@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="EmojiPanel">
+            <connections>
+                <outlet property="collectionView" destination="jnp-pK-a2O" id="Yr7-bI-0TY"/>
+                <outlet property="view" destination="iN0-l3-epB" id="q0o-wa-mwY"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="jnp-pK-a2O">
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="6" minimumInteritemSpacing="6" id="0Fa-Pa-Ee8">
+                        <size key="itemSize" width="38" height="44"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="8" minY="0.0" maxX="8" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                    <connections>
+                        <outlet property="dataSource" destination="-1" id="sdN-bR-gTo"/>
+                        <outlet property="delegate" destination="-1" id="IMM-2d-nwA"/>
+                    </connections>
+                </collectionView>
+            </subviews>
+            <color key="backgroundColor" red="0.16862745100000001" green="0.1960784314" blue="0.25882352939999997" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="jnp-pK-a2O" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="41V-Lg-GGC"/>
+                <constraint firstAttribute="bottom" secondItem="jnp-pK-a2O" secondAttribute="bottom" id="71X-li-PQw"/>
+                <constraint firstItem="jnp-pK-a2O" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="OGw-mq-nSe"/>
+                <constraint firstAttribute="trailing" secondItem="jnp-pK-a2O" secondAttribute="trailing" id="WYd-wX-Xo6"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="324" y="344"/>
+        </view>
+    </objects>
+</document>

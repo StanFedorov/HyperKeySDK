@@ -1,0 +1,1 @@
+../../../YelpAPI/Classes/Common/YLPCoordinate.h

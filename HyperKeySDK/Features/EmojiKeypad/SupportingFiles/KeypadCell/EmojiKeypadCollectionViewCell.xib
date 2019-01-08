@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="EmojiKeypadCollectionViewCell" id="gTV-IL-0wX" customClass="EmojiKeypadCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="32" height="32"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="😜" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="16" translatesAutoresizingMaskIntoConstraints="NO" id="Uef-DC-klg">
+                        <rect key="frame" x="-1" y="0.0" width="32" height="32"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="Uef-DC-klg" secondAttribute="trailing" constant="1" id="0oA-G4-ew7"/>
+                <constraint firstAttribute="bottom" secondItem="Uef-DC-klg" secondAttribute="bottom" id="hbE-nb-LJT"/>
+                <constraint firstItem="Uef-DC-klg" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="m4f-cr-Jke"/>
+                <constraint firstItem="Uef-DC-klg" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="-1" id="vNH-Up-OGi"/>
+            </constraints>
+            <size key="customSize" width="52" height="50"/>
+            <connections>
+                <outlet property="label" destination="Uef-DC-klg" id="4Us-lI-Drn"/>
+            </connections>
+            <point key="canvasLocation" x="285" y="250"/>
+        </collectionViewCell>
+    </objects>
+</document>

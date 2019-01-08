@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="AppsLineView">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" pagingEnabled="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6JA-6u-kJP">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="40"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                </scrollView>
+            </subviews>
+            <color key="backgroundColor" red="0.68627450980392157" green="0.70196078431372544" blue="0.74509803921568629" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="6JA-6u-kJP" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="I9f-Vw-g6u"/>
+                <constraint firstAttribute="trailing" secondItem="6JA-6u-kJP" secondAttribute="trailing" id="bBv-Lv-f9o"/>
+                <constraint firstAttribute="bottom" secondItem="6JA-6u-kJP" secondAttribute="bottom" id="w7j-QT-fHj"/>
+                <constraint firstItem="6JA-6u-kJP" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="xgB-Qs-0Ft"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="apps" destination="6JA-6u-kJP" id="4cC-bv-7Ja"/>
+            </connections>
+        </view>
+    </objects>
+</document>

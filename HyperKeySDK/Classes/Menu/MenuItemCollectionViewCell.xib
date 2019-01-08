@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="" id="gTV-IL-0wX" customClass="MenuItemCollectionViewCell">
+            <rect key="frame" x="0.0" y="0.0" width="35" height="33"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="35" height="33"/>
+                <subviews>
+                    <imageView alpha="0.69999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qgC-Ot-BrL" userLabel="icon">
+                        <rect key="frame" x="1" y="1" width="33" height="31"/>
+                    </imageView>
+                </subviews>
+                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+            </view>
+            <constraints>
+                <constraint firstItem="qgC-Ot-BrL" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="3bU-Ve-Qvn"/>
+                <constraint firstItem="qgC-Ot-BrL" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="phl-0q-dd1"/>
+                <constraint firstItem="qgC-Ot-BrL" firstAttribute="width" secondItem="gTV-IL-0wX" secondAttribute="width" constant="-2" id="sSO-QJ-nOI"/>
+                <constraint firstItem="qgC-Ot-BrL" firstAttribute="height" secondItem="gTV-IL-0wX" secondAttribute="height" constant="-2" id="x5T-q3-dpa"/>
+            </constraints>
+            <size key="customSize" width="31" height="31"/>
+            <connections>
+                <outlet property="imageView" destination="qgC-Ot-BrL" id="e5n-H6-TQC"/>
+                <outletCollection property="selectRelatedSizeConstraintList" destination="sSO-QJ-nOI" id="jPh-AZ-mx3"/>
+                <outletCollection property="selectRelatedSizeConstraintList" destination="x5T-q3-dpa" id="Nfr-c5-w6q"/>
+            </connections>
+            <point key="canvasLocation" x="273.5" y="396.5"/>
+        </collectionViewCell>
+    </objects>
+</document>

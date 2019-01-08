@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G1004" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="yYU-zQ-uyI" customClass="DrawImageView">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="184"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="TFz-57-4So" customClass="DrawImageCanvasView">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="184"/>
+                    <constraints>
+                        <constraint firstAttribute="width" secondItem="TFz-57-4So" secondAttribute="height" multiplier="40:23" priority="998" id="fvV-bV-KhA"/>
+                    </constraints>
+                </imageView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VgL-hz-OyY">
+                    <rect key="frame" x="0.0" y="144" width="320" height="40"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="vjb-J4-2oh"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FRX-re-gsu">
+                    <rect key="frame" x="8" y="9" width="65" height="30"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="calibratedRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="65" id="BDC-xp-3TF"/>
+                        <constraint firstAttribute="height" constant="30" id="syT-0m-oJR"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
+                    <state key="normal" title="Cancel">
+                        <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="actionCancel" destination="yYU-zQ-uyI" eventType="touchUpInside" id="SVk-xH-tik"/>
+                    </connections>
+                </button>
+                <view alpha="0.0" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qey-hq-iTj">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="184"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fmB-9V-jvW" customClass="HProgressHUD">
+                            <rect key="frame" x="8" y="9" width="30" height="30"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="R6J-Rw-TT9"/>
+                                <constraint firstAttribute="width" constant="30" id="yJy-FD-z44"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="fmB-9V-jvW" firstAttribute="leading" secondItem="qey-hq-iTj" secondAttribute="leading" constant="8" id="1W8-nq-J2c"/>
+                        <constraint firstItem="fmB-9V-jvW" firstAttribute="top" secondItem="qey-hq-iTj" secondAttribute="top" constant="9" id="v2g-ho-i01"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="0.94117647058823528" green="0.94117647058823528" blue="0.94117647058823528" alpha="1" colorSpace="calibratedRGB"/>
+            <constraints>
+                <constraint firstItem="FRX-re-gsu" firstAttribute="leading" secondItem="yYU-zQ-uyI" secondAttribute="leading" constant="8" id="2cn-o3-keY"/>
+                <constraint firstItem="FRX-re-gsu" firstAttribute="top" secondItem="yYU-zQ-uyI" secondAttribute="top" constant="9" id="AUu-Fr-TlW"/>
+                <constraint firstItem="VgL-hz-OyY" firstAttribute="leading" secondItem="yYU-zQ-uyI" secondAttribute="leading" id="DJM-dz-3Gr"/>
+                <constraint firstItem="TFz-57-4So" firstAttribute="top" secondItem="yYU-zQ-uyI" secondAttribute="top" id="LnD-AA-bzp"/>
+                <constraint firstItem="qey-hq-iTj" firstAttribute="top" secondItem="yYU-zQ-uyI" secondAttribute="top" id="Sd0-LX-dLq"/>
+                <constraint firstAttribute="bottom" secondItem="VgL-hz-OyY" secondAttribute="bottom" id="TFu-Q8-GEY"/>
+                <constraint firstAttribute="trailing" secondItem="VgL-hz-OyY" secondAttribute="trailing" id="UHS-7v-PIU"/>
+                <constraint firstItem="TFz-57-4So" firstAttribute="centerX" secondItem="yYU-zQ-uyI" secondAttribute="centerX" id="aUx-su-R3j"/>
+                <constraint firstItem="qey-hq-iTj" firstAttribute="leading" secondItem="yYU-zQ-uyI" secondAttribute="leading" id="du0-9R-Ygb"/>
+                <constraint firstAttribute="bottom" secondItem="TFz-57-4So" secondAttribute="bottom" id="gW5-s5-Uej"/>
+                <constraint firstAttribute="bottom" secondItem="qey-hq-iTj" secondAttribute="bottom" id="kg7-PU-NIy"/>
+                <constraint firstAttribute="trailing" secondItem="qey-hq-iTj" secondAttribute="trailing" id="rib-Mh-idz"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outlet property="cancelButton" destination="FRX-re-gsu" id="HEW-SS-sGx"/>
+                <outlet property="canvasRatioConstraint" destination="fvV-bV-KhA" id="APs-eU-h8w"/>
+                <outlet property="canvasView" destination="TFz-57-4So" id="Zmb-Xw-cac"/>
+                <outlet property="menuBottomConstraint" destination="TFu-Q8-GEY" id="ix2-1V-kTH"/>
+                <outlet property="menuContentView" destination="VgL-hz-OyY" id="11P-Ku-sFm"/>
+                <outlet property="progressBackgroundView" destination="qey-hq-iTj" id="iFJ-0N-GXu"/>
+                <outlet property="progressView" destination="fmB-9V-jvW" id="0St-87-7W2"/>
+            </connections>
+        </view>
+    </objects>
+</document>

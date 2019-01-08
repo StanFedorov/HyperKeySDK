@@ -1,0 +1,1 @@
+../../../YelpAPI/Classes/Response/YLPResponsePrivate.h

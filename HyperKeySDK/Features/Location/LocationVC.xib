@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <mutableArray key="roboto_light.ttf">
+            <string>Roboto-Light</string>
+            <string>Roboto-Light</string>
+        </mutableArray>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LocationVC">
+            <connections>
+                <outlet property="activeLocationButton" destination="Mvr-BW-zOd" id="X40-gn-Fia"/>
+                <outlet property="iconButton" destination="D1Q-rY-Fr9" id="g5t-Uq-OB3"/>
+                <outlet property="mapImageView" destination="9Lc-9C-2eq" id="QU0-Nm-Q9V"/>
+                <outlet property="noLocationView" destination="Dpk-Su-3da" id="JjN-MC-cms"/>
+                <outlet property="pasteTipView" destination="zFm-iK-I3q" id="BfK-ne-cyd"/>
+                <outlet property="view" destination="sbL-yR-0Xn" id="Pir-fN-tSi"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="sbL-yR-0Xn">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="274"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <imageView contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9Lc-9C-2eq">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="274"/>
+                </imageView>
+                <button hidden="YES" opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="D1Q-rY-Fr9">
+                    <rect key="frame" x="8" y="9" width="30" height="30"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="nsk-SX-xuN"/>
+                        <constraint firstAttribute="width" constant="30" id="qtr-Oy-bCi"/>
+                    </constraints>
+                    <state key="normal" backgroundImage="Hyperkey_icon">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="functionButton:" destination="-1" eventType="touchUpInside" id="EMN-kJ-uB3"/>
+                    </connections>
+                </button>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="zFm-iK-I3q">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
+                    <subviews>
+                        <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click to paste your address" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yD7-5N-EPN">
+                            <rect key="frame" x="0.0" y="14" width="320" height="21"/>
+                            <fontDescription key="fontDescription" type="system" weight="light" pointSize="15"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tcx-YU-oUs">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="50"/>
+                            <connections>
+                                <action selector="insertMapToTextField:" destination="-1" eventType="touchUpInside" id="ol9-u4-lJA"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.58999999999999997" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="Tcx-YU-oUs" firstAttribute="top" secondItem="zFm-iK-I3q" secondAttribute="top" id="JR6-IA-xIc"/>
+                        <constraint firstAttribute="bottom" secondItem="Tcx-YU-oUs" secondAttribute="bottom" id="JSF-T2-yPh"/>
+                        <constraint firstItem="yD7-5N-EPN" firstAttribute="leading" secondItem="zFm-iK-I3q" secondAttribute="leading" id="KGc-8H-Ttn"/>
+                        <constraint firstAttribute="bottom" secondItem="yD7-5N-EPN" secondAttribute="bottom" constant="15" id="e3e-EX-CNK"/>
+                        <constraint firstAttribute="trailing" secondItem="Tcx-YU-oUs" secondAttribute="trailing" id="fD7-qe-zuK"/>
+                        <constraint firstItem="Tcx-YU-oUs" firstAttribute="leading" secondItem="zFm-iK-I3q" secondAttribute="leading" id="iun-Pu-R5l"/>
+                        <constraint firstAttribute="trailing" secondItem="yD7-5N-EPN" secondAttribute="trailing" id="uUH-gT-1he"/>
+                        <constraint firstAttribute="height" constant="50" id="uie-8s-FeP"/>
+                        <constraint firstItem="yD7-5N-EPN" firstAttribute="top" secondItem="zFm-iK-I3q" secondAttribute="top" constant="14" id="v7D-Rh-oJa"/>
+                    </constraints>
+                </view>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dpk-Su-3da">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="274"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="allow_location_background" translatesAutoresizingMaskIntoConstraints="NO" id="8FX-Rc-Y33">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="274"/>
+                        </imageView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mvr-BW-zOd">
+                            <rect key="frame" x="60" y="149" width="200" height="36"/>
+                            <color key="backgroundColor" red="0.0" green="0.68235294120000001" blue="0.93725490199999995" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="36" id="Ldq-zD-yFX"/>
+                                <constraint firstAttribute="width" constant="200" id="ujN-F5-jEL"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="Roboto-Light" family="Roboto" pointSize="17"/>
+                            <state key="normal" title="Allow Geolocation">
+                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                            </state>
+                            <connections>
+                                <action selector="activateLocation:" destination="-1" eventType="touchUpInside" id="ezz-vt-vNW"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eY1-yx-QWr">
+                            <rect key="frame" x="43" y="68" width="235" height="57"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="57" id="NUp-gl-zB9"/>
+                                <constraint firstAttribute="width" constant="235" id="lVL-9c-Ny4"/>
+                            </constraints>
+                            <string key="text">You need to allow geolocation 
+in order to share it</string>
+                            <fontDescription key="fontDescription" name="Roboto-Light" family="Roboto" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstItem="8FX-Rc-Y33" firstAttribute="centerX" secondItem="Dpk-Su-3da" secondAttribute="centerX" id="9YL-gA-cuh"/>
+                        <constraint firstItem="Mvr-BW-zOd" firstAttribute="top" secondItem="eY1-yx-QWr" secondAttribute="bottom" constant="24" id="JQm-es-KL8"/>
+                        <constraint firstItem="8FX-Rc-Y33" firstAttribute="width" secondItem="Dpk-Su-3da" secondAttribute="width" id="RjQ-su-tbu"/>
+                        <constraint firstItem="8FX-Rc-Y33" firstAttribute="centerY" secondItem="Dpk-Su-3da" secondAttribute="centerY" id="XSF-bA-8kB"/>
+                        <constraint firstAttribute="centerX" secondItem="Mvr-BW-zOd" secondAttribute="centerX" id="ZJv-F6-NZL"/>
+                        <constraint firstAttribute="centerX" secondItem="eY1-yx-QWr" secondAttribute="centerX" constant="-0.5" id="fSf-hb-F1D"/>
+                        <constraint firstItem="8FX-Rc-Y33" firstAttribute="height" secondItem="Dpk-Su-3da" secondAttribute="height" id="rGD-S5-wqr"/>
+                        <constraint firstAttribute="centerY" secondItem="Mvr-BW-zOd" secondAttribute="centerY" constant="-30" id="zTH-Mz-92c"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+            <constraints>
+                <constraint firstItem="D1Q-rY-Fr9" firstAttribute="leading" secondItem="sbL-yR-0Xn" secondAttribute="leading" constant="8" id="H1f-ul-Pmg"/>
+                <constraint firstItem="zFm-iK-I3q" firstAttribute="top" secondItem="sbL-yR-0Xn" secondAttribute="top" id="TOw-3Z-sOx"/>
+                <constraint firstItem="zFm-iK-I3q" firstAttribute="leading" secondItem="sbL-yR-0Xn" secondAttribute="leading" id="TfV-oc-9mW"/>
+                <constraint firstAttribute="bottom" secondItem="Dpk-Su-3da" secondAttribute="bottom" id="YJx-Vz-RcC"/>
+                <constraint firstItem="Dpk-Su-3da" firstAttribute="top" secondItem="sbL-yR-0Xn" secondAttribute="top" id="a43-Mc-qba"/>
+                <constraint firstAttribute="trailing" secondItem="9Lc-9C-2eq" secondAttribute="trailing" id="drI-hT-ebo"/>
+                <constraint firstAttribute="trailing" secondItem="Dpk-Su-3da" secondAttribute="trailing" id="enN-eH-ZUX"/>
+                <constraint firstItem="Dpk-Su-3da" firstAttribute="leading" secondItem="sbL-yR-0Xn" secondAttribute="leading" id="esD-VZ-jp2"/>
+                <constraint firstAttribute="bottom" secondItem="9Lc-9C-2eq" secondAttribute="bottom" id="i7X-VQ-rlV"/>
+                <constraint firstItem="9Lc-9C-2eq" firstAttribute="leading" secondItem="sbL-yR-0Xn" secondAttribute="leading" id="kVT-a4-2Wn"/>
+                <constraint firstItem="9Lc-9C-2eq" firstAttribute="top" secondItem="sbL-yR-0Xn" secondAttribute="top" id="lW9-zJ-L1B"/>
+                <constraint firstItem="D1Q-rY-Fr9" firstAttribute="top" secondItem="sbL-yR-0Xn" secondAttribute="top" constant="9" id="owc-l1-Bal"/>
+                <constraint firstAttribute="trailing" secondItem="zFm-iK-I3q" secondAttribute="trailing" id="w6h-Up-Vzu"/>
+            </constraints>
+            <nil key="simulatedStatusBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="336" y="461"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="Hyperkey_icon" width="29" height="29"/>
+        <image name="allow_location_background" width="337" height="234"/>
+    </resources>
+</document>

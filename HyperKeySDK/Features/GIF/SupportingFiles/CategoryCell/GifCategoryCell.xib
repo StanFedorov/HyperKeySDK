@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11201" systemVersion="16A323" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11161"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="GifCategoryCell" id="gTV-IL-0wX" customClass="GifCategoryCell">
+            <rect key="frame" x="0.0" y="0.0" width="105" height="43"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="105" height="43"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3cn-fU-JG3">
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yXQ-zX-rau">
+                        <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                        <color key="textColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.23529411759999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="3cn-fU-JG3" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="16Q-TD-bdv"/>
+                <constraint firstAttribute="trailing" secondItem="3cn-fU-JG3" secondAttribute="trailing" id="GX0-S5-GOj"/>
+                <constraint firstItem="3cn-fU-JG3" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="HpS-09-tf9"/>
+                <constraint firstItem="yXQ-zX-rau" firstAttribute="centerY" secondItem="gTV-IL-0wX" secondAttribute="centerY" id="QPP-dM-W5d"/>
+                <constraint firstItem="yXQ-zX-rau" firstAttribute="centerX" secondItem="gTV-IL-0wX" secondAttribute="centerX" id="Zdl-Qu-b7f"/>
+                <constraint firstAttribute="bottom" secondItem="3cn-fU-JG3" secondAttribute="bottom" id="qMZ-9w-CYb"/>
+            </constraints>
+            <size key="customSize" width="107" height="53"/>
+            <connections>
+                <outlet property="selectedView" destination="3cn-fU-JG3" id="u53-EA-5AU"/>
+                <outlet property="titleLabel" destination="yXQ-zX-rau" id="6P4-hx-D8h"/>
+            </connections>
+            <point key="canvasLocation" x="406.5" y="267.5"/>
+        </collectionViewCell>
+    </objects>
+</document>
