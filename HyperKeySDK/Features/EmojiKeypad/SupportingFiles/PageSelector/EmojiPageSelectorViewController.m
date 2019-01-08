@@ -7,6 +7,7 @@
 //
 
 #import "EmojiPageSelectorViewController.h"
+#import "UIImage+Pod.h"
 
 @interface EmojiPageSelectorViewController ()
 
@@ -112,15 +113,15 @@
 - (void)setTheme:(KBTheme)theme {
     BOOL needDark = NO;
     
-    self.sectionImageView1.image = [UIImage imageNamed:(needDark) ? @"section01_white" : @"section01"];
-    self.sectionImageView2.image = [UIImage imageNamed:(needDark) ? @"section02_white" : @"section02"];
-    self.sectionImageView3.image = [UIImage imageNamed:(needDark) ? @"section03_white" : @"section03"];
-    self.sectionImageView4.image = [UIImage imageNamed:(needDark) ? @"section04_white" : @"section04"];
-    self.sectionImageView5.image = [UIImage imageNamed:(needDark) ? @"section05_white" : @"section05"];
-    self.sectionImageView6.image = [UIImage imageNamed:(needDark) ? @"section06_white" : @"section06"];
-    self.sectionImageView7.image = [UIImage imageNamed:(needDark) ? @"section07_white" : @"section07"];
-    self.sectionImageView8.image = [UIImage imageNamed:(needDark) ? @"section08_white" : @"section08"];
-    self.sectionImageView9.image = [UIImage imageNamed:(needDark) ? @"section09_white" : @"section09"];
+    self.sectionImageView1.image = [UIImage imageNamedPod:(needDark) ? @"section01_white" : @"section01"];
+    self.sectionImageView2.image = [UIImage imageNamedPod:(needDark) ? @"section02_white" : @"section02"];
+    self.sectionImageView3.image = [UIImage imageNamedPod:(needDark) ? @"section03_white" : @"section03"];
+    self.sectionImageView4.image = [UIImage imageNamedPod:(needDark) ? @"section04_white" : @"section04"];
+    self.sectionImageView5.image = [UIImage imageNamedPod:(needDark) ? @"section05_white" : @"section05"];
+    self.sectionImageView6.image = [UIImage imageNamedPod:(needDark) ? @"section06_white" : @"section06"];
+    self.sectionImageView7.image = [UIImage imageNamedPod:(needDark) ? @"section07_white" : @"section07"];
+    self.sectionImageView8.image = [UIImage imageNamedPod:(needDark) ? @"section08_white" : @"section08"];
+    self.sectionImageView9.image = [UIImage imageNamedPod:(needDark) ? @"section09_white" : @"section09"];
 }
 
 @end

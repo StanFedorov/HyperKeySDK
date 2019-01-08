@@ -13,6 +13,7 @@
 #import "Macroses.h"
 #import "MenuItemCollectionViewCell.h"
 #import "LXReorderableCollectionViewFlowLayout.h"
+#import "UIImage+Pod.h"
 
 #import "ImagesLoadingAndSavingManager.h"
 
@@ -48,12 +49,12 @@ NSString *const kMenuVCCellReuseIdentifier = @"MenuItemCell";
     self.featuresImagesLoadingManager = [[ImagesLoadingAndSavingManager alloc] init];
     self.featuresImagesLoadingManager.delegate = self;
     
-    [self.collectionView registerNib:[UINib nibWithNibName:NSStringFromClass([MenuItemCollectionViewCell class])bundle:nil] forCellWithReuseIdentifier:kMenuVCCellReuseIdentifier];
+    [self.collectionView registerNib:[UINib nibWithNibName:NSStringFromClass([MenuItemCollectionViewCell class])bundle:[NSBundle bundleForClass:MenuItemCollectionViewCell.class]] forCellWithReuseIdentifier:kMenuVCCellReuseIdentifier];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardBlockHandler) name:kNotificationKeyboardBlock object:nil];
     
     if (self.backSpaceButton) {
-        [self.backSpaceButton setImage:[UIImage imageNamed:@"backspace_transparent_active"] forState:UIControlStateHighlighted];
+        [self.backSpaceButton setImage:[UIImage imageNamedPod:@"backspace_transparent_active"] forState:UIControlStateHighlighted];
         [self addGRToDeleteButton];
     }
     
@@ -235,7 +236,7 @@ NSString *const kMenuVCCellReuseIdentifier = @"MenuItemCell";
     // iPad image should be 41x41
     
     if (feature.isImageFromResources) {
-        cell.imageView.image = [UIImage imageNamed:feature.imageNameOrUrl];
+        cell.imageView.image = [UIImage imageNamedPod:feature.imageNameOrUrl];
     } else {
         // FIXME: Remove ServiceType from project
         ServiceType serviceType = ServiceTypeInstagram;
@@ -246,7 +247,7 @@ NSString *const kMenuVCCellReuseIdentifier = @"MenuItemCell";
         }
         
         UIImage *image = [self.featuresImagesLoadingManager loadImageIfItNotExistsByPath:feature.imageNameOrUrl byServiceType:serviceType andSelectedIndex:indexPath];
-        cell.imageView.image = image ? image : [UIImage imageNamed:@"menu_gifCameraPlaceholder"];
+        cell.imageView.image = image ? image : [UIImage imageNamedPod:@"menu_gifCameraPlaceholder"];
         cell.imageView.contentMode = UIViewContentModeScaleAspectFill;
     }
     
@@ -267,7 +268,7 @@ NSString *const kMenuVCCellReuseIdentifier = @"MenuItemCell";
     if ((indexPath) && ([self.collectionView.indexPathsForVisibleItems containsObject:indexPath])) {
         MenuItemCollectionViewCell *cell = (MenuItemCollectionViewCell *)[self.collectionView cellForItemAtIndexPath:indexPath];
 
-        cell.imageView.image = image ? image : [UIImage imageNamed:@"menu_gifCameraPlaceholder"];
+        cell.imageView.image = image ? image : [UIImage imageNamedPod:@"menu_gifCameraPlaceholder"];
         cell.imageView.backgroundColor = cell.imageView.image ? [UIColor clearColor] : [UIColor whiteColor];
     }
 }

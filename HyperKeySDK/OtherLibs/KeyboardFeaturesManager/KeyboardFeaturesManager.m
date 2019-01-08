@@ -85,7 +85,7 @@ NSString *const kNotificationUpdateFeaturesList = @"NotificationUpdateFeaturesLi
     [self.staticSettedItemsList addObject:[KeyboardFeature featureWithType:FeatureTypePhotoLibrary]];
     [self.staticSettedItemsList addObject:[KeyboardFeature featureWithType:FeatureTypeGoogleTranslate]];
     [self.staticSettedItemsList addObject:[KeyboardFeature featureWithType:FeatureTypeShareLocation]];
-    [self.staticSettedItemsList addObject:[KeyboardFeature featureWithType:FeatureTypeDropbox]];
+  //  [self.staticSettedItemsList addObject:[KeyboardFeature featureWithType:FeatureTypeDropbox]];
   //  [self.staticSettedItemsList addObject:[KeyboardFeature featureWithType:FeatureTypeGoogleDrive]];
   //  [self.staticSettedItemsList addObject:[KeyboardFeature featureWithType:FeatureTypeFrequentlyUsedPhrases]];
    // [self.staticSettedItemsList addObject:[KeyboardFeature featureWithType:FeatureTypeCamFind]];

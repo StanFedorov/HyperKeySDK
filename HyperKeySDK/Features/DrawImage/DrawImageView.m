@@ -81,7 +81,7 @@ NSUInteger const kDrawImageMaxFramesCount = 99;
     
     [AWSLogger defaultLogger].logLevel = AWSLogLevelError;
     
-    self.menuView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([DrawImageMenuView class]) owner:self options:nil] firstObject];
+    self.menuView = [[[NSBundle bundleForClass:DrawImageMenuView.class] loadNibNamed:NSStringFromClass([DrawImageMenuView class]) owner:self options:nil] firstObject];
     self.menuView.delegate = self;
     [self.menuContentView addSubview:self.menuView];
     [self.menuView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -151,7 +151,7 @@ NSUInteger const kDrawImageMaxFramesCount = 99;
 
 - (void)showShareOverlayView {
     if (!self.shareOverlayView) {
-        self.shareOverlayView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([DrawImageShareOverlayView class]) owner:self options:nil] firstObject];
+        self.shareOverlayView = [[[NSBundle bundleForClass:DrawImageShareOverlayView.class] loadNibNamed:NSStringFromClass([DrawImageShareOverlayView class]) owner:self options:nil] firstObject];
         self.shareOverlayView.alpha = 0;
         self.shareOverlayView.delegate = self;
         [self addSubview:self.shareOverlayView];
@@ -167,7 +167,7 @@ NSUInteger const kDrawImageMaxFramesCount = 99;
 
 - (void)showSaveOvelayView {
     if (!self.saveOverlayView) {
-        self.saveOverlayView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([DrawImageSaveOverlayView class]) owner:self options:nil] firstObject];
+        self.saveOverlayView = [[[NSBundle bundleForClass:DrawImageSaveOverlayView.class] loadNibNamed:NSStringFromClass([DrawImageSaveOverlayView class]) owner:self options:nil] firstObject];
         self.saveOverlayView.alpha = 0;
         self.saveOverlayView.delegate = self;
         [self addSubview:self.saveOverlayView];

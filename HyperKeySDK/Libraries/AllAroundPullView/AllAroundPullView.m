@@ -10,6 +10,7 @@
 //
 
 #import "AllAroundPullView.h"
+#import "UIImage+Pod.h"
 
 @interface AllAroundPullView ()
 
@@ -115,7 +116,7 @@ static const CGFloat kSidePullViewWidth = 70.0;
         self.backgroundColor = [UIColor clearColor];
         _threshold = 60.0;
         self.arrowImage = [[CALayer alloc] init];
-        UIImage *arrow = [UIImage imageNamed:@"arrow.png"];
+        UIImage *arrow = [UIImage imageNamedPod:@"arrow.png"];
         self.arrowImage.contents = (id) arrow.CGImage;
         CGRect arrowAndActivityFrame;
         if (self.isSideView) {

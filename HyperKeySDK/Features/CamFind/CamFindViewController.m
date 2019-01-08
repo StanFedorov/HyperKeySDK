@@ -201,7 +201,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CamFindTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CamFindTableViewCell"];
     if (cell == nil) {
-        NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"CamFindTableViewCell" owner:self options:nil];
+        NSArray *topLevelObjects = [[NSBundle bundleForClass:NSClassFromString(@"CamFindTableViewCell")] loadNibNamed:@"CamFindTableViewCell" owner:self options:nil];
         cell = [topLevelObjects objectAtIndex:0];
     }
     cell.backgroundColor = [UIColor clearColor];
@@ -270,7 +270,7 @@
         [self insertLinkWithURLString:link title:name featureType:self.featureType completion:nil];
     }*/
     
-    CamFindAmazonViewController *infoVC = [[CamFindAmazonViewController alloc] initWithNibName:NSStringFromClass([CamFindAmazonViewController class]) bundle:nil];
+    CamFindAmazonViewController *infoVC = [[CamFindAmazonViewController alloc] initWithNibName:NSStringFromClass([CamFindAmazonViewController class]) bundle:[NSBundle bundleForClass:NSClassFromString(@"CamFindAmazonViewController")]];
     infoVC.camFindItem = [self.searchResults objectAtIndex:indexPath.row][@"title"];
     [infoVC setDelegate:self.delegate];
     [self.navigationController pushViewController:infoVC animated:YES];

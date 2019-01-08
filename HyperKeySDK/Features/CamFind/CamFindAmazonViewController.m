@@ -244,7 +244,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     AmazonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AmazonTableViewCell"];
     if (cell == nil) {
-        NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"AmazonTableViewCell" owner:self options:nil];
+        NSArray *topLevelObjects = [[NSBundle bundleForClass:NSClassFromString(@"AmazonTableViewCell")] loadNibNamed:@"AmazonTableViewCell" owner:self options:nil];
         cell = [topLevelObjects objectAtIndex:0];
     }
     cell.backgroundColor = [UIColor clearColor];
@@ -273,7 +273,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    AmazonPageViewController *infoVC = [[AmazonPageViewController alloc] initWithNibName:NSStringFromClass([AmazonPageViewController class]) bundle:nil];
+    AmazonPageViewController *infoVC = [[AmazonPageViewController alloc] initWithNibName:NSStringFromClass([AmazonPageViewController class]) bundle:[NSBundle bundleForClass:NSClassFromString(@"AmazonPageViewController")]];
     infoVC.item = [self.searchResults objectAtIndex:indexPath.row];
     [self.navigationController pushViewController:infoVC animated:YES];
 }

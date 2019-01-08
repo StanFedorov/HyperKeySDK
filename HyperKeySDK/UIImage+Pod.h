@@ -10,8 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIImage_Pod : UIImage
-
+@interface UIImage (Pod)
++ (UIImage *)imageNamedPod:(NSString *)name;
 @end
 
 NS_ASSUME_NONNULL_END

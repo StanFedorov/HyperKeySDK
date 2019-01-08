@@ -8,6 +8,7 @@
 
 #import "DropInfoTableViewCell.h"
 #import "KeyboardFeaturesAuthenticationManager.h"
+#import "UIImage+Pod.h"
 
 @interface DropInfoTableViewCell ()
 @property (nonatomic,strong) DBUserClient *client;

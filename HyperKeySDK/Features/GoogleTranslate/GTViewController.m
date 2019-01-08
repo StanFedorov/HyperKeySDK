@@ -107,7 +107,7 @@ NSString *const kGTLangListName = @"name";
 }
 
 - (void)loadLanguages {
-    NSString *sourcePath = [[NSBundle mainBundle] pathForResource:@"glanguages" ofType:@"plist"];
+    NSString *sourcePath = [[NSBundle bundleForClass:NSClassFromString(@"HKKeyboardViewController")] pathForResource:@"glanguages" ofType:@"plist"];
     self.languagesList = [NSArray arrayWithContentsOfFile:sourcePath];
     
     dispatch_async(dispatch_get_main_queue(), ^{

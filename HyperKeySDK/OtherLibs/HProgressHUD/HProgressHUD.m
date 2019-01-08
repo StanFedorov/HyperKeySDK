@@ -7,7 +7,7 @@
 //
 
 #import "HProgressHUD.h"
-
+#import "UIImage+Pod.h"
 CGFloat const kHProgressHUDAnimationDuration = 1.0;
 NSString *const kHProgressHUDAnimationKey = @"HProgressHUDAnimationKey";
 
@@ -200,7 +200,7 @@ NSString *const kHProgressHUDAnimationKey = @"HProgressHUDAnimationKey";
             imageName = @"icon_progress_w";
             break;
     }
-    return [UIImage imageNamed:imageName];
+    return [UIImage imageNamedPod:imageName];
 }
 
 @end

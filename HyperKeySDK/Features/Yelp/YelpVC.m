@@ -16,6 +16,7 @@
 #import "YPAPISample.h"
 #import "JSONSessionManager.h"
 #import "LocationManager.h"
+#import "UIImage+Pod.h"
 
 #import <Masonry/Masonry.h>
 #import <YelpAPI/YelpAPI.h>
@@ -59,7 +60,7 @@
     [self.navigationController setNavigationBarHidden:YES animated:NO];
     
     NSString *cellName = NSStringFromClass([YelpCell class]);
-    [self.tableView registerNib:[UINib nibWithNibName:cellName bundle:nil] forCellReuseIdentifier:cellName];
+    [self.tableView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:YelpCell.class]] forCellReuseIdentifier:cellName];
     
     // For see through
     self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0);
@@ -337,33 +338,33 @@
         //}
         
         if([yelpInfo[@"rating"] doubleValue] < 1) {
-            cell.rateImageView.image = [UIImage imageNamed:@"large_0"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_0"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 1.5) {
-            cell.rateImageView.image = [UIImage imageNamed:@"large_1"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_1"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 2) {
-            cell.rateImageView.image = [UIImage imageNamed:@"large_1_half"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_1_half"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 2.5) {
-            cell.rateImageView.image = [UIImage imageNamed:@"large_2"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_2"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 3) {
-            cell.rateImageView.image = [UIImage imageNamed:@"large_2_half"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_2_half"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 3.5) {
-            cell.rateImageView.image = [UIImage imageNamed:@"large_3"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_3"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 4) {
-            cell.rateImageView.image = [UIImage imageNamed:@"large_3_half"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_3_half"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 4.5) {
-            cell.rateImageView.image = [UIImage imageNamed:@"large_4"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_4"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 5) {
-            cell.rateImageView.image = [UIImage imageNamed:@"large_4_half"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_4_half"];
         }else {
-            cell.rateImageView.image = [UIImage imageNamed:@"large_5"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_5"];
         }
     }
     

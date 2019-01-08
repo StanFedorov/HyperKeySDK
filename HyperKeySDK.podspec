@@ -88,7 +88,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "HyperKeySDK/*.{h}"
+  s.source_files  = "HyperKeySDK/**/*.{h,m}"
 
 
   # ――― Resources ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
@@ -100,7 +100,8 @@ Pod::Spec.new do |s|
   #
 
   # s.resource  = "icon.png"
-  s.resources = "HyperKeySDK/Resources/Images/*","HyperKeySDK/Resources/Fonts/*"
+  s.resources = "HyperKeySDK/Resources/Images/*","HyperKeySDK/Resources/Fonts/*","HyperKeySDK/**/*.{xib,lproj,plist,dat}"
+
 
   # s.preserve_paths = "FilesToSave", "MoreFilesToSave"
 

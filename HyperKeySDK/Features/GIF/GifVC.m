@@ -17,6 +17,7 @@
 #import "FLAnimatedImage.h"
 #import "HProgressHUD.h"
 #import "UIScreen+Orientation.h"
+#import "UIImage+Pod.h"
 
 #ifdef kFabricEnabled
 #import <Crashlytics/Crashlytics.h>
@@ -75,11 +76,11 @@ NSInteger const kGifVCScrollDeceleratingRate = 0.994;
     self.previousSearchString = nil;
     
     NSString *cellName = NSStringFromClass([GifCell class]);
-    [self.itemsCollectionView registerNib:[UINib nibWithNibName:cellName bundle:nil] forCellWithReuseIdentifier:cellName];
+    [self.itemsCollectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:GifCell.class]] forCellWithReuseIdentifier:cellName];
     self.itemsCollectionView.decelerationRate = kGifVCScrollDeceleratingRate;
     
     cellName = NSStringFromClass([GifCategoryCell class]);
-    [self.categoriesCollectionView registerNib:[UINib nibWithNibName:cellName bundle:nil] forCellWithReuseIdentifier:cellName];
+    [self.categoriesCollectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:GifCategoryCell.class]] forCellWithReuseIdentifier:cellName];
 
     self.currentLoadingImagesUrlsArray = [[NSMutableArray alloc] init];
     self.imagesLoadingQueue = [[NSOperationQueue alloc] init];
@@ -141,7 +142,7 @@ NSInteger const kGifVCScrollDeceleratingRate = 0.994;
 
 - (void)keyboardDidDisappear {
     [self setSearchFieldHidden:YES];
-    [self.showKeyboardButton setImage:[UIImage imageNamed:@"search_round_button"] forState:UIControlStateNormal];
+    [self.showKeyboardButton setImage:[UIImage imageNamedPod:@"search_round_button"] forState:UIControlStateNormal];
 }
 
 - (void)showKeyboardButtonTap:(id)sender {
@@ -155,7 +156,7 @@ NSInteger const kGifVCScrollDeceleratingRate = 0.994;
         [self.delegate hideKeyboard];
     }
     
-    UIImage *image = [UIImage imageNamed:searchShouldHidden ? @"search_round_button" : kSearchFieldImageNameHide];
+    UIImage *image = [UIImage imageNamedPod:searchShouldHidden ? @"search_round_button" : kSearchFieldImageNameHide];
     [self.showKeyboardButton setImage:image forState:UIControlStateNormal];
 }
 

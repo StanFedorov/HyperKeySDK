@@ -68,7 +68,7 @@
     self.gifAPIClient = [[GifAPIClient alloc] init];
 
     NSString *cellName = NSStringFromClass([GifCell class]);
-    [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:nil] forCellWithReuseIdentifier:cellName];
+    [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:GifCell.class]] forCellWithReuseIdentifier:cellName];
     
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     KBTheme theme = ((NSNumber *)[userDefaults objectForKey:kUserDefaultsKeyboardTheme]).integerValue;

@@ -7,6 +7,7 @@
 //
 
 #import "ActionView.h"
+#import "UIImage+Pod.h"
 
 NSTimeInterval const kActionViewDefaultShowAnimationDuration = 0.6;
 NSTimeInterval const kActionViewDefaultHideAnimationDuration = 0.3;
@@ -139,7 +140,7 @@ NSTimeInterval const kActionViewDefaultHideAnimationDuration = 0.3;
             imageName = @"icon_action_paste";
             break;
     }
-    self.iconImageView.image = [UIImage imageNamed:imageName];
+    self.iconImageView.image = [UIImage imageNamedPod:imageName];
 }
 
 @end

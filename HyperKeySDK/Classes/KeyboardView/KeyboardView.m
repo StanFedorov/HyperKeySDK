@@ -18,9 +18,9 @@
 #import "KeyboardConfig.h"
 #import "UIImage+Additions.h"
 #import "UIFont+Hyperkey.h"
-
+#import "UIImage+Pod.h"
 #import <mach/mach.h>
-
+#import <CoreText/CTFontManager.h>
 NSString *const kKeyboardViewRowComponentSeparator = @" ";
 
 NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
@@ -89,7 +89,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
         self.numberPadCreated = NO;
         self.symbolPadCreated = NO;
         self.currentPad = KeyboardViewPadTypeLetter;
-        
+        [self registerFont:@"SFUIDisplay-Light"];
         self.isPortraitOrientation = YES;
         self.cellImage = [[UIImageView alloc] init];
         [self addSubview:self.cellImage];
@@ -142,7 +142,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
         }
     }
 
-    self.cellImage.image = [[UIImage imageNamed:imageName] tranlucentWithAlpha:0.1];
+    self.cellImage.image = [[UIImage imageNamedPod:imageName] tranlucentWithAlpha:0.1];
 }
 
 - (void)arrangeKeys {
@@ -441,10 +441,10 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     self.symbolPadButton.frame = self.phoneKeyboardMetrics.leftShiftButtonFrame;
     [self addSubview:self.symbolPadButton];
 
-    NSString *row = NSLocalizedStringFromTable(@"numberPadTop", kLocalizedTableSymbols, @"1 2 3 4 5 6 7 8 9 0 by default");
+    NSString *row = @"1 2 3 4 5 6 7 8 9 0";
     NSArray *characters1 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
-    row = NSLocalizedStringFromTable(@"numberPadMiddleFull", kLocalizedTableSymbols, @"- / : ; ( ) $ & @ \ by default");
+    row = @"- / : ; ( ) $ & @ \\";
     NSArray *characters2 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
     for (int i = 0; i < [self.symbolPadTopRow count]; ++i) {
@@ -459,10 +459,10 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     [self.symbolPadButton removeFromSuperview];
     [self addSubview:self.numberPadButtonOnSymbolPad];
     
-    NSString *row = NSLocalizedStringFromTable(@"symbolPadTop", kLocalizedTableSymbols, @"[ ] { } # % ^ * + = by default");
+    NSString *row = @"[ ] { } # % ^ * + =";
     NSArray *characters1 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
-    row = NSLocalizedStringFromTable(@"symbolPadMiddle", kLocalizedTableSymbols, @"_ \ | ~ < > $ € £ ・ by default");
+    row = @"_ \\ | ~ < > $ € £ ・";
     NSArray *characters2 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
 
     for (int i = 0; i < [self.symbolPadTopRow count]; ++i) {
@@ -479,7 +479,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (ACKey *)nextKeyboardButton {
     if (!_nextKeyboardButton) {
-        _nextKeyboardButton = [ACKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance image:[UIImage imageNamed:@"global_portrait"]];
+        _nextKeyboardButton = [ACKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance image:[UIImage imageNamedPod:@"global_portrait"]];
         [self.delegate setupNewNextKeyboardButton:_nextKeyboardButton];
         [self addSubview:_nextKeyboardButton];
         
@@ -490,7 +490,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (ACKey *)returnButton {
     if (!_returnButton) {
-        NSString *title = NSLocalizedStringFromTable(@"returnTitle", kLocalizedTableSymbols, @"title for return button");
+        NSString *title = @"return";
         _returnButton = [ACKey keyWithStyle:ACKeyStyleBlue appearance:self.keyAppearance title:title];
         _returnButton.titleFont = [self currentFontSmall];
         [_returnButton addTarget:self action:@selector(returnButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
@@ -513,7 +513,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (ACKey *)hideButton {
     if (!_hideButton) {
-        UIImage *image = [[UIImage imageNamed:@"kb_dismiss_pad.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+        UIImage *image = [[UIImage imageNamedPod:@"kb_dismiss_pad.png"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
         _hideButton = [ACKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance image:image];
         [_hideButton addTarget:self action:@selector(hidePressedPad) forControlEvents:UIControlEventTouchUpInside];
         [self addSubview:_hideButton];
@@ -536,7 +536,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
         if (IS_IPAD) {
             _spaceButton = [ACKey keyWithStyle:ACKeyStyleLight appearance:self.keyAppearance];
         } else {
-            NSString *title = NSLocalizedStringFromTable(@"spaceTitle", kLocalizedTableSymbols, @"title for space button");
+            NSString *title = @"space";
             _spaceButton = [ACKey keyWithStyle:ACKeyStyleLight appearance:self.keyAppearance title:title];
         }
         _spaceButton.titleFont = [self currentFontSmall];
@@ -550,7 +550,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (ACKey *)deleteButton {
     if (!_deleteButton) {
-        UIImage *image = [[UIImage imageNamed:@"delete_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        UIImage *image = [[UIImage imageNamedPod:@"delete_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         _deleteButton = [ACKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance image:image];
         [self addSubview:_deleteButton];
         
@@ -601,7 +601,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (ACKey *)overlayButton {
     if (!_overlayButton) {
-        UIImage *image = [UIImage imageNamed:@"kb_main_icon"];
+        UIImage *image = [UIImage imageNamedPod:@"kb_main_icon"];
         _overlayButton = [ACKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance image:image];
         _overlayButton.tag = kKeyboardViewACKeyOvelayTag;
         [_overlayButton addTarget:self action:@selector(overlayButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
@@ -615,8 +615,8 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 - (ACLockKey *)leftShiftButton {
     if (!_leftShiftButton) {
         _leftShiftButton = [ACLockKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance];
-        _leftShiftButton.image = [[UIImage imageNamed:@"shift_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        _leftShiftButton.lockImage = [[UIImage imageNamed:@"shift_lock_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        _leftShiftButton.image = [[UIImage imageNamedPod:@"shift_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        _leftShiftButton.lockImage = [[UIImage imageNamedPod:@"shift_lock_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         [_leftShiftButton addTarget:self action:@selector(shiftButtonTapped:) forControlEvents:UIControlEventTouchDown];
         [_leftShiftButton addTarget:self action:@selector(shiftButtonDoubleTapped:) forControlEvents:UIControlEventTouchDownRepeat];
         [self addSubview:_leftShiftButton];
@@ -627,8 +627,8 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 - (ACLockKey *)rightShiftButton {
     if (!_rightShiftButton) {
         _rightShiftButton = [ACLockKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance];
-        _rightShiftButton.image = [[UIImage imageNamed:@"shift_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-        _rightShiftButton.lockImage = [[UIImage imageNamed:@"shift_lock_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        _rightShiftButton.image = [[UIImage imageNamedPod:@"shift_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+        _rightShiftButton.lockImage = [[UIImage imageNamedPod:@"shift_lock_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
         [_rightShiftButton addTarget:self action:@selector(shiftButtonTapped:) forControlEvents:UIControlEventTouchDown];
         [_rightShiftButton addTarget:self action:@selector(shiftButtonDoubleTapped:) forControlEvents:UIControlEventTouchDownRepeat];
         [self addSubview:_rightShiftButton];
@@ -641,7 +641,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (NSArray *)letterPadTopRow {
     if (!_letterPadTopRow) {
-        NSString *row = NSLocalizedStringFromTable(@"letterPadTop", kLocalizedTableSymbols, @"Q W E R T Y U I P by default");
+        NSString *row = @"Q W E R T Y U I O P";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
         
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
@@ -673,7 +673,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (NSArray *)letterPadMiddleRow {
     if (!_letterPadMiddleRow) {
-        NSString *row = NSLocalizedStringFromTable(@"letterPadMiddle", kLocalizedTableSymbols, @"A S D F G H J K L by default");
+        NSString *row = @"A S D F G H J K L";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
         
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
@@ -705,7 +705,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (NSArray*)letterPadBottomRow {
     if (!_letterPadBottomRow) {
-        NSString *row = NSLocalizedStringFromTable(@"letterPadBottom", kLocalizedTableSymbols, @"Z X C V B N M by default");
+        NSString *row = @"Z X C V B N M";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
 
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
@@ -737,7 +737,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (NSArray *)symbolPadTopRow {
     if (!_symbolPadTopRow) {
-        NSString *row = NSLocalizedStringFromTable(@"numberPadTop", kLocalizedTableSymbols, @"1 2 3 4 5 6 7 8 9 0 by default");
+        NSString *row = @"1 2 3 4 5 6 7 8 9 0";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
         
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
@@ -769,7 +769,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (NSArray*)symbolPadMiddleRow {
     if (!_symbolPadMiddleRow) {
-        NSString *row = NSLocalizedStringFromTable(@"numberPadMiddleFull", kLocalizedTableSymbols, @"- / : ; ( ) $ & @ \ by default");
+        NSString *row = @"- / : ; ( ) $ & @ \\";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
         
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
@@ -801,7 +801,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (NSArray *)symbolPadBottomRow {
     if (!_symbolPadBottomRow) {
-        NSString *row = NSLocalizedStringFromTable(@"numberPadBottomShort", kLocalizedTableSymbols, @". , ? ! ' by default");
+        NSString *row = @". , ? ! '";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
         
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
@@ -836,7 +836,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (NSArray *)letterPadTopRowPad {
     if (!_letterPadTopRowPad) {
-        NSString *row = NSLocalizedStringFromTable(@"letterPadTop", kLocalizedTableSymbols, @"Q W E R T Y U I P by default");
+        NSString *row = @"Q W E R T Y U I O P";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
         
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
@@ -871,7 +871,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (NSArray *)letterPadMiddleRowPad {
     if (!_letterPadMiddleRowPad) {
-        NSString *row = NSLocalizedStringFromTable(@"letterPadMiddle", kLocalizedTableSymbols, @"A S D F G H J K L by default");
+        NSString *row = @"A S D F G H J K L";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
         
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
@@ -906,7 +906,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (NSArray *)letterPadBottomRowPad {
     if (!_letterPadBottomRowPad) {
-        NSString *row = NSLocalizedStringFromTable(@"letterPadBottomiPad", kLocalizedTableSymbols, @"Z X C V B N M , . by default");
+        NSString *row = @"Z X C V B N M , .";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
 
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
@@ -1311,13 +1311,13 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     
     self.currentPad = KeyboardViewPadTypeNumber;
     
-    NSString *row = NSLocalizedStringFromTable(@"numberPadTop", kLocalizedTableSymbols, @"1 2 3 4 5 6 7 8 9 0 by default");
+    NSString *row = @"1 2 3 4 5 6 7 8 9 0";
     NSArray *numbers1 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
-    row = NSLocalizedStringFromTable(@"numberPadMiddle", kLocalizedTableSymbols, @"- / : ; ( ) $ & @ by default");
+    row = @"- / : ; ( ) $ & @";
     NSArray *numbers2 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
-    row = NSLocalizedStringFromTable(@"numberPadBottom", kLocalizedTableSymbols, @". , ? ! ' \ by default");
+    row = @". , ? ! ' \\";
     NSArray *numbers3 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
     for (int i = 0; i < [numbers1 count]; ++i) {
@@ -1364,13 +1364,13 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     
     self.currentPad = KeyboardViewPadTypeSymbol;
     
-    NSString *row = NSLocalizedStringFromTable(@"symbolPadTop", kLocalizedTableSymbols, @"[ ] { } # % ^ * + = by default");
+    NSString *row = @"[ ] { } # % ^ * + =";
     NSArray *symbols1 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
-    row = NSLocalizedStringFromTable(@"symbolPadMiddleShort", kLocalizedTableSymbols, @"_ \ | ~ < > $ € £ by default");
+    row = @"_ \\ | ~ < > $ € £ ・";
     NSArray *symbols2 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
-    row = NSLocalizedStringFromTable(@"numberPadBottom", kLocalizedTableSymbols, @". , ? ! ' \ by default");
+    row = @". , ? ! ' \\";
     NSArray *symbols3 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
     for (int i = 0; i < [symbols1 count]; ++i) {
@@ -1427,13 +1427,13 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     [self addSubview:self.leftNumberPadButton];
     [self addSubview:self.rightNumberPadButton];
     
-    NSString *row = NSLocalizedStringFromTable(@"letterPadTop", kLocalizedTableSymbols, @"Q W E R T Y U I P by default");
+    NSString *row = @"Q W E R T Y U I O P";
     NSArray *numbers1 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
 
-    row = NSLocalizedStringFromTable(@"letterPadMiddle", kLocalizedTableSymbols, @"A S D F G H J K L by default");
+    row = @"A S D F G H J K L";
     NSArray *numbers2 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
-    row = NSLocalizedStringFromTable(@"letterPadBottomiPad", kLocalizedTableSymbols, @"Z X C V B N M , . by default");
+    row = @"Z X C V B N M , .";
     NSArray *numbers3 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
     for (int i = 0; i < [numbers1 count]; ++i) {
@@ -1506,6 +1506,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
             if (IS_IPAD) {
                 font = [UIFont systemFontOfSize:(self.frame.size.width >= 1024) ? 26.5 : 22.0 weight:UIFontWeightLight];
             } else {
+               
                 font = [UIFont fontWithName:@"SFUIDisplay-Light" size:24.0];
             }
             break;
@@ -1513,6 +1514,27 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     return font;
 }
 
+- (void)registerFont:(NSString*)fontName {
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    NSURL *fontURL = [bundle URLForResource:fontName withExtension:@"ttf"];
+    NSData *inData = [NSData dataWithContentsOfURL:fontURL];
+    CFErrorRef error;
+    CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)inData);
+    CGFontRef fontRef = CGFontCreateWithDataProvider(provider);
+    if (!CTFontManagerRegisterGraphicsFont(fontRef, &error)) {
+        CFStringRef errorDescription = CFErrorCopyDescription(error);
+        NSLog(@"Failed to load font: %@", errorDescription);
+        CFRelease(errorDescription);
+    }
+    CFSafeRelease(fontRef);
+    CFSafeRelease(provider);
+}
+
+void CFSafeRelease(CFTypeRef cf) {
+    if (cf != NULL) {
+        CFRelease(cf);
+    }
+}
 
 #pragma mark - Keys State
 
@@ -1555,22 +1577,22 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
         _deleteButton = nil;
         switch (self.currentKBTheme) {
             case KBThemeTransparent: {
-                UIImage *activeImage = [UIImage imageNamed:@"backspace_transparent_active"];
-                UIImage *nonActiveImage = [UIImage imageNamed:@"backspace_transparent_inactive"];
+                UIImage *activeImage = [UIImage imageNamedPod:@"backspace_transparent_active"];
+                UIImage *nonActiveImage = [UIImage imageNamedPod:@"backspace_transparent_inactive"];
                 _deleteButton = [ACActivatedKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance image:nil];
                 [((ACActivatedKey *)_deleteButton) setActiveImage:activeImage andInactiveImage:nonActiveImage];
             }   break;
                 
             case KBThemeClassic:{
-                UIImage *activeImage = [UIImage imageNamed:@"backspace_active"];
-                UIImage *nonActiveImage = [UIImage imageNamed:@"backspace"];
+                UIImage *activeImage = [UIImage imageNamedPod:@"backspace_active"];
+                UIImage *nonActiveImage = [UIImage imageNamedPod:@"backspace"];
                 _deleteButton = [ACActivatedKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance image:nil];
                 [((ACActivatedKey*)_deleteButton) setActiveImage:activeImage andInactiveImage:nonActiveImage];
             }   break;
                 
             case KBThemeOriginal:
             default: {
-                UIImage *image = [[UIImage imageNamed:@"delete_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                UIImage *image = [[UIImage imageNamedPod:@"delete_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 _deleteButton = [ACKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance image:image];
             }
                 break;
@@ -1588,27 +1610,27 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
         
         switch (self.currentKBTheme) {
             case KBThemeTransparent: {
-                UIImage *activeImage = [UIImage imageNamed:@"shift_transparent_active"];
-                UIImage *nonActiveImage = [UIImage imageNamed:@"shift_transparent_inactive"];
+                UIImage *activeImage = [UIImage imageNamedPod:@"shift_transparent_active"];
+                UIImage *nonActiveImage = [UIImage imageNamedPod:@"shift_transparent_inactive"];
                 _leftShiftButton = [ACLockActivatedKey keyWithStyle:ACKeyStyleLight appearance:self.keyAppearance image:nil];
-                _leftShiftButton.lockImage = [[UIImage imageNamed:@"shift_transparent_lock"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                _leftShiftButton.lockImage = [[UIImage imageNamedPod:@"shift_transparent_lock"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 [((ACLockActivatedKey *)_leftShiftButton) setActiveImage:activeImage andInactiveImage:nonActiveImage];
 
             }   break;
                 
             case KBThemeClassic: {
-                UIImage *activeImage = [UIImage imageNamed:@"shift_classic_active"];
-                UIImage *nonActiveImage = [UIImage imageNamed:@"shift_classic_inactive"];
+                UIImage *activeImage = [UIImage imageNamedPod:@"shift_classic_active"];
+                UIImage *nonActiveImage = [UIImage imageNamedPod:@"shift_classic_inactive"];
                 _leftShiftButton = [ACLockActivatedKey keyWithStyle:ACKeyStyleLight appearance:self.keyAppearance image:nil];
-                _leftShiftButton.lockImage = [[UIImage imageNamed:@"shift_lock_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                _leftShiftButton.lockImage = [[UIImage imageNamedPod:@"shift_lock_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 [((ACLockActivatedKey *)_leftShiftButton) setActiveImage:activeImage andInactiveImage:nonActiveImage];
                 
             }   break;
                 
             case KBThemeOriginal:{
                 _leftShiftButton = [ACLockKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance];
-                _leftShiftButton.image = [[UIImage imageNamed:@"shift_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
-                _leftShiftButton.lockImage = [[UIImage imageNamed:@"shift_lock_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                _leftShiftButton.image = [[UIImage imageNamedPod:@"shift_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
+                _leftShiftButton.lockImage = [[UIImage imageNamedPod:@"shift_lock_portrait"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
             }   break;
                 
             default:
@@ -1653,7 +1675,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     
     [self updateAppearance];
     
-    self.overlayButton.image = [UIImage imageNamed:@"kb_main_icon.png"];
+    self.overlayButton.image = [UIImage imageNamedPod:@"kb_main_icon.png"];
 }
 
 - (void)undoButtonTapped {

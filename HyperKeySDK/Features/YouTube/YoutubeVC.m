@@ -37,7 +37,7 @@
     [super viewDidLoad];
     
     NSString *cellName = NSStringFromClass([YoutubeCell class]);
-    [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:nil] forCellWithReuseIdentifier:cellName];
+    [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:NSClassFromString(@"YoutubeCell")]] forCellWithReuseIdentifier:cellName];
     
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     layout.itemSize = [YoutubeCell cellSizeWithSectionInsets:layout.sectionInset andCellSpacing:layout.minimumInteritemSpacing];

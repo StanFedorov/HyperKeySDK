@@ -8,6 +8,11 @@
 
 #import "UIImage+Pod.h"
 
-@implementation UIImage_Pod
+@implementation UIImage (Pod)
+
++ (UIImage *)imageNamedPod:(NSString *)name {
+    return [UIImage imageNamed:name inBundle:[NSBundle bundleForClass:NSClassFromString(@"HKKeyboardViewController")] compatibleWithTraitCollection:nil];
+}
+
 
 @end

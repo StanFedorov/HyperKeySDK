@@ -7,12 +7,13 @@
 //
 
 #import "TopAppImage.h"
+#import "UIImage+Pod.h"
 
 @implementation TopAppImage
 
 - (void)setKeyboardFeature:(KeyboardFeature *)feature {
     self.feature = feature;
-    [self setBackgroundImage:[UIImage imageNamed:feature.imageNameOrUrl] forState:UIControlStateNormal];
+    [self setBackgroundImage:[UIImage imageNamedPod:feature.imageNameOrUrl] forState:UIControlStateNormal];
 }
 
 /*

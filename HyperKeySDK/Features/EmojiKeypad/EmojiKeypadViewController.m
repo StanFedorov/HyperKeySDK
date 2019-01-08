@@ -15,6 +15,7 @@
 #import "EmojiPageSelectorViewController.h"
 #import "EmojiCategoryCollectionReusableView.h"
 #import "GifStripeViewController.h"
+#import "UIImage+Pod.h"
 
 NSString *const kEmojiKeypadRecentUsedEmojiCharactersKey = @"RecentUsedEmojiCharactersKey";
 NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
@@ -62,7 +63,7 @@ NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
     self.categoryList = @[@"RECENT", @"SMILES & PEOPLE", @"ANIMALS & NATURE", @"FOOD & DRINK", @"ACTIVITY", @"TRAVEL & PLACES", @"OBJECTS", @"SYMBOLS", @"FLAGS"];
     
     NSString *cellName = NSStringFromClass([EmojiKeypadCollectionViewCell class]);
-    [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:nil] forCellWithReuseIdentifier:cellName];
+    [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:EmojiKeypadCollectionViewCell.class]] forCellWithReuseIdentifier:cellName];
     
     // TODO: Do right headers
     /*
@@ -146,7 +147,7 @@ NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
             suffix = @"_10";
         }
         
-        NSString *plistPath = [[NSBundle mainBundle] pathForResource:[@"EmojisList" stringByAppendingString:suffix] ofType:@"plist"];
+        NSString *plistPath = [[NSBundle bundleForClass:NSClassFromString(@"HKKeyboardViewController")] pathForResource:[@"EmojisList" stringByAppendingString:suffix] ofType:@"plist"];
         
         NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
         NSUInteger skinTone = [userDefaults integerForKey:kUserDefaultsSettingEmojiSkinTone];
@@ -158,7 +159,7 @@ NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
                 [originList addObject:[NSMutableArray arrayWithArray:array]];
             }
             
-            plistPath = [[NSBundle mainBundle] pathForResource:@"skinTonedList" ofType:@"plist"];
+            plistPath = [[NSBundle bundleForClass:NSClassFromString(@"HKKeyboardViewController")] pathForResource:@"skinTonedList" ofType:@"plist"];
             NSArray *skinToned = [[NSArray arrayWithContentsOfFile:plistPath] copy];
             NSArray *origin = [skinToned objectAtIndex:EmojiSkinToneYellow];
             NSArray *tanned = [skinToned objectAtIndex:skinTone];
@@ -584,7 +585,7 @@ NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
     
     //self.view.backgroundColor = (needDark) ? RGB(37, 37, 37) : RGB(226, 229, 233);
     
-    [self.popImage setImage:[UIImage imageNamed:(needDark) ? @"popBlack" : @"pop"]];
+    [self.popImage setImage:[UIImage imageNamedPod:(needDark) ? @"popBlack" : @"pop"]];
     [self.pageSelector setTheme:theme];
 }
 

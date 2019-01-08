@@ -50,7 +50,7 @@
     [self showEmpty];
     
     NSString* cellName = NSStringFromClass([GifCategoryCell class]);
-    [self.categoriesCollectionView registerNib:[UINib nibWithNibName:cellName bundle:nil] forCellWithReuseIdentifier:cellName];
+    [self.categoriesCollectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:GifCategoryCell.class]] forCellWithReuseIdentifier:cellName];
     
     self.categoriesArray = @[@"All", @"Appliances", @"Arts, Crafts & Sewing", @"Automotive", @"Baby", @"Beauty",@"Books",@"Collectibles & Fine Arts",@"Electronics",@"Clothing, Shoes & Jewelry",@"Gift Cards",@"Grocery & Gourmet Food",@"Handmade",@"Health & Personal Care",@"Home & Kitchen",@"Industrial & Scientific",@"Kindle Store",@"Patio, Lawn & Garden",@"Luggage & Travel Gear",@"Magazine Subscriptions",@"CDs & Vinyl",@"Musical Instruments",@"Office Products",@"Prime Pantry",@"Computers",@"Pet Supplies",@"Software",@"Sports & Outdoors",@"Tools & Home Improvement",@"Toys & Games",@"Vehicles",@"Cell Phones & Accessories"];
     self.categoriesArrayIds = @[@"All", @"Appliances", @"ArtsAndCrafts", @"Automotive", @"Baby", @"Beauty",@"Books",@"Collectibles",@"Electronics",@"Fashion",@"GiftCards",@"Grocery",@"Handmade",@"HealthPersonalCare",@"HomeGarden",@"Industrial",@"KindleStore",@"LawnAndGarden",@"Luggage",@"Magazines",@"Music",@"MusicalInstruments",@"OfficeProducts",@"Pantry",@"PCHardware",@"PetSupplies",@"Software",@"SportingGoods",@"Tools",@"Toys",@"Vehicles",@"Wireless"];
@@ -192,7 +192,7 @@
     CCHmac(kCCHmacAlgSHA256, saltData.bytes, saltData.length, paramData.bytes, paramData.length, hash.mutableBytes);
     NSString *base64Hash = [hash base64Encoding];
     query = [query stringByAppendingString:[NSString stringWithFormat:@"&Signature=%@",base64Hash]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://webservices.amazon.com/onca/xml?%@",query]]
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://webservices.amazon.com/onca/xml?%@",query]]
                                                            cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                        timeoutInterval:10.0];
     [request setHTTPMethod:@"GET"];
@@ -299,7 +299,7 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     AmazonTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"AmazonTableViewCell"];
     if (cell == nil) {
-        NSArray *topLevelObjects = [[NSBundle mainBundle] loadNibNamed:@"AmazonTableViewCell" owner:self options:nil];
+        NSArray *topLevelObjects = [[NSBundle bundleForClass:NSClassFromString(@"AmazonTableViewCell")] loadNibNamed:@"AmazonTableViewCell" owner:self options:nil];
         cell = [topLevelObjects objectAtIndex:0];
     }
     cell.backgroundColor = [UIColor clearColor];
@@ -328,7 +328,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    AmazonPageViewController *infoVC = [[AmazonPageViewController alloc] initWithNibName:NSStringFromClass([AmazonPageViewController class]) bundle:nil];
+    AmazonPageViewController *infoVC = [[AmazonPageViewController alloc] initWithNibName:NSStringFromClass([AmazonPageViewController class]) bundle:[NSBundle bundleForClass:NSClassFromString(@"AmazonPageViewController")]];
     infoVC.item = [self.searchResults objectAtIndex:indexPath.row];
     [self.navigationController pushViewController:infoVC animated:YES];
 }

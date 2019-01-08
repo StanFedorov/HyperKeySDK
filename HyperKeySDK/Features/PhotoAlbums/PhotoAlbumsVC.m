@@ -61,7 +61,7 @@ CGFloat const kPAScrollSpeedDownOffset = 250;
     self.collectionView.decelerationRate = UIScrollViewDecelerationRateFast;
     
     NSString *cellName = NSStringFromClass([PhotoAlbumsCell class]);
-    [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:nil] forCellWithReuseIdentifier:cellName];
+    [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:PhotoAlbumsCell.class]] forCellWithReuseIdentifier:cellName];
     
     [self makeFlowLayout];
 }
@@ -353,7 +353,7 @@ CGFloat const kPAScrollSpeedDownOffset = 250;
 
 - (void)photoAlbumsCellDidEdit:(PhotoAlbumsCell *)photoAlbumsCell {
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:photoAlbumsCell];
-    DrawImageView *drawImageView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([DrawImageView class]) owner:self options:nil] firstObject];
+    DrawImageView *drawImageView = [[[NSBundle bundleForClass:DrawImageView.class] loadNibNamed:NSStringFromClass([DrawImageView class]) owner:self options:nil] firstObject];
     drawImageView.delegate = self;
     drawImageView.featureType = self.featureType;
     [self.view addSubview:drawImageView];

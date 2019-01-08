@@ -40,6 +40,7 @@
 #import "EmojiPanel.h"
 #import <Masonry/Masonry.h>
 #import <ObjectiveDropboxOfficial/ObjectiveDropboxOfficial.h>
+#import "UIImage+Pod.h"
 
 #import <mach/mach.h>
 
@@ -200,7 +201,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     
     NSString *nibName = [NSString stringWithFormat:(self.requireMainKeyboard) ? @"bottomWide_%@" : @"bottom_%@", NSStringFromClass([MenuVC class])];
     
-    self.menu = [[MenuVC alloc] initWithNibName:nibName bundle:nil];
+    self.menu = [[MenuVC alloc] initWithNibName:nibName bundle:[NSBundle bundleForClass:MenuVC.class]];
     self.menu.delegate = self;
     [self.view addSubview:self.menu.view];
     
@@ -210,7 +211,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     }];
     
     if (self.requireWordSuggestions) {
-        self.autoCorrectionView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([AutoCorrectionView class]) owner:self options:nil] firstObject];
+        self.autoCorrectionView = [[[NSBundle bundleForClass:AutoCorrectionView.class] loadNibNamed:NSStringFromClass([AutoCorrectionView class]) owner:self options:nil] firstObject];
         self.autoCorrectionView.delegate = self;
         self.autoCorrectionView.isAutoCorrect = self.requireWordAutocorrections;
         self.autoCorrectionView.isAutoCapitalize = self.requireAutoCapitalize;
@@ -234,7 +235,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         }
     }
     
-    self.appsLineView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([AppsLineView class]) owner:self options:nil] firstObject];
+    self.appsLineView = [[[NSBundle bundleForClass:AppsLineView.class] loadNibNamed:NSStringFromClass([AppsLineView class]) owner:self options:nil] firstObject];
     [self.view addSubview:self.appsLineView];
     [self.appsLineView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.right.top.mas_equalTo(0);
@@ -246,7 +247,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     
     
     if(![userDefaults objectForKey:@"firstLaunchCompleted"]) {
-        self.introView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([IntroView class]) owner:self options:nil] objectAtIndex:0];
+        self.introView = [[[NSBundle bundleForClass:IntroView.class] loadNibNamed:NSStringFromClass([IntroView class]) owner:self options:nil] objectAtIndex:0];
         self.introView.tag = 5544;
         self.introView.frame = self.view.bounds;
         [self.view addSubview:self.introView];
@@ -349,12 +350,12 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
                     
                 case AFNetworkReachabilityStatusNotReachable:
                 default:
-                    self.keyboardView.overlayButton.image = [UIImage imageNamed:@"icon_kb_overlay_error"];
+                    self.keyboardView.overlayButton.image = [UIImage imageNamedPod:@"icon_kb_overlay_error"];
                     break;
             }
         }];
     } else {
-        self.keyboardView.overlayButton.image = [UIImage imageNamed:@"icon_kb_overlay_error"];
+        self.keyboardView.overlayButton.image = [UIImage imageNamedPod:@"icon_kb_overlay_error"];
     }
     
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
@@ -554,7 +555,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 - (void)keyboardWasHidden:(BOOL)wasHidden {
     if (self.selectedVC) {
         if ([self.selectedVC isKindOfClass:[GTViewController class]]) {
-            UIImage *bgImage = [UIImage imageNamed:wasHidden ? @"arrow_up" : @"arrow_down"];
+            UIImage *bgImage = [UIImage imageNamedPod:wasHidden ? @"arrow_up" : @"arrow_down"];
             [((BaseVC *)self.selectedVC).iconButton setBackgroundImage:bgImage forState:UIControlStateNormal];
         }
         if (wasHidden){
@@ -648,7 +649,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 }
 
 - (void)addHoverView {
-    HoverView *hover = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([HoverView class]) owner:self options:nil] objectAtIndex:0];
+    HoverView *hover = [[[NSBundle bundleForClass:HoverView.class] loadNibNamed:NSStringFromClass([HoverView class]) owner:self options:nil] objectAtIndex:0];
     hover.tag = 5531;
     hover.frame = self.view.bounds;
     hover.delegate = self;
@@ -682,7 +683,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     }
     
     if (imageName) {
-        self.keyboardView.overlayButton.image = [UIImage imageNamed:imageName];
+        self.keyboardView.overlayButton.image = [UIImage imageNamedPod:imageName];
     }
 }
 
@@ -1162,24 +1163,24 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         if ((self.selectedFeature.type == FeatureTypeMemeGenerator) || (self.selectedFeature.type == FeatureTypeDrawImage)) {
             newTitle = @"Ok";
         } else {
-            newTitle = NSLocalizedStringFromTable(@"returnTitleSearch", kLocalizedTableSymbols, @"title for return button");
+            newTitle = @"Search";
         }
     } else {
         switch (self.textDocumentProxy.returnKeyType) {
             case UIReturnKeyDefault:
             case UIReturnKeyDone:
-                newTitle = NSLocalizedStringFromTable(@"returnTitle", kLocalizedTableSymbols, @"title for return button");
+                newTitle = @"return";
                 break;
             case UIReturnKeyEmergencyCall:
                 newTitle = @"Emergency Call";
                 break;
             case UIReturnKeyGo:
-                newTitle = NSLocalizedStringFromTable(@"returnTitleGo", kLocalizedTableSymbols, @"title for return button");
+                newTitle = @"Go";
                 break;
             case UIReturnKeySearch:
             case UIReturnKeyGoogle:
             case UIReturnKeyYahoo:
-                newTitle = NSLocalizedStringFromTable(@"returnTitleSearch", kLocalizedTableSymbols, @"title for return button");
+                newTitle = @"Search";
                 break;
             case UIReturnKeyJoin:
                 newTitle = @"Join";
@@ -1500,7 +1501,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 
 - (void)setupNewNextKeyboardButton:(ACKey *)button {
     if (self.requireWordSuggestions && self.requireQuickEmojiKey) {
-        button.imageView.image = [UIImage imageNamed:@"emoji"];
+        button.imageView.image = [UIImage imageNamedPod:@"emoji"];
         [button addTarget:self action:@selector(tapEmojiButton) forControlEvents:UIControlEventTouchUpInside];
         
         UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(tapGlobeButton)];
@@ -1711,7 +1712,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 #pragma mark - Add and remove
 
 - (void)makeEmojiPanel {
-    self.emojiPanel = [[EmojiPanel alloc] initWithNibName:NSStringFromClass([EmojiPanel class]) bundle:nil];
+    self.emojiPanel = [[EmojiPanel alloc] initWithNibName:NSStringFromClass([EmojiPanel class]) bundle:[NSBundle bundleForClass:EmojiPanel.class]];
     self.emojiPanel.delegate = self;
     [self.emojiPanel setTheme:self.currentKBTheme];
     self.emojiPanel.view.alpha = 0;
@@ -1831,7 +1832,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             }
             
             Class class = NSClassFromString(className);
-            self.selectedVC = [[class alloc] initWithNibName:NSStringFromClass(class) bundle:nil];
+            self.selectedVC = [[class alloc] initWithNibName:NSStringFromClass(class) bundle:[NSBundle bundleForClass:class]];
             
             if ([self.selectedVC isKindOfClass:[BaseVC class]]) {
                 [(id)self.selectedVC setFeatureType:item.type];
@@ -1966,7 +1967,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             break;
     }
     
-    self.keyboardView.nextKeyboardButton.image = [UIImage imageNamed:(self.requireWordSuggestions && self.requireQuickEmojiKey) ? emojiImageName : @"global_portrait"];
+    self.keyboardView.nextKeyboardButton.image = [UIImage imageNamedPod:(self.requireWordSuggestions && self.requireQuickEmojiKey) ? emojiImageName : @"global_portrait"];
     self.view.backgroundColor = colorBackgroundForTheme(self.currentKBTheme);
     
     if (self.selectedFeature.type == FeatureTypeEmojiKeypad) {

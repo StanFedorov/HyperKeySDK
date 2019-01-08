@@ -164,7 +164,7 @@ NSTimeInterval kBaseVCActionHideDuration = 0.5;
 }
 
 - (void)addHoverView {
-    HoverView *hover = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([HoverView class]) owner:self options:nil] objectAtIndex:0];
+    HoverView *hover = [[[NSBundle bundleForClass:HoverView.class] loadNibNamed:NSStringFromClass([HoverView class]) owner:self options:nil] objectAtIndex:0];
     hover.delegate = self;
     hover.frame = self.view.bounds;
     [self.view addSubview:hover];
@@ -183,7 +183,7 @@ NSTimeInterval kBaseVCActionHideDuration = 0.5;
         return;
     }
     
-    HoverView *hoverView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([HoverView class]) owner:self options:nil] objectAtIndex:0];
+    HoverView *hoverView = [[[NSBundle bundleForClass:HoverView.class] loadNibNamed:NSStringFromClass([HoverView class]) owner:self options:nil] objectAtIndex:0];
     hoverView.frame = subview.bounds;
     [self.view insertSubview:hoverView aboveSubview:subview];
     [hoverView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -227,7 +227,7 @@ NSTimeInterval kBaseVCActionHideDuration = 0.5;
     NSString *showedKey = [kUserDefaultsKeyboardFourthTutorialShowedBefore stringByAppendingString:NSStringFromClass([self class])];
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     if ([userDefaults boolForKey:kUserDefaultsKeyboardTutorialShowedBefore] && ![userDefaults boolForKey:showedKey]) {
-        FourthTutorialView *tutorialView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([FourthTutorialView class]) owner:self options:nil] firstObject];
+        FourthTutorialView *tutorialView = [[[NSBundle bundleForClass:FourthTutorialView.class] loadNibNamed:NSStringFromClass([FourthTutorialView class]) owner:self options:nil] firstObject];
         tutorialView.objectName = objectName;
         tutorialView.frame = CGRectMake(0, 0, SCREEN_WIDTH, self.view.frame.size.height);
         [self.view addSubview:tutorialView];
@@ -287,7 +287,7 @@ NSTimeInterval kBaseVCActionHideDuration = 0.5;
     NSTimeInterval showDuration = kBaseVCActionShowDuration;
     NSTimeInterval hideDuration = kBaseVCActionHideDuration;
     
-    ActionView *actionView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([ActionView class]) owner:self options:nil] firstObject];
+    ActionView *actionView = [[[NSBundle bundleForClass:ActionView.class] loadNibNamed:NSStringFromClass([ActionView class]) owner:self options:nil] firstObject];
     actionView.type = type;
     actionView.options = options;
     [view addSubview:actionView];

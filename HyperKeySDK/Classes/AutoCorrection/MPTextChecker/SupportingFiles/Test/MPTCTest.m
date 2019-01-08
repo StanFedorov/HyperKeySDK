@@ -139,7 +139,7 @@ NSUInteger const kMPTCTestMaxRepatCount = 1;
 }
 
 - (NSArray *)linesFromFileName:(NSString *)fileName {
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@"txt"];
+    NSString *filePath = [[NSBundle bundleForClass:NSClassFromString(@"HKKeyboardViewController")] pathForResource:fileName ofType:@"txt"];
     NSString *fileContents = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
     fileContents = [fileContents stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
     return [fileContents componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];

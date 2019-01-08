@@ -43,7 +43,7 @@ CGFloat const kDeawImageMenuSaveButtonFontSize = 17;
     CGFloat rigntMarign = MAX(leftRightDefaultMarign - self.saveButton.contentEdgeInsets.right, 1);
     self.layoutMargins = UIEdgeInsetsMake(0, leftMarign, 0, rigntMarign);
     
-    self.colorBarView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([DrawImageColorBarView class]) owner:self options:nil] firstObject];
+    self.colorBarView = [[[NSBundle bundleForClass:DrawImageColorBarView.class] loadNibNamed:NSStringFromClass([DrawImageColorBarView class]) owner:self options:nil] firstObject];
     self.colorBarView.delegate = self;
     [self.colorBarContentView addSubview:self.colorBarView];
     [self.colorBarView mas_makeConstraints:^(MASConstraintMaker *make) {

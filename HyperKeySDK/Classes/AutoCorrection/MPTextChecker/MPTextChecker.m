@@ -941,7 +941,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
 
 - (NSData *)dataWithFilePrefix:(NSString *)prefix {
     NSString *fileName = [NSString stringWithFormat:@"%@_%@", prefix, self.language];
-    NSString *filePath = [[NSBundle mainBundle] pathForResource:fileName ofType:@""];
+    NSString *filePath = [[NSBundle bundleForClass:NSClassFromString(@"HKKeyboardViewController")] pathForResource:fileName ofType:@"dat"];
     return [[NSData alloc] initWithContentsOfFile:filePath];
 }
 

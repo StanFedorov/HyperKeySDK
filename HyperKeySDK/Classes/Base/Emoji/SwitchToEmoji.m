@@ -7,6 +7,7 @@
 //
 
 #import "SwitchToEmoji.h"
+#import "UIImage+Pod.h"
 
 CGFloat const kSwitchToEmojiShadowSize = 3;
 
@@ -45,13 +46,13 @@ CGFloat const kSwitchToEmojiShadowSize = 3;
     self.backgroundView = [[UIImageView alloc] initWithFrame:self.containerView.bounds];
     self.backgroundView.backgroundColor = [UIColor clearColor];
     self.backgroundView.userInteractionEnabled = YES;
-    [self.backgroundView setImage:[UIImage imageNamed:@"open_globe_backgr"]];
+    [self.backgroundView setImage:[UIImage imageNamedPod:@"open_globe_backgr"]];
     
     self.globeButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [self.globeButton setTitle:@"SWITCH KEYBOARD" forState:UIControlStateNormal];
     [self.globeButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.globeButton.titleLabel setFont:buttonFont];
-    [self.globeButton setImage:[UIImage imageNamed:@"globe_open"] forState:UIControlStateNormal];
+    [self.globeButton setImage:[UIImage imageNamedPod:@"globe_open"] forState:UIControlStateNormal];
     [self.globeButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [self.globeButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
     [self.globeButton setFrame:CGRectMake(30, 15, 150, 19)];
@@ -60,7 +61,7 @@ CGFloat const kSwitchToEmojiShadowSize = 3;
     [self.emojiButton setTitle:@"EMOJI" forState:UIControlStateNormal];
     [self.emojiButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     [self.emojiButton.titleLabel setFont:buttonFont];
-    [self.emojiButton setImage:[UIImage imageNamed:@"emoji_open"] forState:UIControlStateNormal];
+    [self.emojiButton setImage:[UIImage imageNamedPod:@"emoji_open"] forState:UIControlStateNormal];
     [self.emojiButton setContentHorizontalAlignment:UIControlContentHorizontalAlignmentLeft];
     [self.emojiButton setTitleEdgeInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
     [self.emojiButton setFrame:CGRectMake(30, 42, 150, 19)];

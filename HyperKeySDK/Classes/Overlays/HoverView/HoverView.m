@@ -11,6 +11,7 @@
 
 #import "Config.h"
 #import "Masonry.h"
+#import "UIImage+Pod.h"
 
 
 @interface HoverView ()
@@ -139,7 +140,7 @@
         }   break;
             
         case HoverViewTypeNoInternet:
-            self.iconImageView.image = [UIImage imageNamed:@"no_connection.png"];
+            self.iconImageView.image = [UIImage imageNamedPod:@"no_connection.png"];
             
             self.topLabel.hidden = NO;
             self.topLabel.text = @"No Internet Connection";
@@ -153,7 +154,7 @@
             break;
             
         case HoverViewTypeNoResults:
-            self.iconImageView.image = [UIImage imageNamed:@"cancel.png"];
+            self.iconImageView.image = [UIImage imageNamedPod:@"cancel.png"];
             
             self.topLabel.hidden = YES;
             self.topTextConstraint.constant = -35.0;
@@ -166,7 +167,7 @@
             break;
             
         case HoverViewTypeNoAccess:
-            self.iconImageView.image = [UIImage imageNamed:@"unlock_filled.png"];
+            self.iconImageView.image = [UIImage imageNamedPod:@"unlock_filled.png"];
             
             self.topLabel.hidden = NO;
             self.topLabel.text = @"Hyperkey requires Full Access";
@@ -197,7 +198,7 @@
 - (void)setupHoverViewForNoLocationAccess {
     UIImageView *backgr = [[UIImageView alloc] initWithFrame:self.bounds];
     backgr.contentMode = UIViewContentModeScaleAspectFill;
-    [backgr setImage:[UIImage imageNamed:@"allow_location_background"]];
+    [backgr setImage:[UIImage imageNamedPod:@"allow_location_background"]];
     [self addSubview:backgr];
     [self sendSubviewToBack:backgr];
     

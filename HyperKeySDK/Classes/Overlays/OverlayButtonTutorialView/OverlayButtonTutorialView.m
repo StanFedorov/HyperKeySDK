@@ -10,6 +10,7 @@
 
 #import "Macroses.h"
 #import "UIFont+Hyperkey.h"
+#import "UIImage+Pod.h"
 
 @interface OverlayButtonTutorialView ()
 
@@ -24,7 +25,7 @@
     
     self.subtitleLabel.font = [UIFont helveticaNeueFontOfSize:IS_IPHONE_5 ? 18 : 20];
     
-    UIImage *image = [UIImage imageNamed:@"kb_main_icon"];
+    UIImage *image = [UIImage imageNamedPod:@"kb_main_icon"];
     self.overlayButton = [ACKey keyWithStyle:ACKeyStyleDark appearance:ACKeyAppearanceLight image:image];
     [self.overlayButton addTarget:self action:@selector(actionOverlay) forControlEvents:UIControlEventTouchUpInside];
     [self addSubview:self.overlayButton];
