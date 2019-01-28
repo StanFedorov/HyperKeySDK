@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -30,7 +30,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="90" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="ALT-FT-RDQ">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
+                    <rect key="frame" x="0.0" y="44" width="320" height="172"/>
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="pPb-EK-VHx"/>
@@ -146,7 +146,6 @@ in order to use Yelp</string>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="ALT-FT-RDQ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="4yL-L3-IlH"/>
-                <constraint firstItem="ALT-FT-RDQ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="87z-tk-ndy"/>
                 <constraint firstAttribute="bottom" secondItem="sYe-7B-AQj" secondAttribute="bottom" id="CjA-0k-ALC"/>
                 <constraint firstItem="sYe-7B-AQj" firstAttribute="width" secondItem="iN0-l3-epB" secondAttribute="width" id="FPE-Ze-BNa"/>
                 <constraint firstItem="sYe-7B-AQj" firstAttribute="top" secondItem="DjX-hu-I3j" secondAttribute="bottom" id="K4w-E6-c18"/>
@@ -156,6 +155,7 @@ in order to use Yelp</string>
                 <constraint firstAttribute="bottom" secondItem="ALT-FT-RDQ" secondAttribute="bottom" id="Z9V-Yg-ivD"/>
                 <constraint firstItem="DjX-hu-I3j" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="buc-4F-oMd"/>
                 <constraint firstAttribute="trailing" secondItem="ALT-FT-RDQ" secondAttribute="trailing" id="hU9-gz-o0d"/>
+                <constraint firstItem="ALT-FT-RDQ" firstAttribute="top" secondItem="DjX-hu-I3j" secondAttribute="bottom" id="im4-Bb-3tI"/>
                 <constraint firstAttribute="trailing" secondItem="DjX-hu-I3j" secondAttribute="trailing" id="mLh-Pd-ecu"/>
                 <constraint firstItem="DjX-hu-I3j" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="nRr-iK-QnL"/>
                 <constraint firstAttribute="bottom" secondItem="g60-hP-nCc" secondAttribute="bottom" id="sb6-zQ-LOL"/>
@@ -163,12 +163,12 @@ in order to use Yelp</string>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="250" y="38"/>
+            <point key="canvasLocation" x="249.59999999999999" y="37.781109445277366"/>
         </view>
     </objects>
     <resources>
         <image name="allow_location_background" width="337" height="234"/>
-        <image name="btn_search_field" width="16" height="16"/>
-        <image name="searchFied_w" width="7" height="7"/>
+        <image name="btn_search_field" width="16.5" height="16.5"/>
+        <image name="searchFied_w" width="7.5" height="7.5"/>
     </resources>
 </document>

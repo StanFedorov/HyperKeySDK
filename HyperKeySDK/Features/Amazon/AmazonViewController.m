@@ -51,7 +51,7 @@
     
     NSString* cellName = NSStringFromClass([GifCategoryCell class]);
     [self.categoriesCollectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:GifCategoryCell.class]] forCellWithReuseIdentifier:cellName];
-    
+
     self.categoriesArray = @[@"All", @"Appliances", @"Arts, Crafts & Sewing", @"Automotive", @"Baby", @"Beauty",@"Books",@"Collectibles & Fine Arts",@"Electronics",@"Clothing, Shoes & Jewelry",@"Gift Cards",@"Grocery & Gourmet Food",@"Handmade",@"Health & Personal Care",@"Home & Kitchen",@"Industrial & Scientific",@"Kindle Store",@"Patio, Lawn & Garden",@"Luggage & Travel Gear",@"Magazine Subscriptions",@"CDs & Vinyl",@"Musical Instruments",@"Office Products",@"Prime Pantry",@"Computers",@"Pet Supplies",@"Software",@"Sports & Outdoors",@"Tools & Home Improvement",@"Toys & Games",@"Vehicles",@"Cell Phones & Accessories"];
     self.categoriesArrayIds = @[@"All", @"Appliances", @"ArtsAndCrafts", @"Automotive", @"Baby", @"Beauty",@"Books",@"Collectibles",@"Electronics",@"Fashion",@"GiftCards",@"Grocery",@"Handmade",@"HealthPersonalCare",@"HomeGarden",@"Industrial",@"KindleStore",@"LawnAndGarden",@"Luggage",@"Magazines",@"Music",@"MusicalInstruments",@"OfficeProducts",@"Pantry",@"PCHardware",@"PetSupplies",@"Software",@"SportingGoods",@"Tools",@"Toys",@"Vehicles",@"Wireless"];
     
@@ -155,6 +155,8 @@
 - (void)searchAmazon:(NSString*)keyword {
     if(self.itemPage == 1)
         [self.searchResults removeAllObjects];
+    if(![keyword isEqualToString:@"Amazon"])
+        [FBSDKAppEvents logEvent:@"Amazon Search"];
     if(!self.searchInProgress)
         [HProgressHUD showHUDSizeType:HProgressHUDSizeTypeBigWhite addedTo:self.hudContainerView animated:YES];
     self.searchInProgress = YES;
@@ -172,6 +174,8 @@
     parameters[@"AssociateTag"] = @"hyperkey-20";
     parameters[@"ItemPage"] = [NSString stringWithFormat:@"%i",self.itemPage];
     parameters[@"Timestamp"] = [[dateFormatter stringFromDate:[NSDate date]] stringByReplacingOccurrencesOfString:@":" withString:@"%3A"];
+    
+    NSLog(@"%@",parameters);
     NSArray *sortedKeys = [[parameters allKeys] sortedArrayUsingSelector: @selector(compare:)];
     NSString *strToSign = [NSString stringWithFormat:@"GET\nwebservices.amazon.com\n/onca/xml\n"];
     NSString *query = @"";
@@ -192,7 +196,7 @@
     CCHmac(kCCHmacAlgSHA256, saltData.bytes, saltData.length, paramData.bytes, paramData.length, hash.mutableBytes);
     NSString *base64Hash = [hash base64Encoding];
     query = [query stringByAppendingString:[NSString stringWithFormat:@"&Signature=%@",base64Hash]];
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://webservices.amazon.com/onca/xml?%@",query]]
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://webservices.amazon.com/onca/xml?%@",query]]
                                                            cachePolicy:NSURLRequestUseProtocolCachePolicy
                                                        timeoutInterval:10.0];
     [request setHTTPMethod:@"GET"];
@@ -495,7 +499,10 @@
         if([self.activeCategory isEqualToString:@"All"]) {
             [self showEmpty];
         }else
-           [self searchAmazon:self.activeCategoryName];
+            if([self.activeCategoryName isEqualToString:@"Electronics"])
+                [self searchAmazon:@"computer"];
+            else
+                [self searchAmazon:self.activeCategoryName];
     }
 }
 

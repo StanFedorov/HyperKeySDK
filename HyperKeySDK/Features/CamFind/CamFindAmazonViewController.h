@@ -7,6 +7,7 @@
 //
 
 #import "BaseVC.h"
+#import "AnalyticsHelper.h"
 
 @interface CamFindAmazonViewController : BaseVC
 @property (nonatomic) NSString *camFindItem;

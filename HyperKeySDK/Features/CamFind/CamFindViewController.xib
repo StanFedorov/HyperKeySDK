@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14313.18" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14283.14"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="roboto_light.ttf">
+            <string>Roboto-Light</string>
+        </array>
+    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CamFindViewController">
             <connections>
                 <outlet property="empty" destination="U6N-c7-VAu" id="O1e-oY-99F"/>
+                <outlet property="noAcccessView" destination="a7n-9c-76q" id="0sc-d0-TA9"/>
                 <outlet property="resultsTable" destination="tM1-DV-l3M" id="WGb-3P-hoN"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -98,6 +104,52 @@
                         <constraint firstAttribute="height" constant="255" id="49v-Be-hgf"/>
                     </constraints>
                 </imageView>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="a7n-9c-76q">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="418"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="allow_location_background" translatesAutoresizingMaskIntoConstraints="NO" id="sQo-tR-1bX">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="418"/>
+                        </imageView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nYt-r1-kkS">
+                            <rect key="frame" x="60" y="221" width="200" height="36"/>
+                            <color key="backgroundColor" red="0.0" green="0.68235294120000001" blue="0.93725490199999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="200" id="2ga-aH-WOi"/>
+                                <constraint firstAttribute="height" constant="36" id="VJ5-zi-MM3"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="Roboto-Light" family="Roboto" pointSize="17"/>
+                            <state key="normal" title="Allow Camera">
+                                <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="grantAccess:" destination="-1" eventType="touchUpInside" id="W81-U3-jcX"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2KH-Co-LoS">
+                            <rect key="frame" x="43" y="140" width="235" height="57"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="235" id="Ufv-0p-fzv"/>
+                                <constraint firstAttribute="height" constant="57" id="Vt0-4r-jWp"/>
+                            </constraints>
+                            <string key="text">You need to allow camera 
+in order to use CamFind</string>
+                            <fontDescription key="fontDescription" name="Roboto-Light" family="Roboto" pointSize="17"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="sQo-tR-1bX" firstAttribute="centerX" secondItem="a7n-9c-76q" secondAttribute="centerX" id="2Ht-SR-e7Z"/>
+                        <constraint firstItem="nYt-r1-kkS" firstAttribute="top" secondItem="2KH-Co-LoS" secondAttribute="bottom" constant="24" id="46B-PC-yU1"/>
+                        <constraint firstAttribute="centerX" secondItem="nYt-r1-kkS" secondAttribute="centerX" id="8Gg-SR-FfI"/>
+                        <constraint firstItem="sQo-tR-1bX" firstAttribute="width" secondItem="a7n-9c-76q" secondAttribute="width" id="CEk-7C-3nK"/>
+                        <constraint firstAttribute="centerX" secondItem="2KH-Co-LoS" secondAttribute="centerX" constant="-0.5" id="Qu9-kW-XP2"/>
+                        <constraint firstItem="sQo-tR-1bX" firstAttribute="centerY" secondItem="a7n-9c-76q" secondAttribute="centerY" id="dSC-0M-oaL"/>
+                        <constraint firstAttribute="centerY" secondItem="nYt-r1-kkS" secondAttribute="centerY" constant="-30" id="hL0-IQ-GXK"/>
+                        <constraint firstItem="sQo-tR-1bX" firstAttribute="height" secondItem="a7n-9c-76q" secondAttribute="height" id="w3r-Rm-1FB"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -107,10 +159,14 @@
                 <constraint firstAttribute="trailing" secondItem="8pU-fu-1a4" secondAttribute="trailing" id="Fmr-98-ct0"/>
                 <constraint firstItem="8pU-fu-1a4" firstAttribute="top" secondItem="U6N-c7-VAu" secondAttribute="bottom" id="G7d-mY-KCj"/>
                 <constraint firstItem="tM1-DV-l3M" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="Olq-pb-25w"/>
+                <constraint firstAttribute="bottom" secondItem="a7n-9c-76q" secondAttribute="bottom" id="Px8-mF-3rT"/>
                 <constraint firstItem="x8X-4q-30w" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="RAL-i7-cWT"/>
                 <constraint firstItem="8pU-fu-1a4" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="YYH-dI-MfL"/>
+                <constraint firstItem="a7n-9c-76q" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="ZqB-YJ-jAB"/>
                 <constraint firstAttribute="bottom" secondItem="8pU-fu-1a4" secondAttribute="bottom" id="cuc-ef-3TA"/>
                 <constraint firstAttribute="trailing" secondItem="x8X-4q-30w" secondAttribute="trailing" id="d4R-zX-cKw"/>
+                <constraint firstItem="a7n-9c-76q" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="huL-Vm-qTU"/>
+                <constraint firstAttribute="trailing" secondItem="a7n-9c-76q" secondAttribute="trailing" id="mX3-jr-QyX"/>
                 <constraint firstItem="8pU-fu-1a4" firstAttribute="top" secondItem="tM1-DV-l3M" secondAttribute="bottom" id="ujU-Ad-uwH"/>
                 <constraint firstItem="tM1-DV-l3M" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="va8-M1-ctD"/>
                 <constraint firstAttribute="trailing" secondItem="U6N-c7-VAu" secondAttribute="trailing" id="ygp-tx-QlA"/>
@@ -120,6 +176,7 @@
         </view>
     </objects>
     <resources>
+        <image name="allow_location_background" width="337" height="234"/>
         <image name="btn_search_field" width="16.5" height="16.5"/>
         <image name="camfind_help.png" width="244" height="189"/>
         <image name="searchFied_w" width="7.5" height="7.5"/>

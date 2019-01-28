@@ -33,7 +33,6 @@
 #import "LocationVC.h"
 #import "ReachabilityManager.h"
 #import "KeyboardViewControllerProtocolList.h"
-#import "IntroView.h"
 #import "KeyboardView.h"
 #import "SwitchToEmoji.h"
 #import "EmojiAPI.h"
@@ -73,7 +72,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 @property (strong, nonatomic) MenuVC *menu;
 @property (strong, nonatomic) AutoCorrectionView *autoCorrectionView;
 @property (strong, nonatomic) AppsLineView *appsLineView;
-@property (strong, nonatomic) IntroView *introView;
 @property (strong, nonatomic) SwitchToEmoji *switchToEmojiView;
 @property (strong, nonatomic) EmojiPanel *emojiPanel;
 
@@ -244,19 +242,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     self.appsLineView.keyboardViewController = self;
     self.autoCorrectionView.appsLine =self.appsLineView;
     [self.view bringSubviewToFront:self.appsLineView];
-    
-    
-    if(![userDefaults objectForKey:@"firstLaunchCompleted"]) {
-        self.introView = [[[NSBundle bundleForClass:IntroView.class] loadNibNamed:NSStringFromClass([IntroView class]) owner:self options:nil] objectAtIndex:0];
-        self.introView.tag = 5544;
-        self.introView.frame = self.view.bounds;
-        [self.view addSubview:self.introView];
-        [self.introView mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.edges.mas_equalTo(0);
-        }];
-        [userDefaults setBool:YES forKey:@"firstLaunchCompleted"];
-        [userDefaults synchronize];
-    }
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(userDidSelectTextField) name:kSearchFieldDidTaped object:nil];
@@ -482,8 +467,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         [self.view bringSubviewToFront:[self.view viewWithTag:5531]];
         [self.view bringSubviewToFront:self.keyboardView];
     }
-    if(self.introView != nil)
-    [self.view bringSubviewToFront:[self.view viewWithTag:5544]];
 }
 
 

@@ -11,11 +11,13 @@
 #import "ImagesLoadingAndSavingManager.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "CamFindAmazonViewController.h"
+#import <AVKit/AVKit.h>
 
 @interface CamFindViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (weak,nonatomic) IBOutlet UITableView *resultsTable;
 @property (strong,nonatomic) NSMutableArray *searchResults;
 @property (weak,nonatomic) IBOutlet UIImageView *empty;
+@property (weak, nonatomic) IBOutlet UIView *noAcccessView;
 @property (strong, nonatomic) ImagesLoadingAndSavingManager *fileManager;
 @end
 
@@ -24,10 +26,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-/*    self.fileManager = [[ImagesLoadingAndSavingManager alloc] init];
-    [self.fileManager setDelegate:self];
-    [self.fileManager showContentsOfDirrectoryForServiceType:ServiceTypeCamFind];*/
-
+    /*    self.fileManager = [[ImagesLoadingAndSavingManager alloc] init];
+     [self.fileManager setDelegate:self];
+     [self.fileManager showContentsOfDirrectoryForServiceType:ServiceTypeCamFind];*/
+    
     self.resultsTable.tableFooterView = [UIView new];
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     self.searchResults = [[NSKeyedUnarchiver unarchiveObjectWithData:[defaults objectForKey:@"camFindSearches"]] mutableCopy];
@@ -35,8 +37,33 @@
     [self.resultsTable reloadData];
 }
 
+- (void)checkAccess {
+    NSString *mediaType = AVMediaTypeVideo;
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+    if(authStatus == AVAuthorizationStatusAuthorized) {
+        self.noAcccessView.hidden = YES;
+    }else {
+        self.noAcccessView.hidden = NO;
+    }
+}
+
+- (IBAction)grantAccess:(id)sender {
+    NSString *mediaType = AVMediaTypeVideo;
+    AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
+    if(authStatus == AVAuthorizationStatusDenied) {
+        [self openURL:UIApplicationOpenSettingsURLString];
+    }else {
+        [AVCaptureDevice requestAccessForMediaType:mediaType completionHandler:^(BOOL granted) {
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+                [self checkAccess];
+            });
+        }];
+    }
+}
+
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self checkAccess];
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     self.searchResults = [[NSKeyedUnarchiver unarchiveObjectWithData:[defaults objectForKey:@"camFindSearches"]] mutableCopy];
     self.searchResults  = [[[self.searchResults reverseObjectEnumerator] allObjects] mutableCopy];
@@ -47,8 +74,10 @@
 }
 
 - (IBAction)newCamFind:(id)sender {
+    [FBSDKAppEvents logEvent:@"CamFind New Search Clicked"];
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     [userDefaults setBool:YES forKey:kUserDefaultsCamfindRefresh];
+    [userDefaults setBool:NO forKey:kUserDefaultsCamfindClose];
     [userDefaults synchronize];
     [self openURL:@"hyperkeyapp://camfind"];
 }
@@ -207,15 +236,15 @@
     cell.backgroundColor = [UIColor clearColor];
     cell.itemTitle.text = [self.searchResults objectAtIndex:indexPath.row][@"title"];
     cell.itemDesc.text = [NSString stringWithFormat:@"Found via CamFind at %@", [self.searchResults objectAtIndex:indexPath.row][@"date"]];
-   /* cell.itemTitle.text = [self.searchResults objectAtIndex:indexPath.row][@"name"];
-    NSString *link = [self.searchResults objectAtIndex:indexPath.row][@"link"];
-    if(link != nil) {
-        cell.itemDesc.text = [self.searchResults objectAtIndex:indexPath.row][@"desc"];
-        NSURL* url = [NSURL URLWithString:link];
-        NSString* domain = [url host];
-        cell.itemUrl.text = domain;
-    }
-    [cell.imageIcon sd_setImageWithURL:[NSURL URLWithString:[self.searchResults objectAtIndex:indexPath.row][@"image_thumbnail"]]];*/
+    /* cell.itemTitle.text = [self.searchResults objectAtIndex:indexPath.row][@"name"];
+     NSString *link = [self.searchResults objectAtIndex:indexPath.row][@"link"];
+     if(link != nil) {
+     cell.itemDesc.text = [self.searchResults objectAtIndex:indexPath.row][@"desc"];
+     NSURL* url = [NSURL URLWithString:link];
+     NSString* domain = [url host];
+     cell.itemUrl.text = domain;
+     }
+     [cell.imageIcon sd_setImageWithURL:[NSURL URLWithString:[self.searchResults objectAtIndex:indexPath.row][@"image_thumbnail"]]];*/
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     NSString *previewUrl = [userDefaults objectForKey:[NSString stringWithFormat:@"camfind_%@",cell.itemTitle.text]];
     if(previewUrl.length == 0) {
@@ -240,8 +269,8 @@
                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
                                                     if (!error) {
                                                         NSDictionary *jsonData = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                                    options:NSJSONReadingMutableContainers
-                                                                                                                      error:nil];
+                                                                                                                 options:NSJSONReadingMutableContainers
+                                                                                                                   error:nil];
                                                         NSDictionary *firstLink = [jsonData[@"value"] objectAtIndex:0];
                                                         [userDefaults setObject:firstLink[@"thumbnailUrl"] forKey:[NSString stringWithFormat:@"camfind_%@",query]];
                                                         [userDefaults synchronize];
@@ -264,12 +293,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-   /* NSString *link = [self.searchResults objectAtIndex:indexPath.row][@"link"];
-    NSString *name = [self.searchResults objectAtIndex:indexPath.row][@"name"];
-    if(link != nil) {
-        [self insertLinkWithURLString:link title:name featureType:self.featureType completion:nil];
-    }*/
-    
     CamFindAmazonViewController *infoVC = [[CamFindAmazonViewController alloc] initWithNibName:NSStringFromClass([CamFindAmazonViewController class]) bundle:[NSBundle bundleForClass:NSClassFromString(@"CamFindAmazonViewController")]];
     infoVC.camFindItem = [self.searchResults objectAtIndex:indexPath.row][@"title"];
     [infoVC setDelegate:self.delegate];

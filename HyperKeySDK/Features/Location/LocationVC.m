@@ -11,6 +11,7 @@
 #import "LocationMapApi.h"
 #import "LocationManager.h"
 #import "HProgressHUD.h"
+#import "AnalyticsHelper.h"
 
 @interface LocationVC ()
 
@@ -77,7 +78,7 @@
             while ((responder = [responder nextResponder]) != nil) {
                 NSLog(@"responder = %@", responder);
                 if ([responder respondsToSelector:@selector(openURL:)] == YES) {
-                    [responder performSelector:@selector(openURL:) withObject:[NSURL URLWithString:@"hyperkeyapp://location"]];
+                    [responder performSelector:@selector(openURL:) withObject:[NSURL URLWithString:UIApplicationOpenSettingsURLString]];
                 }
             }
         }   break;
@@ -130,6 +131,7 @@
         }   break;
             
         case kCLLocationUpdateStatusAllowed:
+            addAnalyticsEventWithFeatureType(kAEventFeatureOpen, self.featureType);
             LOCATION_MANAGER.shouldSendLocationNotification = YES;
             [LOCATION_MANAGER startUpdateLocation];
             break;
@@ -189,6 +191,9 @@
 - (void)locationDidDecode:(NSNotification *)note {
     self.noLocationView.hidden = YES;
     [self stopUpdateLocationInManager];
+    
+    addAnalyticsEventWithFeatureType(kAEventFeatureShare, self.featureType);
+    addAnalyticsEventTwicedShare(self.featureType);
     
     self.addressString = note.object;
     

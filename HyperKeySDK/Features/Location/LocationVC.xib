@@ -1,14 +1,17 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
-        <mutableArray key="roboto_light.ttf">
+        <array key="roboto_light.ttf">
             <string>Roboto-Light</string>
-            <string>Roboto-Light</string>
-        </mutableArray>
+        </array>
     </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="LocationVC">
@@ -31,13 +34,13 @@
                 </imageView>
                 <button hidden="YES" opaque="NO" alpha="0.0" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="D1Q-rY-Fr9">
                     <rect key="frame" x="8" y="9" width="30" height="30"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="nsk-SX-xuN"/>
                         <constraint firstAttribute="width" constant="30" id="qtr-Oy-bCi"/>
                     </constraints>
                     <state key="normal" backgroundImage="Hyperkey_icon">
-                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </state>
                     <connections>
                         <action selector="functionButton:" destination="-1" eventType="touchUpInside" id="EMN-kJ-uB3"/>
@@ -49,7 +52,7 @@
                         <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Click to paste your address" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yD7-5N-EPN">
                             <rect key="frame" x="0.0" y="14" width="320" height="21"/>
                             <fontDescription key="fontDescription" type="system" weight="light" pointSize="15"/>
-                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tcx-YU-oUs">
@@ -59,7 +62,7 @@
                             </connections>
                         </button>
                     </subviews>
-                    <color key="backgroundColor" white="0.0" alpha="0.58999999999999997" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.58999999999999997" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="Tcx-YU-oUs" firstAttribute="top" secondItem="zFm-iK-I3q" secondAttribute="top" id="JR6-IA-xIc"/>
                         <constraint firstAttribute="bottom" secondItem="Tcx-YU-oUs" secondAttribute="bottom" id="JSF-T2-yPh"/>
@@ -80,14 +83,14 @@
                         </imageView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mvr-BW-zOd">
                             <rect key="frame" x="60" y="149" width="200" height="36"/>
-                            <color key="backgroundColor" red="0.0" green="0.68235294120000001" blue="0.93725490199999995" alpha="1" colorSpace="calibratedRGB"/>
+                            <color key="backgroundColor" red="0.0" green="0.68235294120000001" blue="0.93725490199999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="36" id="Ldq-zD-yFX"/>
                                 <constraint firstAttribute="width" constant="200" id="ujN-F5-jEL"/>
                             </constraints>
                             <fontDescription key="fontDescription" name="Roboto-Light" family="Roboto" pointSize="17"/>
                             <state key="normal" title="Allow Geolocation">
-                                <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                             <connections>
                                 <action selector="activateLocation:" destination="-1" eventType="touchUpInside" id="ezz-vt-vNW"/>
@@ -102,11 +105,11 @@
                             <string key="text">You need to allow geolocation 
 in order to share it</string>
                             <fontDescription key="fontDescription" name="Roboto-Light" family="Roboto" pointSize="17"/>
-                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                     </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="8FX-Rc-Y33" firstAttribute="centerX" secondItem="Dpk-Su-3da" secondAttribute="centerX" id="9YL-gA-cuh"/>
                         <constraint firstItem="Mvr-BW-zOd" firstAttribute="top" secondItem="eY1-yx-QWr" secondAttribute="bottom" constant="24" id="JQm-es-KL8"/>
@@ -119,7 +122,7 @@ in order to share it</string>
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="D1Q-rY-Fr9" firstAttribute="leading" secondItem="sbL-yR-0Xn" secondAttribute="leading" constant="8" id="H1f-ul-Pmg"/>
                 <constraint firstItem="zFm-iK-I3q" firstAttribute="top" secondItem="sbL-yR-0Xn" secondAttribute="top" id="TOw-3Z-sOx"/>
@@ -141,7 +144,7 @@ in order to share it</string>
         </view>
     </objects>
     <resources>
-        <image name="Hyperkey_icon" width="29" height="29"/>
+        <image name="Hyperkey_icon" width="13.920000076293945" height="13.920000076293945"/>
         <image name="allow_location_background" width="337" height="234"/>
     </resources>
 </document>

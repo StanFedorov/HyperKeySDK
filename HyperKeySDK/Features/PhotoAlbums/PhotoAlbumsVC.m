@@ -12,7 +12,9 @@
 #import "Macroses.h"
 #import "UIImage+Resize.h"
 #import "PasteboardManager.h"
+#import "RecentSharedManager.h"
 #import "Config.h"
+#import "AnalyticsHelper.h"
 #import "CHTCollectionViewWaterfallLayout.h"
 #import "DrawImageView.h"
 #import "Masonry.h"
@@ -44,7 +46,7 @@ CGFloat const kPAScrollSpeedDownOffset = 250;
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.autorizedView.hidden = YES;
+    self.autorizedView.hidden = NO;
     self.copiedView.hidden = YES;
     self.shouldReloadInfo = NO;
     self.isFlowLayout = NO;
@@ -62,7 +64,7 @@ CGFloat const kPAScrollSpeedDownOffset = 250;
     
     NSString *cellName = NSStringFromClass([PhotoAlbumsCell class]);
     [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:PhotoAlbumsCell.class]] forCellWithReuseIdentifier:cellName];
-    
+
     [self makeFlowLayout];
 }
 
@@ -108,6 +110,31 @@ CGFloat const kPAScrollSpeedDownOffset = 250;
     if (self.shouldReloadInfo) {
         self.shouldReloadInfo = NO;
         [self loadInfoLogic];
+    }
+}
+
+- (IBAction)allowPhotos:(id)sender {
+    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
+    if (status != PHAuthorizationStatusAuthorized) {
+        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {
+            if (status == PHAuthorizationStatusAuthorized) {
+                [self loadInfoLogic];
+            }
+            else if (status == PHAuthorizationStatusDenied) {
+                [self openURL:UIApplicationOpenSettingsURLString];
+            }
+        }];
+    }
+}
+
+- (void)openURL:(NSString*)url{
+    UIResponder* responder = self;
+    while ((responder = [responder nextResponder]) != nil) {
+        NSLog(@"responder = %@", responder);
+        if ([responder respondsToSelector:@selector(openURL:)] == YES) {
+            [responder performSelector:@selector(openURL:)
+                            withObject:[NSURL URLWithString:url]];
+        }
     }
 }
 
@@ -158,6 +185,8 @@ CGFloat const kPAScrollSpeedDownOffset = 250;
                     strongSelf.shouldReloadInfo = YES;
                     strongSelf.autorizedView.hidden = NO;
                     return;
+                }else {
+                    strongSelf.autorizedView.hidden = YES;
                 }
                 
                 strongSelf.imageManager = [[PHCachingImageManager alloc] init];
@@ -283,8 +312,17 @@ CGFloat const kPAScrollSpeedDownOffset = 250;
                 [strongSelf.imageManager cancelImageRequest:requestID];
                 
                 if (image) {
+                    addAnalyticsEventWithParameters(kAEventFeatureShare, (@{kAParameterFeatureType: kAEventNameForFeatureType(self.featureType), kAParameterDataType: kAValueImage}));
+                    addAnalyticsEventTwicedShare(self.featureType);
+                    
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [PasteboardManager setJPEG:image];
+                        
+                        MRecentShared *recentShared = [[MRecentShared alloc] initWithFeatureType:strongSelf.featureType];
+                        recentShared.preview = previewImage;
+                        recentShared.sharedType = DataTypeJPEG;
+                        recentShared.shared = image;
+                        [RecentSharedManager addRecentShared:recentShared uploadToFeed:NO];
                     });
                 }
             }
@@ -353,7 +391,7 @@ CGFloat const kPAScrollSpeedDownOffset = 250;
 
 - (void)photoAlbumsCellDidEdit:(PhotoAlbumsCell *)photoAlbumsCell {
     NSIndexPath *indexPath = [self.collectionView indexPathForCell:photoAlbumsCell];
-    DrawImageView *drawImageView = [[[NSBundle bundleForClass:DrawImageView.class] loadNibNamed:NSStringFromClass([DrawImageView class]) owner:self options:nil] firstObject];
+    DrawImageView *drawImageView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([DrawImageView class]) owner:self options:nil] firstObject];
     drawImageView.delegate = self;
     drawImageView.featureType = self.featureType;
     [self.view addSubview:drawImageView];

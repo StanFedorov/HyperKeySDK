@@ -31,6 +31,8 @@
 @property (nonatomic) int itemPage;
 @property (nonatomic) NSString *activeCategory;
 @property (nonatomic) NSString *activeCategoryName;
+@property (weak, nonatomic) IBOutlet UILabel *empty;
+
 @end
 
 @implementation CamFindAmazonViewController
@@ -44,6 +46,7 @@
     [SDWebImageManager sharedManager].delegate = self;
     //  [self searchAmazon:@"Amazon"];
     self.featureType = FeatureTypeCamFind;
+    
     NSString* cellName = NSStringFromClass([GifCategoryCell class]);
     [self.categoriesCollectionView registerNib:[UINib nibWithNibName:cellName bundle:nil] forCellWithReuseIdentifier:cellName];
     
@@ -111,6 +114,8 @@
 - (void)searchAmazon:(NSString*)keyword {
     if(self.itemPage == 1)
         [self.searchResults removeAllObjects];
+    if(![keyword isEqualToString:@"Amazon"])
+        [FBSDKAppEvents logEvent:@"Amazon Search"];
     if(!self.searchInProgress)
         [HProgressHUD showHUDSizeType:HProgressHUDSizeTypeBigWhite addedTo:self.hudContainerView animated:YES];
     self.searchInProgress = YES;
@@ -230,6 +235,17 @@
                                                                 [HProgressHUD hideHUDForView:self.hudContainerView animated:YES];
                                                             });
                                                         }
+                                                        dispatch_async(dispatch_get_main_queue(), ^{
+                                                            if(self.searchResults.count == 0) {
+                                                                self.upButton.hidden = YES;
+                                                                [self.moreButton removeFromSuperview];
+                                                                self.moreButton = nil;
+                                                                self.empty.hidden = NO;
+                                                            }else {
+                                                                self.upButton.hidden = NO;
+                                                                self.empty.hidden = YES;
+                                                            }
+                                                        });
                                                     }else {
                                                         dispatch_async(dispatch_get_main_queue(), ^{
                                                             self.searchInProgress = NO;
@@ -311,6 +327,7 @@
 }
 
 - (IBAction)shareAction:(id)sender {
+    [FBSDKAppEvents logEvent:@"Amazon Share"];
     UIButton *btn = (UIButton*)sender;
     int index = (int)btn.tag;
     NSString *link = [self.searchResults objectAtIndex:index][@"link"];

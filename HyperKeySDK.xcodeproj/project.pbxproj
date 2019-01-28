@@ -14,11 +14,8 @@
 		5D23C33121E4D4970057A146 /* NetworkManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C13021E4D4970057A146 /* NetworkManager.m */; };
 		5D23C33221E4D4970057A146 /* PasteboardManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C13221E4D4970057A146 /* PasteboardManager.h */; };
 		5D23C33321E4D4970057A146 /* PasteboardManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C13321E4D4970057A146 /* PasteboardManager.m */; };
-		5D23C33421E4D4970057A146 /* IntroView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C13621E4D4970057A146 /* IntroView.m */; };
 		5D23C33521E4D4970057A146 /* HoverView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C13721E4D4970057A146 /* HoverView.h */; };
-		5D23C33621E4D4970057A146 /* IntroView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C13821E4D4970057A146 /* IntroView.xib */; };
 		5D23C33721E4D4970057A146 /* HoverView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C13921E4D4970057A146 /* HoverView.xib */; };
-		5D23C33821E4D4970057A146 /* IntroView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C13A21E4D4970057A146 /* IntroView.h */; };
 		5D23C33921E4D4970057A146 /* HoverView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C13B21E4D4970057A146 /* HoverView.m */; };
 		5D23C33A21E4D4970057A146 /* FourthTutorialView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C13D21E4D4970057A146 /* FourthTutorialView.m */; };
 		5D23C33B21E4D4970057A146 /* FourthTutorialView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C13E21E4D4970057A146 /* FourthTutorialView.xib */; };
@@ -438,11 +435,8 @@
 		5D23C13021E4D4970057A146 /* NetworkManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkManager.m; sourceTree = "<group>"; };
 		5D23C13221E4D4970057A146 /* PasteboardManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasteboardManager.h; sourceTree = "<group>"; };
 		5D23C13321E4D4970057A146 /* PasteboardManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasteboardManager.m; sourceTree = "<group>"; };
-		5D23C13621E4D4970057A146 /* IntroView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroView.m; sourceTree = "<group>"; };
 		5D23C13721E4D4970057A146 /* HoverView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HoverView.h; sourceTree = "<group>"; };
-		5D23C13821E4D4970057A146 /* IntroView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = IntroView.xib; sourceTree = "<group>"; };
 		5D23C13921E4D4970057A146 /* HoverView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = HoverView.xib; sourceTree = "<group>"; };
-		5D23C13A21E4D4970057A146 /* IntroView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroView.h; sourceTree = "<group>"; };
 		5D23C13B21E4D4970057A146 /* HoverView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HoverView.m; sourceTree = "<group>"; };
 		5D23C13D21E4D4970057A146 /* FourthTutorialView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FourthTutorialView.m; sourceTree = "<group>"; };
 		5D23C13E21E4D4970057A146 /* FourthTutorialView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FourthTutorialView.xib; sourceTree = "<group>"; };
@@ -969,11 +963,8 @@
 		5D23C13521E4D4970057A146 /* HoverView */ = {
 			isa = PBXGroup;
 			children = (
-				5D23C13621E4D4970057A146 /* IntroView.m */,
 				5D23C13721E4D4970057A146 /* HoverView.h */,
-				5D23C13821E4D4970057A146 /* IntroView.xib */,
 				5D23C13921E4D4970057A146 /* HoverView.xib */,
-				5D23C13A21E4D4970057A146 /* IntroView.h */,
 				5D23C13B21E4D4970057A146 /* HoverView.m */,
 			);
 			path = HoverView;
@@ -1530,18 +1521,16 @@
 		5D23C24621E4D4970057A146 /* Amazon */ = {
 			isa = PBXGroup;
 			children = (
-				5D23C24721E4D4970057A146 /* AmazonViewController.h */,
+				5D23C24D21E4D4970057A146 /* XMLDictionary */,
 				5D23C24821E4D4970057A146 /* AmazonTableViewCell.xib */,
 				5D23C24A21E4D4970057A146 /* AmazonTableViewCell.m */,
-				5D23C24B21E4D4970057A146 /* AmazonPageViewController.m */,
-				5D23C24C21E4D4970057A146 /* XMLReader.h */,
-				5D23C24D21E4D4970057A146 /* XMLDictionary */,
+				5D23C24721E4D4970057A146 /* AmazonViewController.h */,
 				5D23C24E21E4D4970057A146 /* AmazonViewController.m */,
 				5D23C24F21E4D4970057A146 /* AmazonViewController.xib */,
 				5D23C25021E4D4970057A146 /* AmazonTableViewCell.h */,
 				5D23C25121E4D4970057A146 /* AmazonPageViewController.xib */,
-				5D23C25421E4D4970057A146 /* XMLReader.m */,
 				5D23C25521E4D4970057A146 /* AmazonPageViewController.h */,
+				5D23C24B21E4D4970057A146 /* AmazonPageViewController.m */,
 			);
 			path = Amazon;
 			sourceTree = "<group>";
@@ -1549,6 +1538,8 @@
 		5D23C24D21E4D4970057A146 /* XMLDictionary */ = {
 			isa = PBXGroup;
 			children = (
+				5D23C24C21E4D4970057A146 /* XMLReader.h */,
+				5D23C25421E4D4970057A146 /* XMLReader.m */,
 			);
 			path = XMLDictionary;
 			sourceTree = "<group>";
@@ -2128,7 +2119,6 @@
 				5D23C37421E4D4970057A146 /* ACDarkAppearance.h in Headers */,
 				5D23C36E21E4D4970057A146 /* PhoneKeyboardMetrics.h in Headers */,
 				5D23C39121E4D4980057A146 /* LocationMapApi.h in Headers */,
-				5D23C33821E4D4970057A146 /* IntroView.h in Headers */,
 				5D23C4C621E4D4980057A146 /* HKKeyboardViewController.h in Headers */,
 				5D23C36F21E4D4970057A146 /* PadKeyboardMetrics.h in Headers */,
 				5D23C44E21E4D4980057A146 /* NSURLRequest+OAuth.h in Headers */,
@@ -2369,7 +2359,6 @@
 				5D23C3DE21E4D4980057A146 /* delete_portrait@2x.png in Resources */,
 				5D23C35721E4D4970057A146 /* AutoCorrectionView.xib in Resources */,
 				5D23C3DC21E4D4980057A146 /* H_pasted_icon@2x.png in Resources */,
-				5D23C33621E4D4970057A146 /* IntroView.xib in Resources */,
 				5D23C36921E4D4970057A146 /* mptc_defaults_en_US.dat in Resources */,
 				5D23C3FC21E4D4980057A146 /* venmo_error@2x.png in Resources */,
 				5D23C3DD21E4D4980057A146 /* PoweredBy_HorizLogo@2x.png in Resources */,
@@ -2577,7 +2566,6 @@
 				5D23C4B021E4D4980057A146 /* GifRounLabel.m in Sources */,
 				5D23C39521E4D4980057A146 /* ActionView.m in Sources */,
 				5D23C3D821E4D4980057A146 /* UIScreen+Orientation.m in Sources */,
-				5D23C33421E4D4970057A146 /* IntroView.m in Sources */,
 				5D23C46921E4D4980057A146 /* DropInfoTableViewHeaderCell.m in Sources */,
 				5D23C49121E4D4980057A146 /* DateFlowLayout.m in Sources */,
 				5D23C37021E4D4970057A146 /* PhoneKeyboardMetrics.m in Sources */,

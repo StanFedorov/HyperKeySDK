@@ -150,7 +150,8 @@ NSTimeInterval kBaseVCActionHideDuration = 0.5;
                 text = [text stringByAppendingFormat:@"%@ ", title];
             }
             text = [text stringByAppendingString:object];
-            
+            text = [text stringByAppendingString:@"  Sent from Hyperkey app "];
+
             if ([self.delegate respondsToSelector:@selector(keyboardContainerDidInsertText:)]) {
                 [self.delegate keyboardContainerDidInsertText:text];
             }
