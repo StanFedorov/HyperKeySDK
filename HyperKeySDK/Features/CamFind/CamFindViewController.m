@@ -74,12 +74,7 @@
 }
 
 - (IBAction)newCamFind:(id)sender {
-    [FBSDKAppEvents logEvent:@"CamFind New Search Clicked"];
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
-    [userDefaults setBool:YES forKey:kUserDefaultsCamfindRefresh];
-    [userDefaults setBool:NO forKey:kUserDefaultsCamfindClose];
-    [userDefaults synchronize];
-    [self openURL:@"hyperkeyapp://camfind"];
+    [self openURL:@"hyperkeysdk://camfind"];
 }
 
 - (void)openURL:(NSString*)url{
@@ -236,15 +231,6 @@
     cell.backgroundColor = [UIColor clearColor];
     cell.itemTitle.text = [self.searchResults objectAtIndex:indexPath.row][@"title"];
     cell.itemDesc.text = [NSString stringWithFormat:@"Found via CamFind at %@", [self.searchResults objectAtIndex:indexPath.row][@"date"]];
-    /* cell.itemTitle.text = [self.searchResults objectAtIndex:indexPath.row][@"name"];
-     NSString *link = [self.searchResults objectAtIndex:indexPath.row][@"link"];
-     if(link != nil) {
-     cell.itemDesc.text = [self.searchResults objectAtIndex:indexPath.row][@"desc"];
-     NSURL* url = [NSURL URLWithString:link];
-     NSString* domain = [url host];
-     cell.itemUrl.text = domain;
-     }
-     [cell.imageIcon sd_setImageWithURL:[NSURL URLWithString:[self.searchResults objectAtIndex:indexPath.row][@"image_thumbnail"]]];*/
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     NSString *previewUrl = [userDefaults objectForKey:[NSString stringWithFormat:@"camfind_%@",cell.itemTitle.text]];
     if(previewUrl.length == 0) {

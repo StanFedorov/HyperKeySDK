@@ -11,7 +11,6 @@
 #import "LocationMapApi.h"
 #import "LocationManager.h"
 #import "HProgressHUD.h"
-#import "AnalyticsHelper.h"
 
 @interface LocationVC ()
 
@@ -131,7 +130,6 @@
         }   break;
             
         case kCLLocationUpdateStatusAllowed:
-            addAnalyticsEventWithFeatureType(kAEventFeatureOpen, self.featureType);
             LOCATION_MANAGER.shouldSendLocationNotification = YES;
             [LOCATION_MANAGER startUpdateLocation];
             break;
@@ -191,10 +189,7 @@
 - (void)locationDidDecode:(NSNotification *)note {
     self.noLocationView.hidden = YES;
     [self stopUpdateLocationInManager];
-    
-    addAnalyticsEventWithFeatureType(kAEventFeatureShare, self.featureType);
-    addAnalyticsEventTwicedShare(self.featureType);
-    
+
     self.addressString = note.object;
     
     [self getMapImageWithLocation:LOCATION_MANAGER.currentLocation];

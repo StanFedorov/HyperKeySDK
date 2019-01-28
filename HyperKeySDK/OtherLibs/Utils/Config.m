@@ -18,7 +18,7 @@ NSString *const kNotificationKeyValue = @"NotificationKeyValue";
 #pragma mark - UserDefaults
 
 NSString *const kUserDefaultsKey = @"UserDefaultsKey";
-NSString *const kUserDefaultsSuiteName = @"group.net.hyperkey.keyboard";
+NSString *const kUserDefaultsSuiteName = @"group.net.hyperkey.sdk.keyboard";
 NSString *const kUserDefaultsBundleID = @"net.hyperkey.keyboard";
 NSString *const kUserDefaultsContainerTutotialShowedBefore = @"isTutotialShowsBefore";
 NSString *const kUserDefaultsAppRunCount = @"UserDefaultsAppRunCount";

@@ -1482,6 +1482,37 @@
 				5D23C4E921E54CA00057A146 /* icon_progress@2x.png */,
 				5D23C4E721E54C9B0057A146 /* icon_progress_w@2x.png */,
 				5D23C25621E4D4970057A146 /* amzup@2x.png */,
+				5D23C2F121E4D4970057A146 /* camfind_help@2x.png */,
+				5D23C26021E4D4970057A146 /* large_4_half@3x.png */,
+				5D23C26121E4D4970057A146 /* large_3@3x.png */,
+				5D23C26221E4D4970057A146 /* large_1_half@2x.png */,
+				5D23C26321E4D4970057A146 /* large_1@2x.png */,
+				5D23C26421E4D4970057A146 /* large_3_half.png */,
+				5D23C26521E4D4970057A146 /* large_2_half.png */,
+				5D23C26621E4D4970057A146 /* large_1@3x.png */,
+				5D23C26721E4D4970057A146 /* large_1_half@3x.png */,
+				5D23C26821E4D4970057A146 /* large_3@2x.png */,
+				5D23C26921E4D4970057A146 /* large_4_half@2x.png */,
+				5D23C26A21E4D4970057A146 /* large_2_half@3x.png */,
+				5D23C26B21E4D4970057A146 /* large_5@3x.png */,
+				5D23C26C21E4D4970057A146 /* large_5@2x.png */,
+				5D23C26D21E4D4970057A146 /* large_2_half@2x.png */,
+				5D23C26E21E4D4970057A146 /* large_4_half.png */,
+				5D23C26F21E4D4970057A146 /* large_0@2x.png */,
+				5D23C27021E4D4970057A146 /* large_5.png */,
+				5D23C27121E4D4970057A146 /* large_4.png */,
+				5D23C27221E4D4970057A146 /* large_2@3x.png */,
+				5D23C27321E4D4970057A146 /* large_1_half.png */,
+				5D23C27421E4D4970057A146 /* large_2@2x.png */,
+				5D23C27521E4D4970057A146 /* large_0.png */,
+				5D23C27621E4D4970057A146 /* large_1.png */,
+				5D23C27721E4D4970057A146 /* large_0@3x.png */,
+				5D23C27821E4D4970057A146 /* large_3.png */,
+				5D23C27921E4D4970057A146 /* large_2.png */,
+				5D23C27A21E4D4970057A146 /* large_4@3x.png */,
+				5D23C27B21E4D4970057A146 /* large_3_half@2x.png */,
+				5D23C27C21E4D4970057A146 /* large_3_half@3x.png */,
+				5D23C27D21E4D4970057A146 /* large_4@2x.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -1521,7 +1552,8 @@
 		5D23C24621E4D4970057A146 /* Amazon */ = {
 			isa = PBXGroup;
 			children = (
-				5D23C24D21E4D4970057A146 /* XMLDictionary */,
+				5D23C24C21E4D4970057A146 /* XMLReader.h */,
+				5D23C25421E4D4970057A146 /* XMLReader.m */,
 				5D23C24821E4D4970057A146 /* AmazonTableViewCell.xib */,
 				5D23C24A21E4D4970057A146 /* AmazonTableViewCell.m */,
 				5D23C24721E4D4970057A146 /* AmazonViewController.h */,
@@ -1533,15 +1565,6 @@
 				5D23C24B21E4D4970057A146 /* AmazonPageViewController.m */,
 			);
 			path = Amazon;
-			sourceTree = "<group>";
-		};
-		5D23C24D21E4D4970057A146 /* XMLDictionary */ = {
-			isa = PBXGroup;
-			children = (
-				5D23C24C21E4D4970057A146 /* XMLReader.h */,
-				5D23C25421E4D4970057A146 /* XMLReader.m */,
-			);
-			path = XMLDictionary;
 			sourceTree = "<group>";
 		};
 		5D23C25721E4D4970057A146 /* Location */ = {
@@ -1568,48 +1591,10 @@
 		5D23C25E21E4D4970057A146 /* SupportingFiles */ = {
 			isa = PBXGroup;
 			children = (
-				5D23C25F21E4D4970057A146 /* large */,
 				5D23C27E21E4D4970057A146 /* Cell */,
 				5D23C28221E4D4970057A146 /* API */,
 			);
 			path = SupportingFiles;
-			sourceTree = "<group>";
-		};
-		5D23C25F21E4D4970057A146 /* large */ = {
-			isa = PBXGroup;
-			children = (
-				5D23C26021E4D4970057A146 /* large_4_half@3x.png */,
-				5D23C26121E4D4970057A146 /* large_3@3x.png */,
-				5D23C26221E4D4970057A146 /* large_1_half@2x.png */,
-				5D23C26321E4D4970057A146 /* large_1@2x.png */,
-				5D23C26421E4D4970057A146 /* large_3_half.png */,
-				5D23C26521E4D4970057A146 /* large_2_half.png */,
-				5D23C26621E4D4970057A146 /* large_1@3x.png */,
-				5D23C26721E4D4970057A146 /* large_1_half@3x.png */,
-				5D23C26821E4D4970057A146 /* large_3@2x.png */,
-				5D23C26921E4D4970057A146 /* large_4_half@2x.png */,
-				5D23C26A21E4D4970057A146 /* large_2_half@3x.png */,
-				5D23C26B21E4D4970057A146 /* large_5@3x.png */,
-				5D23C26C21E4D4970057A146 /* large_5@2x.png */,
-				5D23C26D21E4D4970057A146 /* large_2_half@2x.png */,
-				5D23C26E21E4D4970057A146 /* large_4_half.png */,
-				5D23C26F21E4D4970057A146 /* large_0@2x.png */,
-				5D23C27021E4D4970057A146 /* large_5.png */,
-				5D23C27121E4D4970057A146 /* large_4.png */,
-				5D23C27221E4D4970057A146 /* large_2@3x.png */,
-				5D23C27321E4D4970057A146 /* large_1_half.png */,
-				5D23C27421E4D4970057A146 /* large_2@2x.png */,
-				5D23C27521E4D4970057A146 /* large_0.png */,
-				5D23C27621E4D4970057A146 /* large_1.png */,
-				5D23C27721E4D4970057A146 /* large_0@3x.png */,
-				5D23C27821E4D4970057A146 /* large_3.png */,
-				5D23C27921E4D4970057A146 /* large_2.png */,
-				5D23C27A21E4D4970057A146 /* large_4@3x.png */,
-				5D23C27B21E4D4970057A146 /* large_3_half@2x.png */,
-				5D23C27C21E4D4970057A146 /* large_3_half@3x.png */,
-				5D23C27D21E4D4970057A146 /* large_4@2x.png */,
-			);
-			path = large;
 			sourceTree = "<group>";
 		};
 		5D23C27E21E4D4970057A146 /* Cell */ = {
@@ -1903,7 +1888,6 @@
 				5D23C2EE21E4D4970057A146 /* CamFindAmazonViewController.m */,
 				5D23C2EF21E4D4970057A146 /* CamFindAmazonViewController.xib */,
 				5D23C2F021E4D4970057A146 /* CamFindTableViewCell.xib */,
-				5D23C2F121E4D4970057A146 /* camfind_help@2x.png */,
 				5D23C2F221E4D4970057A146 /* CamFindViewController.m */,
 				5D23C2F321E4D4970057A146 /* CamFindTableViewCell.h */,
 				5D23C2F421E4D4970057A146 /* CamFindAmazonViewController.h */,

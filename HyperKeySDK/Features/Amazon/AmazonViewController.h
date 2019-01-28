@@ -7,7 +7,6 @@
 //
 
 #import "BaseVC.h"
-#import "AnalyticsHelper.h"
 
 @interface AmazonViewController : BaseVC
 

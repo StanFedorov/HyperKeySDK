@@ -155,8 +155,6 @@
 - (void)searchAmazon:(NSString*)keyword {
     if(self.itemPage == 1)
         [self.searchResults removeAllObjects];
-    if(![keyword isEqualToString:@"Amazon"])
-        [FBSDKAppEvents logEvent:@"Amazon Search"];
     if(!self.searchInProgress)
         [HProgressHUD showHUDSizeType:HProgressHUDSizeTypeBigWhite addedTo:self.hudContainerView animated:YES];
     self.searchInProgress = YES;

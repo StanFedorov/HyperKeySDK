@@ -12,9 +12,7 @@
 #import "Macroses.h"
 #import "UIImage+Resize.h"
 #import "PasteboardManager.h"
-#import "RecentSharedManager.h"
 #import "Config.h"
-#import "AnalyticsHelper.h"
 #import "CHTCollectionViewWaterfallLayout.h"
 #import "DrawImageView.h"
 #import "Masonry.h"
@@ -312,17 +310,8 @@ CGFloat const kPAScrollSpeedDownOffset = 250;
                 [strongSelf.imageManager cancelImageRequest:requestID];
                 
                 if (image) {
-                    addAnalyticsEventWithParameters(kAEventFeatureShare, (@{kAParameterFeatureType: kAEventNameForFeatureType(self.featureType), kAParameterDataType: kAValueImage}));
-                    addAnalyticsEventTwicedShare(self.featureType);
-                    
                     dispatch_async(dispatch_get_main_queue(), ^{
                         [PasteboardManager setJPEG:image];
-                        
-                        MRecentShared *recentShared = [[MRecentShared alloc] initWithFeatureType:strongSelf.featureType];
-                        recentShared.preview = previewImage;
-                        recentShared.sharedType = DataTypeJPEG;
-                        recentShared.shared = image;
-                        [RecentSharedManager addRecentShared:recentShared uploadToFeed:NO];
                     });
                 }
             }

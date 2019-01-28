@@ -48,7 +48,7 @@
     self.featureType = FeatureTypeCamFind;
     
     NSString* cellName = NSStringFromClass([GifCategoryCell class]);
-    [self.categoriesCollectionView registerNib:[UINib nibWithNibName:cellName bundle:nil] forCellWithReuseIdentifier:cellName];
+    [self.categoriesCollectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:GifCategoryCell.class]] forCellWithReuseIdentifier:cellName];
     
     self.categoriesArray = @[@"All", @"Appliances", @"Arts, Crafts & Sewing", @"Automotive", @"Baby", @"Beauty",@"Books",@"Collectibles & Fine Arts",@"Electronics",@"Clothing, Shoes & Jewelry",@"Gift Cards",@"Grocery & Gourmet Food",@"Handmade",@"Health & Personal Care",@"Home & Kitchen",@"Industrial & Scientific",@"Kindle Store",@"Patio, Lawn & Garden",@"Luggage & Travel Gear",@"Magazine Subscriptions",@"CDs & Vinyl",@"Musical Instruments",@"Office Products",@"Prime Pantry",@"Computers",@"Pet Supplies",@"Software",@"Sports & Outdoors",@"Tools & Home Improvement",@"Toys & Games",@"Vehicles",@"Cell Phones & Accessories"];
     self.categoriesArrayIds = @[@"All", @"Appliances", @"ArtsAndCrafts", @"Automotive", @"Baby", @"Beauty",@"Books",@"Collectibles",@"Electronics",@"Fashion",@"GiftCards",@"Grocery",@"Handmade",@"HealthPersonalCare",@"HomeGarden",@"Industrial",@"KindleStore",@"LawnAndGarden",@"Luggage",@"Magazines",@"Music",@"MusicalInstruments",@"OfficeProducts",@"Pantry",@"PCHardware",@"PetSupplies",@"Software",@"SportingGoods",@"Tools",@"Toys",@"Vehicles",@"Wireless"];
@@ -114,8 +114,6 @@
 - (void)searchAmazon:(NSString*)keyword {
     if(self.itemPage == 1)
         [self.searchResults removeAllObjects];
-    if(![keyword isEqualToString:@"Amazon"])
-        [FBSDKAppEvents logEvent:@"Amazon Search"];
     if(!self.searchInProgress)
         [HProgressHUD showHUDSizeType:HProgressHUDSizeTypeBigWhite addedTo:self.hudContainerView animated:YES];
     self.searchInProgress = YES;
@@ -327,7 +325,6 @@
 }
 
 - (IBAction)shareAction:(id)sender {
-    [FBSDKAppEvents logEvent:@"Amazon Share"];
     UIButton *btn = (UIButton*)sender;
     int index = (int)btn.tag;
     NSString *link = [self.searchResults objectAtIndex:index][@"link"];

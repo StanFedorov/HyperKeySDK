@@ -27,7 +27,6 @@
     self.itemPrice.text = item[@"price"];
     self.itemDesc.text = item[@"features"];
     [self.imageIcon sd_setImageWithURL:[NSURL URLWithString:item[@"image"]] placeholderImage:nil options: SDWebImageRetryFailed | SDWebImageContinueInBackground ];
-    // Do any additional setup after loading the view from its nib.
 }
 
 - (void)didReceiveMemoryWarning {
