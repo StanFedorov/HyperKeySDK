@@ -1,6 +1,6 @@
 //
 //  MPTCDataCreator.h
-//  WordPredictionDB
+//  Better Word
 //
 //  Created by Maxim Popov popovme@gmail.com on 10.02.16.
 //  Copyright © 2016 Popovme. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  MPTextChecker.m
-//  WordPrediction
+//  Better Word
 //
 //  Created by Maxim Popov popovme@gmail.com on 27.01.16.
 //  Copyright © 2016 Popovme. All rights reserved.
@@ -12,17 +12,26 @@
 #import "MPTCConfig.h"
 #import "Config.h"
 
-//#define kMPTCExecuteTimeLog
+#define kMPTCStepTimeLog
+#ifdef kMPTCStepTimeLog
+#define ALLTICK NSDate *startAllTime = [NSDate date];
+#define ALLTOCK(title) NSLog(@"%@: %.6f", title, -[startAllTime timeIntervalSinceNow]);
+#else
+#define ALLTICK
+#define ALLTOCK(title)
+#endif
 
+#define kMPTCExecuteTimeLog
 #ifdef kMPTCExecuteTimeLog
-#define TICK NSDate *startTime = [NSDate date];
-#define TOCK(title) NSLog(@"%@: %.3f", title, -[startTime timeIntervalSinceNow]);
+NSDate *startTime;
+#define TICK startTime = [NSDate date];
+#define TOCK(title) NSLog(@"%@: %.6f", title, -[startTime timeIntervalSinceNow]);
 #else
 #define TICK
 #define TOCK(title)
 #endif
 
-NSUInteger const kMPTCDefaultCount = 3;
+NSUInteger const kMPTCDefaultResultCount = 3;
 
 UInt8 const kMPTCCorretsMaxWords = 10;
 UInt8 const kMPTCNgramsLength = 3;
@@ -59,6 +68,13 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     dispatch_queue_t _backgroundQueue;
     UInt8 _calc[kMPTCGuessesMaxLength + 1][kMPTCGuessesMaxLength + 1];
     UInt8 _typos[kMPTCTyposSize][kMPTCTyposSize];
+    
+    UInt8 *_replacements;
+    UInt32 _replacementsLastIndex;
+    UInt8 *_unigrams;
+    UInt32 _unigramsLastIndex;
+    UInt8 *_ngrams;
+    UInt32 _ngramsLastIndex;
 }
 
 - (instancetype)init {
@@ -67,18 +83,15 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
         _backgroundQueue = dispatch_queue_create("net.hyperkey.keyboard.MPTextChecker", nil);
         
         NSMutableCharacterSet *sentence = [[NSMutableCharacterSet alloc] init];
-        [sentence formUnionWithCharacterSet:[NSCharacterSet newlineCharacterSet]];
         [sentence formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@".?!"]];
+        [sentence formUnionWithCharacterSet:[NSCharacterSet newlineCharacterSet]];
         self.sentenceSeparatorCharacterSet = sentence;
         
         // TODO: Store corrected to language data
-        NSCharacterSet *corrected = [NSCharacterSet characterSetWithCharactersInString:@"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-"];
-        NSMutableCharacterSet *correctedFull = [[NSMutableCharacterSet alloc] init];
-        [correctedFull formUnionWithCharacterSet:[NSCharacterSet whitespaceCharacterSet]];
-        [correctedFull formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@"'"]];
-        [correctedFull formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@"0123456789"]];
-        [correctedFull formUnionWithCharacterSet:corrected];
-        self.predictionSeparatorCharacterSet = [correctedFull invertedSet];
+        NSMutableCharacterSet *corrected = [[NSMutableCharacterSet alloc] init];
+        [corrected formUnionWithCharacterSet:[NSCharacterSet characterSetWithCharactersInString:@"0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-'"]];
+        [corrected formUnionWithCharacterSet:[NSCharacterSet whitespaceCharacterSet]];
+        self.predictionSeparatorCharacterSet = [corrected invertedSet];
         
         NSMutableCharacterSet *word = [[NSMutableCharacterSet alloc] init];
         [word formUnionWithCharacterSet:self.predictionSeparatorCharacterSet];
@@ -86,7 +99,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
         self.wordSeparatorCharacterSet = word;
         
         self.isDataCreated = NO;
-        self.defaultCount = kMPTCDefaultCount;
+        self.defaultResultCount = kMPTCDefaultResultCount;
         self.isAutoCapitalize = NO;
         self.isFullAccess = YES;
         self.systemTextChecker = [[UITextChecker alloc] init];
@@ -100,8 +113,8 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
 
 #pragma mark - Property
 
-- (void)setDefaultCount:(NSUInteger)defaultCount {
-    _defaultCount = MAX(defaultCount, 1);
+- (void)setDefaultResultCount:(NSUInteger)defaultResultCount {
+    _defaultResultCount = MAX(defaultResultCount, 1);
 }
 
 
@@ -112,14 +125,18 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     
     dispatch_async(_backgroundQueue, ^{
         @synchronized (self) {
+            TICK
             [self createTypos];
             [self createDefaults];
             [self createReplacements];
+            TOCK(@"Create Language Preapre")
             if (dataCreation) {
+                TICK
                 [self createUnigrams];
                 [self createNgrams];
                 
                 self.isDataCreated = YES;
+                TOCK(@"Create Language Data")
             }
         }
         
@@ -135,10 +152,12 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     if (self.language) {
         dispatch_async(_backgroundQueue, ^{
             @synchronized (self) {
+                TICK
                 [self createUnigrams];
                 [self createNgrams];
                 
                 self.isDataCreated = YES;
+                TOCK(@"Create Language Data")
             }
             
             if (completion) {
@@ -167,6 +186,20 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     });
 }
 
+- (nullable NSString *)lastWordForString:(NSString *)string {
+    if (string.length == 0) {
+        return nil;
+    }
+    NSRange range = [string rangeOfCharacterFromSet:self.wordSeparatorCharacterSet options:NSBackwardsSearch];
+    if (range.location == NSNotFound) {
+        return [string copy];
+    } if (range.location < string.length - 1) {
+        return [string substringFromIndex:range.location + 1];
+    } else {
+        return nil;
+    }
+}
+
 - (BOOL)isAlreadyCorrectedWord:(NSString *)word inRange:(NSRange)range {
     MPTCCorrect *correct = [MPTCCorrect correctWithString:word range:range];
     if ([self.alreadyCorrectedWords indexOfObject:correct] != NSNotFound) {
@@ -183,29 +216,11 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     }
 }
 
-- (NSArray *)stringsFromMPTCStrings:(NSArray *)mptcStrings {
-    return [self stringsFromMPTCStrings:mptcStrings original:nil];
-}
-
-- (NSArray *)stringsFromMPTCStrings:(NSArray *)mptcStrings original:(nullable NSString *)original {
-    NSMutableArray *strings = nil;
-    if (mptcStrings.count > 0 || original.length > 0) {
-        strings = [[NSMutableArray alloc] initWithCapacity:mptcStrings.count + 1];
-        if (original.length > 0) {
-            [strings addObject:original];
-        }
-        for (MPTCString *mptcString in mptcStrings) {
-            [strings addObject:mptcString.string.lowercaseString];
-        }
-    }
-    return strings;
-}
-
 
 #pragma mark - Public Guesses And Predictions
 
 - (nullable NSArray *)defaultsForString:(NSString *)string {
-    TICK
+    ALLTICK
     BOOL isNeedCapitalized = YES;
     
     for (NSInteger i = string.length - 1; i >= 0; i --) {
@@ -222,13 +237,13 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     
     NSArray *defaults = self.defaults.count > 0 ? [[NSArray alloc] initWithArray:self.defaults copyItems:YES] : nil;
     
-    TOCK(@"defaultsForString")
+    ALLTOCK(@"defaultsForString")
     
     return isNeedCapitalized ? [self capitalizeResults:defaults] : defaults;
 }
 
 - (nullable MPTCString *)replacementForWord:(NSString *)word {
-    TICK
+    ALLTICK
     
     UInt8 wordLength = word.length;
     if (word.length == 0) {
@@ -237,20 +252,18 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     
     MPTCString *mptcString = nil;
     
-    BOOL isNeedCapitalized = [self isCapitalizedString:word];
-    
     UInt16 wordCharacters[wordLength];
     [word.lowercaseString getCharacters:wordCharacters range:NSMakeRange(0, wordLength)];
     
     @synchronized(self) {
-        UInt8 *replacements = (UInt8 *)[self.replacementsData bytes];
+        UInt8 *replacements = _replacements;
         
         UInt8 unigramLength = 0;
         UInt8 replacementLength = 0;
         UInt32 index = 0;
-        UInt32 lastIndex = (UInt32)self.replacementsData.length - 1;
+        UInt32 lastIndex = _replacementsLastIndex;
         
-        // [unigram length][replacement length][unigram][replacement]
+        // [unigram length(8)][replacement length(8)][unigram(8 * length)][replacement(8 * length)]
         
         while (index < lastIndex) {
             unigramLength = replacements[index ++];
@@ -269,12 +282,10 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
             }
             if (i == unigramLength) {
                 UInt8 *bytes = &replacements[index + unigramLength];
-                NSString *string = [[NSString alloc] initWithBytes:bytes length:replacementLength encoding:NSUTF8StringEncoding];
-                if (isNeedCapitalized) {
-                    string = [self capitalizeString:string];
-                }
+                NSString *string = stringFromBytes(bytes, replacementLength);
+                
                 mptcString = [[MPTCString alloc] init];
-                mptcString.string = string;
+                mptcString.string = [self isCapitalizedString:word] ? [self capitalizeString:string] : string;
                 mptcString.type = MPTCStringTypeReplacement;
                 
                 index = lastIndex;
@@ -284,17 +295,17 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
         }
     }
     
-    TOCK(@"replacementForWord")
+    ALLTOCK(@"replacementForWord")
     
     return mptcString;
 }
 
 - (nullable NSArray *)correctionsForString:(NSString *)string original:(MPTCString * __nullable __autoreleasing * __nullable)original {
-    return [self correctionsForString:string original:original count:self.defaultCount];
+    return [self correctionsForString:string original:original resultCount:self.defaultResultCount];
 }
 
-- (nullable NSArray *)correctionsForString:(NSString *)string original:(MPTCString * __nullable __autoreleasing * __nullable)original count:(NSUInteger)count {
-    TICK
+- (nullable NSArray *)correctionsForString:(NSString *)string original:(MPTCString * __nullable __autoreleasing * __nullable)original resultCount:(NSUInteger)resultCount {
+    ALLTICK
     
     if (original) {
         *original = nil;
@@ -304,6 +315,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
         return nil;
     }
     
+    TICK
     // Find last words of the corresponding prediction
     NSString *wordsString = nil;
     NSRange range = [string rangeOfCharacterFromSet:self.predictionSeparatorCharacterSet options:NSBackwardsSearch];
@@ -312,25 +324,30 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     } else {
         wordsString = [string substringWithRange:NSMakeRange(range.location + 1, string.length - range.location - 1)];
     }
+    TOCK(@"Find Last Words Prediction")
     
+    TICK
     // Separate string to words
     NSArray *words = [wordsString componentsSeparatedByCharactersInSet:self.wordSeparatorCharacterSet];
     if (words.count == 0) {
         return nil;
     }
+    TOCK(@"Separate Words")
     
     BOOL isNeedCapitalized = NO;
     
+    TICK
     // Find last word for correction (if exist)
     NSString *correctionWord = nil;
-    NSInteger wordsIndex = words.count - 1;
-    if (((NSString *)words.lastObject).length > 0) {
-        NSString *word = words[wordsIndex --];
-        isNeedCapitalized = [self isCapitalizedString:word];
-        correctionWord = word;
+    NSInteger wordIndex = words.count - 1;
+    if (((NSString *)words[wordIndex]).length > 0) {
+        correctionWord = words[wordIndex --];
+        isNeedCapitalized = [self isCapitalizedString:correctionWord];
     }
+    TOCK(@"Find Last Word Correction")
     
-    // Correction character for correction word
+    TICK
+    // Get character for correction word
     UInt8 wordLength = correctionWord.length;
     if (wordLength > kMPTCGuessesMaxLength) {
         return nil;
@@ -339,16 +356,20 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     if (wordLength > 0) {
         [correctionWord.lowercaseString getCharacters:wordCharacters range:NSMakeRange(0, wordLength)];
     }
+    TOCK(@"Get Word Characters")
     
+    TICK
     // Find word for ngrams
     NSMutableArray *ngramWords = [[NSMutableArray alloc] init];
-    while (wordsIndex >= 0 && ngramWords.count < (kMPTCNgramsLength - 1)) {
-        NSString *word = words[wordsIndex --];
+    while (wordIndex >= 0 && ngramWords.count < (kMPTCNgramsLength - 1)) {
+        NSString *word = words[wordIndex --];
         if (word.length > 0) {
             [ngramWords insertObject:word.lowercaseString atIndex:0];
         }
     }
+    TOCK(@"Find Word For Ngrams")
     
+    TICK
     // Get characters form ngrams word 2
     NSString *word2 = nil;
     if (ngramWords.count > 0) {
@@ -364,7 +385,9 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
         [word2.lowercaseString getCharacters:word2Characters range:NSMakeRange(0, word2Length)];
     }
     UInt32 word2DataIndex = 0;
+    TOCK(@"Get Characters Word 2 Ngrams")
     
+    TICK
     // Get characters form ngrams word 1
     NSString *word1 = nil;
     if (ngramWords.count > 0) {
@@ -376,7 +399,9 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
         [word1.lowercaseString getCharacters:word1Characters range:NSMakeRange(0, word1Length)];
     }
     UInt32 word1DataIndex = 0;
+    TOCK(@"Get Characters Word 1 Ngrams")
     
+    TICK
     NSMutableArray *corrections = [[NSMutableArray alloc] init];
     NSMutableArray *completions = [[NSMutableArray alloc] init];
     
@@ -400,27 +425,29 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     UInt8 nearbyErrorsWeight = highErrorsWeight + errorsWeight;
     UInt8 maxErrorsWeight = guessesMaxErrors + (kMPTCGuessesMaxHighErrors * 2 + 1);
     UInt8 maxHighErrorsWeight = (kMPTCGuessesMaxHighErrors * 2 + 1) * highErrorsWeight + maxErrorsWeight;
+    TOCK(@"Init Parameters")
     
     @synchronized(self) {
-        UInt8 *unigrams = (UInt8 *)[self.unigramsData bytes];
+        UInt8 *unigrams = _unigrams;
         
         UInt8 unigramLength = 0;
-        UInt8 spelling = 0;
+        UInt8 uppercase = 0;
         UInt8 bytesLength = 0;
         UInt32 index = 1;
-        UInt32 lastIndex = (UInt32)self.unigramsData.length - 1;
+        UInt32 lastIndex = _unigramsLastIndex;
         
-        // [unigram lenght][?(is spelling)][unigram characters][spelling characters][weight]
-        // [unigram length][unigram characters][weight]
+        TICK
+        // [unigram lenght(8)][?(is uppercase)(8)][unigram characters(8 * length)][uppercase characters(8 * length)][weight(16)]
+        // [unigram length(8)][unigram characters(8 * length)][weight(16)]
         while (index < lastIndex) {
             unigramLength = unigrams[index ++];
             bytesLength = unigramLength;
             
-            // Get spelling bytes if exist spelling
-            spelling = 0;
+            // Check exist uppercase
+            uppercase = 0;
             if (unigrams[index] == '?') {
                 index ++;
-                spelling = 1;
+                uppercase = 1;
                 bytesLength *= 2;
             }
             bytesLength += 2;
@@ -433,7 +460,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                     }
                 }
                 if (i == unigramLength) {
-                    word1DataIndex = index - 1 - (spelling > 0 ? 1 : 0);
+                    word1DataIndex = index - 1 - uppercase;
                 }
             }
             
@@ -445,7 +472,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                     }
                 }
                 if (i == unigramLength) {
-                    word2DataIndex = index - 1 - (spelling > 0 ? 1 : 0);
+                    word2DataIndex = index - 1 - uppercase;
                 }
             }
             
@@ -457,10 +484,10 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                     }
                 }
                 if (i == wordLength) {
-                    UInt8 *bytes = spelling > 0 ? &unigrams[index + unigramLength] : &unigrams[index];
+                    UInt8 *bytes = uppercase > 0 ? &unigrams[index + unigramLength] : &unigrams[index];
                     
                     MPTCString *mptcString = [[MPTCString alloc] init];
-                    mptcString.string = [[NSString alloc] initWithBytes:bytes length:unigramLength encoding:NSUTF8StringEncoding];
+                    mptcString.string = stringFromBytes(bytes, unigramLength);
                     mptcString.weight = int16FromBytes(unigrams, index + bytesLength - 2);
                     mptcString.type = MPTCStringTypeCompletion;
                     [completions addObject:mptcString];
@@ -469,24 +496,24 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
             
             // Find separators
             if (unigramLength >= minSeparatorsLenght && unigramLength <= maxSeparatorsLenght) {
-                // Find word from left
+                // Find word from left ("bestword" -> "best")
                 for (i = 0; i < unigramLength; i ++) {
                     if (unigrams[index + i] != wordCharacters[i]) {
                         break;
                     }
                 }
                 if (i == unigramLength) {
-                    separatorsData[unigramLength - minSeparatorsLenght][0] = index - 1 - (spelling > 0 ? 1 : 0);
+                    separatorsData[unigramLength - minSeparatorsLenght][0] = index - 1 - uppercase;
                 }
                 
-                // Find word from right
+                // Find word from right ("bestword" -> "word")
                 for (i = 0; i < unigramLength; i ++) {
                     if (unigrams[index + unigramLength - 1 - i] != wordCharacters[wordLength - 1 - i]) {
                         break;
                     }
                 }
                 if (i == unigramLength) {
-                    separatorsData[wordLength - i - minSeparatorsLenght][1] = index - 1 - (spelling > 0 ? 1 : 0);
+                    separatorsData[wordLength - i - minSeparatorsLenght][1] = index - 1 - uppercase;
                 }
             }
             
@@ -495,6 +522,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                 index += bytesLength;
                 continue;
             }
+            
             
             // Ignore for fist character is transposition or first character is not low error (typos error)
             if (wordCharacters[0] != unigrams[index]) {
@@ -506,7 +534,9 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                 }
             }
             
-            UInt8 lastStringCharacter = 0;
+            // Calculate errors, high errors, types, transpositions, deletions
+            // Algorithm Diamer-Levenshtein distance
+            UInt8 lastUnigramCharacter = 0;
             for (i = 1; i <= unigramLength; i ++) {
                 UInt8 unigramCharacter = unigrams[index + i - 1];
                 
@@ -526,7 +556,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                     };
                     UInt8 weight = MIN(MIN(_calc[i][j - 1] + nearbyErrorsWeight, _calc[i - 1][j] + nearbyErrorsWeight), _calc[i - 1][j - 1] + cost);
                     
-                    if (wordCharacter == lastStringCharacter && unigramCharacter == lastWordCharacter && wordCharacter != unigramCharacter) {
+                    if (wordCharacter == lastUnigramCharacter && unigramCharacter == lastWordCharacter && wordCharacter != unigramCharacter) {
                         UInt8 weightHightError = weight / highErrorsWeight * highErrorsWeight;
                         UInt8 weightError = weight % highErrorsWeight;
                         UInt8 prevWeightHighError = _calc[i - 2][j - 2] / highErrorsWeight * highErrorsWeight;
@@ -537,6 +567,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                         weight = MIN(weightHightError, prevWeightHighError) + MIN(weightError, prevWeightError + 1);
                     }
                     
+                    // Force quit from calculate errors if errors count is too many
                     if (weight > maxHighErrorsWeight || weight % highErrorsWeight > maxErrorsWeight) {
                         _calc[unigramLength][wordLength] = weight;
 
@@ -548,19 +579,20 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                     _calc[i][j] = weight;
                     lastWordCharacter = wordCharacter;
                 }
-                lastStringCharacter = unigramCharacter;
+                lastUnigramCharacter = unigramCharacter;
             }
             
             UInt8 weight = _calc[unigramLength][wordLength];
             UInt8 errorsCount = weight % highErrorsWeight;
             UInt8 highErrorsCount = weight / highErrorsWeight;
             
+            // Add guesses word to array
             if (errorsCount <= guessesMaxErrors && highErrorsCount <= kMPTCGuessesMaxHighErrors) {
-                UInt8 *bytes = spelling > 0 ? &unigrams[index + unigramLength] : &unigrams[index];
-                NSString *string = [[NSString alloc] initWithBytes:bytes length:unigramLength encoding:NSUTF8StringEncoding];
+                UInt8 *bytes = uppercase > 0 ? &unigrams[index + unigramLength] : &unigrams[index];
+                NSString *string = stringFromBytes(bytes, unigramLength);
                 
                 MPTCString *mptcString = [[MPTCString alloc] init];
-                mptcString.dataIndex = index - 1 - (spelling > 0 ? 1 : 0);
+                mptcString.dataIndex = index - 1 - uppercase;
                 mptcString.string = string;
                 mptcString.errorsCount = errorsCount;
                 mptcString.lowErrorsCount = errorsCount - highErrorsCount;
@@ -570,7 +602,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                 mptcString.type = MPTCStringTypeGuesses;
                 [corrections addObject:mptcString];
                 
-                if ([(isNeedCapitalized ? [string stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[[string substringToIndex:1] uppercaseString]] : string) isEqualToString:correctionWord]) {
+                if ([(isNeedCapitalized ? [self capitalizeString:string] : string) isEqualToString:correctionWord]) {
                     if (original) {
                         *original = mptcString;
                     }
@@ -579,14 +611,16 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
             
             index += bytesLength;
         }
+        TOCK(@"Find Guesses")
         
         // Get ngrams data
-        UInt8 *ngrams = (UInt8 *)[self.ngramsData bytes];
+        UInt8 *ngrams = _ngrams;
         UInt32 ngrams2Index = int24FromBytes(ngrams, 0);
         
-        // [ngram2Index]
-        // [ngram3word3 count][ngram3word1][ngram3word2]{[word][weight],[word][weight],...}
-        // [ngram2word3 count][ngram2word2]{[word][weight],[word][weight],...}
+        TICK
+        // [ngram2Index(24)]
+        // [ngram3word3 count(16)][ngram3word1 unigram index(24)][ngram3word2 unigram index(24)][unigram index(24)][weight(16)][unigram index(24)][weight(16)]...
+        // [ngram2word3 count(16)][ngram2word2 unigram index(24)][unigram index(24)][weight(16)][unigram index(24)][weight(16)]...
         
         correctionsCount = corrections.count;
         
@@ -619,13 +653,15 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                 }
             }
         }
+        TOCK(@"Find 3 Grams")
         
         correctionsCount = corrections.count;
         
+        TICK
         // Predictions with 2 gramms
         if (word2DataIndex > 0 && (existGuesses || wordLength == 0)) {
             index = ngrams2Index;
-            lastIndex = (UInt32)self.ngramsData.length;
+            lastIndex = _ngramsLastIndex;
             
             while (index < lastIndex) {
                 UInt16 ngramsCount = int16FromBytes(ngrams, index);
@@ -643,7 +679,9 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                 }
             }
         }
+        TOCK(@"Find 2 Grams")
         
+        TICK
         // Filter separators
         for (i = 0; i < maxSeparatorsLenght; i ++) {
             if (separatorsData[i][0] > 0 && separatorsData[i][1] > 0) {
@@ -658,16 +696,16 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                     
                     unigramLength = unigrams[index ++];
                     bytesLength = unigramLength;
-                    spelling = 0;
+                    uppercase = 0;
                     if (unigrams[index] == '?') {
                         index ++;
-                        spelling = 1;
+                        uppercase = 1;
                         bytesLength *= 2;
                     }
                     bytesLength += 2;
                     
-                    UInt8 *bytes = spelling > 0 ? &unigrams[index + unigramLength] : &unigrams[index];
-                    NSString *string = [[NSString alloc] initWithBytes:bytes length:unigramLength encoding:NSUTF8StringEncoding];
+                    UInt8 *bytes = uppercase > 0 ? &unigrams[index + unigramLength] : &unigrams[index];
+                    NSString *string = stringFromBytes(bytes, unigramLength);
                     UInt16 weight = int16FromBytes(unigrams, index + bytesLength - 2);
                     
                     if (mptcString.string.length > 0) {
@@ -680,8 +718,10 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                 [corrections addObject:mptcString];
             }
         }
+        TOCK(@"Filter separators")
     }
     
+    TICK
     if (corrections.count > 0) {
         sortWeightOfArray(&corrections);
         
@@ -690,7 +730,9 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
             [corrections removeObject:*original];
         }
     }
+    TOCK(@"Sort weight for corrections")
     
+    TICK
     if (completions.count > 0) {
         sortWeightOfArray(&completions);
         
@@ -705,13 +747,15 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
             [corrections insertObject:completions.firstObject atIndex:1];
         }
     }
+    TOCK(@"Sort weight for completions")
     
+    TICK
     NSArray *result = nil;
     if (corrections.count > 0) {
         // Remove dublicates
         UInt16 from = 1;
         correctionsCount = corrections.count;
-        while (from < count && from < (correctionsCount - 1)) {
+        while (from < resultCount && from < (correctionsCount - 1)) {
             MPTCString *correct = corrections[from];
             for (i = 0; i < from; i ++) {
                 if ([((MPTCString *)corrections[i]).string isEqualToString:correct.string]) {
@@ -727,16 +771,17 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
         }
         
         // Return result count
-        result = corrections.count > count ? [corrections subarrayWithRange:NSMakeRange(0, count)] : corrections;
+        result = corrections.count > resultCount ? [corrections subarrayWithRange:NSMakeRange(0, resultCount)] : corrections;
         
         if (isNeedCapitalized) {
             result = [self capitalizeResults:result];
         }
     } else if (wordLength > 0 && self.isFullAccess) {
-        result = [self systemGuessesForWord:correctionWord count:count];
+        result = [self systemGuessesForWord:correctionWord resultCount:resultCount];
     }
+    TOCK(@"Filter sesults")
     
-    TOCK(@"correctionsForString")
+    ALLTOCK(@"correctionsForString")
     
     return result;
 }
@@ -744,7 +789,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
 
 // Method not used, this is alpha version of base separations
 - (nullable NSArray *)separationsForString:(NSString *)string {
-    TICK
+    ALLTICK
     
     NSMutableArray *separators = [[NSMutableArray alloc] init];
     
@@ -753,13 +798,13 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     UInt16 wordCharacters[wordLength];
     [correctionWord.lowercaseString getCharacters:wordCharacters range:NSMakeRange(0, wordLength)];
     
-    UInt8 *unigrams = (UInt8 *)[self.unigramsData bytes];
+    UInt8 *unigrams = _unigrams;
     
     UInt8 unigramLength = 0;
-    UInt8 spelling = 0;
+    UInt8 uppercase = 0;
     UInt8 bytesLength = 0;
     UInt32 index = 1;
-    UInt32 lastIndex = (UInt32)self.unigramsData.length - 1;
+    UInt32 lastIndex = _unigramsLastIndex;
     
     UInt16 i = 0;
     
@@ -772,17 +817,17 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
         separatorsData[i][1] = 0;
     }
     
-    // [unigram lenght][?(is spelling)][unigram characters][spelling characters][weight]
+    // [unigram lenght][?(is uppercase)][unigram characters][uppercase characters][weight]
     // [unigram length][unigram characters][weight]
     
     while (index < lastIndex) {
         bytesLength = unigramLength = unigrams[index ++];
         
-        // Get spelling bytes if exist spelling
-        spelling = 0;
+        // Get uppercase bytes if exist uppercase
+        uppercase = 0;
         if (unigrams[index] == '?') {
             index ++;
-            spelling = 1;
+            uppercase = 1;
             bytesLength *= 2;
         }
         bytesLength += 2;
@@ -799,7 +844,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
             }
         }
         if (i == unigramLength) {
-            separatorsData[unigramLength - minLenght][0] = index - 1 - (spelling > 0 ? 1 : 0);
+            separatorsData[unigramLength - minLenght][0] = index - 1 - uppercase;
             [self testShowWordFromUnigramDataIndex:separatorsData[unigramLength - minLenght][0]];
         }
         
@@ -810,7 +855,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
             }
         }
         if (i == unigramLength) {
-            separatorsData[wordLength - i - minLenght][1] = index - 1 - (spelling > 0 ? 1 : 0);
+            separatorsData[wordLength - i - minLenght][1] = index - 1 - uppercase;
             //[self testShowWordFromUnigramDataIndex:separatorsData[wordLength - 1 - i - minLenght][1]];
         }
         
@@ -830,16 +875,16 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
                 index = separatorsData[i][j];
                 
                 bytesLength = unigramLength = unigrams[index ++];
-                spelling = 0;
+                uppercase = 0;
                 if (unigrams[index] == '?') {
                     index ++;
-                    spelling = 1;
+                    uppercase = 1;
                     bytesLength *= 2;
                 }
                 bytesLength += 2;
                 
-                UInt8 *bytes = spelling > 0 ? &unigrams[index + unigramLength] : &unigrams[index];
-                NSString *string = [[NSString alloc] initWithBytes:bytes length:unigramLength encoding:NSUTF8StringEncoding];
+                UInt8 *bytes = uppercase > 0 ? &unigrams[index + unigramLength] : &unigrams[index];
+                NSString *string = stringFromBytes(bytes, unigramLength);
                 UInt16 weight = int16FromBytes(unigrams, index + bytesLength - 2);
                 
                 if (mptcString.string.length > 0) {
@@ -854,7 +899,7 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
         }
     }
     
-    TOCK(@"separationsForString")
+    ALLTOCK(@"separationsForString")
     
     return separators.count > 0 ? separators : nil;
 }
@@ -863,8 +908,9 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
 #pragma mark - Private Data Creator
 
 - (void)createCalcTable {
-    for (NSInteger i = 0; i <= kMPTCGuessesMaxLength; i ++) {
-        for (NSInteger j = 0; j <= kMPTCGuessesMaxLength; j ++) {
+    // For algorithm Diamer-Levenshtein distance
+    for (UInt8 i = 0; i <= kMPTCGuessesMaxLength; i ++) {
+        for (UInt8 j = 0; j <= kMPTCGuessesMaxLength; j ++) {
             _calc[i][j] = 99;
         }
     }
@@ -874,34 +920,36 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
 }
 
 - (void)createTypos {
+    // For find typos (adjacent characters on the keyboard)
     for (UInt8 i = 0; i < kMPTCTyposSize; i ++) {
         for (UInt8 j = 0; j < kMPTCTyposSize; j ++) {
             _typos[i][j] = 0;
         }
     }
     
-    NSData *data = [self dataWithFilePrefix:kMPTCTyposPrefix];
+    NSData *data = [self dataWithFilePrefix:kMPTCTypos];
     if (!data) {
         return;
     }
     
     UInt8 *typosData = (UInt8 *)[data bytes];
     
-    NSUInteger index = 0;
-    NSUInteger lastIndex = data.length - 1;
+    UInt32 index = 0;
+    UInt32 lastIndex = (UInt32)data.length - 1;
     
+    // [character code(8)][typos count(8)][typos 1(8)][typos 2(8)]....
     while (index < lastIndex) {
-        UInt8 code = typosData[index ++];
-        UInt8 length = typosData[index ++];
-        for (UInt8 i = 0; i < length; i ++) {
-            UInt8 typo = typosData[index ++];
-            _typos[code][typo] = 1;
+        UInt8 characterCode = typosData[index ++];
+        UInt8 typosCount = typosData[index ++];
+        for (UInt8 i = 0; i < typosCount; i ++) {
+            UInt8 typoCode = typosData[index ++];
+            _typos[characterCode][typoCode] = 1;
         }
     }
 }
 
 - (void)createDefaults {
-    NSData *data = [self dataWithFilePrefix:kMPTCDefaultsPrefix];
+    NSData *data = [self dataWithFilePrefix:kMPTCDefaults];
     if (!data) {
         return;
     }
@@ -910,33 +958,45 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
     
     UInt8 *defaultsData = (UInt8 *)[data bytes];
     
-    NSUInteger index = 0;
-    NSUInteger lastIndex = data.length - 1;
+    UInt32 index = 0;
+    UInt32 lastIndex = (UInt32)data.length - 1;
     
+    TICK
+    // [length(8)][unigram (8 * length)]
     while (index < lastIndex) {
         UInt8 length = defaultsData[index ++];
         UInt8 *bytes = &defaultsData[index];
         
         MPTCString *mptcString = [[MPTCString alloc] init];
-        mptcString.string = [[NSString alloc] initWithBytes:bytes length:length encoding:NSUTF8StringEncoding];
+        mptcString.string = stringFromBytes(bytes, length);
         mptcString.type = MPTCStringTypeDefaults;
         [defaults addObject:mptcString];
         
         index += length;
     }
+    TOCK(@"createDefaults")
     self.defaults = defaults;
 }
 
 - (void)createReplacements {
-    self.replacementsData = [self dataWithFilePrefix:kMPTCReplacementsPrefix];
+    self.replacementsData = [self dataWithFilePrefix:kMPTCReplacements];
+    
+    _replacements = (UInt8 *)[self.replacementsData bytes];
+    _replacementsLastIndex = (UInt32)self.replacementsData.length - 1;
 }
 
 - (void)createUnigrams {
-    self.unigramsData = [self dataWithFilePrefix:kMPTCUnigramsPrefix];
+    self.unigramsData = [self dataWithFilePrefix:kMPTCUnigrams];
+    
+    _unigrams = (UInt8 *)[self.unigramsData bytes];
+    _unigramsLastIndex = (UInt32)self.unigramsData.length - 1;
 }
 
 - (void)createNgrams {
-    self.ngramsData = [self dataWithFilePrefix:kMPTCNgramsPrefix];
+    self.ngramsData = [self dataWithFilePrefix:kMPTCNgrams];
+    
+    _ngrams = (UInt8 *)[self.ngramsData bytes];
+    _ngramsLastIndex = (UInt32)self.ngramsData.length;
 }
 
 - (NSData *)dataWithFilePrefix:(NSString *)prefix {
@@ -971,15 +1031,16 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
 
 #pragma mark - Private System Guesses
 
-- (NSArray *)systemGuessesForWord:(NSString *)word count:(NSUInteger)count {
-    NSRange misspelledRange = [self.systemTextChecker rangeOfMisspelledWordInString:word range:NSMakeRange(0, word.length) startingAt:0 wrap:NO language:@"en_US"];
+- (NSArray *)systemGuessesForWord:(NSString *)word resultCount:(NSUInteger)resultCount {
+    NSRange wordRange = NSMakeRange(0, word.length);
+    NSRange misspelledRange = [self.systemTextChecker rangeOfMisspelledWordInString:word range:wordRange startingAt:0 wrap:NO language:self.language];
     
     if (misspelledRange.location != NSNotFound) {
-        NSArray *systemGuesses = [self.systemTextChecker guessesForWordRange:NSMakeRange(0, word.length) inString:word language:@"en_US"];
+        NSArray *systemGuesses = [self.systemTextChecker guessesForWordRange:wordRange inString:word language:self.language];
         if (systemGuesses.count > 0) {
-            NSUInteger guessesCount = MIN(count, systemGuesses.count);
+            NSUInteger guessesCount = MIN(resultCount, systemGuesses.count);
             NSMutableArray *guesses = [[NSMutableArray alloc] initWithCapacity:guessesCount];
-            for (NSInteger i = 0; i < guessesCount; i++) {
+            for (NSInteger i = 0; i < guessesCount; i ++) {
                 NSString *string = systemGuesses[i];
                 NSUInteger weight = guessesCount - i;
                 [guesses addObject:[[MPTCString alloc] initWithString:string weight:weight type:MPTCStringTypeGuesses]];
@@ -993,12 +1054,16 @@ Float32 const kMPTCGuessesMaxErrorsFactor = 0.4;
 
 #pragma mark - Inline
 
-NS_INLINE UInt32 int24FromBytes(UInt8 *bytes, NSUInteger index) {
+NS_INLINE UInt32 int24FromBytes(UInt8 *bytes, UInt32 index) {
     return bytes[index] | *(UInt16 *)&bytes[index + 1] << 8;
 }
 
-NS_INLINE UInt16 int16FromBytes(UInt8 *bytes, NSUInteger index) {
+NS_INLINE UInt16 int16FromBytes(UInt8 *bytes, UInt32 index) {
     return *(UInt16 *)&bytes[index];
+}
+
+NS_INLINE NSString *stringFromBytes(UInt8 *bytes, UInt32 length) {
+    return [[NSString alloc] initWithBytes:bytes length:length encoding:NSUTF8StringEncoding];
 }
 
 NS_INLINE void sortWeightOfArray(NSMutableArray **array) {
@@ -1018,12 +1083,10 @@ NS_INLINE void sortWeightOfArray(NSMutableArray **array) {
 
 NS_INLINE void findNgrams(UInt8 *ngrams, UInt16 ngramsCount, UInt32 index, UInt8 *unigrams, NSMutableArray **corrections, UInt16 correctionsCount, NSMutableArray **completions, UInt16 *wordCharacters, UInt8 wordLength, MPTCStringType type) {
     UInt32 lastIndex = 0;
-    UInt16 correctionsIndex = 0;
-    UInt8 unigramLength = 0;
-    UInt8 spelling = 0;
-    UInt8 i = 0;
     
     if (wordLength > 0 && correctionsCount > 0) {
+        UInt16 correctionsIndex = 0;
+        
         MPTCString *correction = (*corrections)[correctionsIndex ++];
         lastIndex = index + 5 * ngramsCount;
         
@@ -1040,36 +1103,7 @@ NS_INLINE void findNgrams(UInt8 *ngrams, UInt16 ngramsCount, UInt32 index, UInt8
                 }
             } else if (correction.dataIndex > dataIndex) {
                 // Find completion for prediction
-                unigramLength = unigrams[dataIndex];
-                if (unigramLength > (wordLength + kMPTCGuessesMaxHighErrors) && unigramLength <= (wordLength + kMPTCCompletionDistinction)) {
-                    UInt32 unigramDataIndex = dataIndex + 1;
-                    spelling = 0;
-                    if (unigrams[unigramDataIndex] == '?') {
-                        unigramDataIndex ++;
-                        spelling = 1;
-                    }
-                    
-                    for (i = 0; i < wordLength; i ++) {
-                        if (unigrams[unigramDataIndex + i] != wordCharacters[i]) {
-                            break;
-                        }
-                    }
-                    
-                    if (i == wordLength) {
-                        if (spelling > 0) {
-                            unigramDataIndex += unigramLength;
-                        }
-                        UInt8 *bytes = &unigrams[unigramDataIndex];
-                        
-                        MPTCString *mptcString = [[MPTCString alloc] init];
-                        mptcString.string = [[NSString alloc] initWithBytes:bytes length:unigramLength encoding:NSUTF8StringEncoding];
-                        mptcString.weight = int16FromBytes(unigrams, unigramDataIndex + unigramLength);
-                        mptcString.predictionWeight = int16FromBytes(ngrams, index);
-                        mptcString.lengthErrorsCount = abs(wordLength - unigramLength);
-                        mptcString.type = type;
-                        [(*completions) addObject:mptcString];
-                    }
-                }
+                findCompletions(ngrams, index, unigrams, dataIndex, &(*completions), wordCharacters, wordLength, type);
                 
                 index += 2;
                 if (index < lastIndex) {
@@ -1079,46 +1113,15 @@ NS_INLINE void findNgrams(UInt8 *ngrams, UInt16 ngramsCount, UInt32 index, UInt8
                     break;
                 }
             } else {
-                UInt16 weight = int16FromBytes(ngrams, index);
-                index += 2;
-                
                 if (correction.type == MPTCStringTypeGuesses) {
-                    correction.predictionWeight = weight;
+                    correction.predictionWeight = int16FromBytes(ngrams, index);
                     correction.type = type;
                 }
                 
                 // Find completion for prediction
-                unigramLength = unigrams[dataIndex];
-                if (unigramLength > (wordLength + kMPTCGuessesMaxHighErrors) && unigramLength <= (wordLength + kMPTCCompletionDistinction)) {
-                    UInt32 unigramDataIndex = dataIndex + 1;
-                    spelling = 0;
-                    if (unigrams[unigramDataIndex] == '?') {
-                        unigramDataIndex ++;
-                        spelling = 1;
-                    }
-                    
-                    for (i = 0; i < wordLength; i ++) {
-                        if (unigrams[unigramDataIndex + i] != wordCharacters[i]) {
-                            break;
-                        }
-                    }
-                    
-                    if (i == wordLength) {
-                        if (spelling > 0) {
-                            unigramDataIndex += unigramLength;
-                        }
-                        UInt8 *bytes = &unigrams[unigramDataIndex];
-                        
-                        MPTCString *mptcString = [[MPTCString alloc] init];
-                        mptcString.string = [[NSString alloc] initWithBytes:bytes length:unigramLength encoding:NSUTF8StringEncoding];
-                        mptcString.weight = int16FromBytes(unigrams, unigramDataIndex + unigramLength);
-                        mptcString.predictionWeight = weight;
-                        mptcString.lengthErrorsCount = abs(wordLength - unigramLength);
-                        mptcString.type = type;
-                        [(*completions) addObject:mptcString];
-                    }
-                }
+                findCompletions(ngrams, index, unigrams, dataIndex, &(*completions), wordCharacters, wordLength, type);
                 
+                index += 2;
                 correctionsIndex ++;
                 if (correctionsIndex < correctionsCount && index < lastIndex) {
                     correction = (*corrections)[correctionsIndex];
@@ -1130,6 +1133,9 @@ NS_INLINE void findNgrams(UInt8 *ngrams, UInt16 ngramsCount, UInt32 index, UInt8
             }
         } while (1);
     } else {
+        UInt8 unigramLength = 0;
+        UInt8 uppercase = 0;
+        
         // Prediction without corrections
         lastIndex = index + (5 * ngramsCount);
         do {
@@ -1140,16 +1146,16 @@ NS_INLINE void findNgrams(UInt8 *ngrams, UInt16 ngramsCount, UInt32 index, UInt8
             index += 2;
             
             unigramLength = unigrams[wordDataIndex ++];
-            spelling = 0;
+            uppercase = 0;
             if (unigrams[wordDataIndex] == '?') {
                 wordDataIndex ++;
-                spelling = 1;
+                uppercase = 1;
             }
             
-            UInt8 *bytes = spelling > 0 ? &unigrams[wordDataIndex + unigramLength] : &unigrams[wordDataIndex];
+            UInt8 *bytes = uppercase > 0 ? &unigrams[wordDataIndex + unigramLength] : &unigrams[wordDataIndex];
             
             MPTCString *mptcString = [[MPTCString alloc] init];
-            mptcString.string = [[NSString alloc] initWithBytes:bytes length:unigramLength encoding:NSUTF8StringEncoding];
+            mptcString.string = stringFromBytes(bytes, unigramLength);
             mptcString.predictionWeight = weight;
             mptcString.lengthErrorsCount = abs(wordLength - unigramLength);
             mptcString.type = type;
@@ -1158,21 +1164,56 @@ NS_INLINE void findNgrams(UInt8 *ngrams, UInt16 ngramsCount, UInt32 index, UInt8
     }
 }
 
+NS_INLINE void findCompletions(UInt8 *ngrams, UInt32 ngramsIndex, UInt8 *unigrams, UInt32 unigramIndex, NSMutableArray **completions, UInt16 *wordCharacters, UInt8 wordLength, MPTCStringType type) {
+    UInt8 unigramLength = unigrams[unigramIndex];
+    UInt8 uppercase = 0;
+    UInt8 i = 0;
+    
+    if (unigramLength > (wordLength + kMPTCGuessesMaxHighErrors) && unigramLength <= (wordLength + kMPTCCompletionDistinction)) {
+        unigramIndex ++;
+        
+        if (unigrams[unigramIndex] == '?') {
+            unigramIndex ++;
+            uppercase = 1;
+        }
+        
+        for (i = 0; i < wordLength; i ++) {
+            if (unigrams[unigramIndex + i] != wordCharacters[i]) {
+                break;
+            }
+        }
+        
+        if (i == wordLength) {
+            if (uppercase > 0) {
+                unigramIndex += unigramLength;
+            }
+            UInt8 *bytes = &unigrams[unigramIndex];
+            
+            MPTCString *mptcString = [[MPTCString alloc] init];
+            mptcString.string = stringFromBytes(bytes, unigramLength);
+            mptcString.weight = int16FromBytes(unigrams, unigramIndex + unigramLength);
+            mptcString.predictionWeight = int16FromBytes(ngrams, ngramsIndex);
+            mptcString.lengthErrorsCount = abs(wordLength - unigramLength);
+            mptcString.type = type;
+            [(*completions) addObject:mptcString];
+        }
+    }
+}
 
 #pragma mark - Test Methods
 
 - (NSString *)testWordFromUnigramDataIndex:(UInt32)dataIndex {
-    UInt8 *unigrams = (UInt8 *)[self.unigramsData bytes];
+    UInt8 *unigrams = _unigrams;
     
     UInt16 unigramLength = unigrams[dataIndex ++];
-    UInt16 spelling = 0;
+    UInt16 uppercase = 0;
     if (unigrams[dataIndex] == '?') {
         dataIndex ++;
-        spelling = 1;
+        uppercase = 1;
     }
     
-    UInt8 *bytes = spelling > 0 ? &unigrams[dataIndex + unigramLength] : &unigrams[dataIndex];
-    return [[NSString alloc] initWithBytes:bytes length:unigramLength encoding:NSUTF8StringEncoding];
+    UInt8 *bytes = uppercase > 0 ? &unigrams[dataIndex + unigramLength] : &unigrams[dataIndex];
+    return stringFromBytes(bytes, unigramLength);
 }
 
 - (void)testShowWordFromUnigramDataIndex:(UInt32)dataIndex {
@@ -1180,7 +1221,7 @@ NS_INLINE void findNgrams(UInt8 *ngrams, UInt16 ngramsCount, UInt32 index, UInt8
 }
 
 - (void)testShowCalcWithCorrectionWord:(NSString *)word unigramDataIndex:(UInt32)dataIndex {
-    UInt8 *unigrams = (UInt8 *)[self.unigramsData bytes];
+    UInt8 *unigrams = _unigrams;
     UInt8 wordLength = word.length;
     
     NSString *line = @"    ";

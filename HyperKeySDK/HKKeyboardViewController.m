@@ -121,7 +121,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
     self = [super initWithNibName:nibName bundle:nibBundle];
     if (self) {
-        [LayoutManager resetFrame];
+        [LayoutManager resetFrameWithSize:UIScreen.mainScreen.bounds.size];
     }
     return self;
 }
@@ -240,7 +240,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         make.height.mas_equalTo([LayoutManager menuHeight]);
     }];
     self.appsLineView.keyboardViewController = self;
-    self.autoCorrectionView.appsLine =self.appsLineView;
     [self.view bringSubviewToFront:self.appsLineView];
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
@@ -384,8 +383,8 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     }
     
     if (!self.switchOffAutolayout) {
-        [LayoutManager resetFrame];
-        
+        [LayoutManager resetFrameWithSize:self.view.bounds.size];
+
         if (self.heightConstraint) {
             [self updateMainViewHeight];
         }
@@ -396,7 +395,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     
-    [LayoutManager resetFrame];
+    [LayoutManager resetFrameWithSize:self.view.bounds.size];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -793,6 +792,11 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     }
 }
 
+- (void)autoCorrectionView:(AutoCorrectionView *)autoCorrectionView didUpdateCorrectionString:(NSString *)correctionString {
+    if (correctionString.length != 0) {
+        self.appsLineView.alpha = 0.0f;
+    }
+}
 
 #pragma mark - KeyboardContainerDelegate
 
@@ -1293,7 +1297,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 // Insert text not in searchField
 - (void)insertKeyboardText:(NSString *)text {
     NSString *before = self.textDocumentProxy.documentContextBeforeInput;
-    NSString *after = self.textDocumentProxy.documentContextAfterInput;
     
     if (self.requireQuickPeriod && before.length && [text isEqualToString:@" "] && ([[self.endOfSentenceRegularExpression matchesInString:before options:0 range:NSMakeRange(0, before.length)] count] > 0)) {
         [self.textDocumentProxy deleteBackward];
@@ -1301,7 +1304,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     }
     
     if (self.requireWordSuggestions) {
-        if ([self.autoCorrectionView checkNeedSeparateText:text before:before after:after]) {
+        if ([self.autoCorrectionView checkNeedSeparateText:before withIsertedText:text]) {
             [self.autoCorrectionView addSeparate];
         }
         

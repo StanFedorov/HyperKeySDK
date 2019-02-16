@@ -10,7 +10,7 @@
 
 @interface ACCharacterOperation : NSOperation
 
-@property (strong, nonatomic, readonly) NSString *text;
+@property (copy, nonatomic, readonly) NSString *text;
 
 @property (copy, nonatomic) void (^willCompletionBlock)(NSString *text, NSString *original, MPTCString *correction, NSArray *other);
 

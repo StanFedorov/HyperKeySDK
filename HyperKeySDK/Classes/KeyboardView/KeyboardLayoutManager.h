@@ -31,6 +31,6 @@
 - (CGFloat)mainViewHeight;
 - (CGFloat)menuHeight;
 - (CGRect)amazonKeyboardFrame;
-- (void)resetFrame;
+- (void)resetFrameWithSize:(CGSize)size;
 
 @end

@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		5A839FBFDC926193310CD463 /* libPods-HyperKeySDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3BFC36207E9A3F34D4B28F01 /* libPods-HyperKeySDK.a */; };
+		5D1C9F82221854CF007DCAF5 /* MPTCDataConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C9F7E221854CF007DCAF5 /* MPTCDataConverter.m */; };
+		5D1C9F83221854CF007DCAF5 /* MPTCDataExporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C9F7F221854CF007DCAF5 /* MPTCDataExporter.m */; };
+		5D1C9F84221854CF007DCAF5 /* MPTCDataExporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D1C9F80221854CF007DCAF5 /* MPTCDataExporter.h */; };
+		5D1C9F85221854CF007DCAF5 /* MPTCDataConverter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D1C9F81221854CF007DCAF5 /* MPTCDataConverter.h */; };
+		5D1C9F88221854E9007DCAF5 /* MPTCDataUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D1C9F86221854E9007DCAF5 /* MPTCDataUtils.m */; };
+		5D1C9F89221854E9007DCAF5 /* MPTCDataUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D1C9F87221854E9007DCAF5 /* MPTCDataUtils.h */; };
 		5D23B9CC21E4D1C30057A146 /* HyperKeySDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23B9CA21E4D1C30057A146 /* HyperKeySDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5D23C32E21E4D4970057A146 /* HKKeyboardViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C12921E4D4970057A146 /* HKKeyboardViewController.m */; };
 		5D23C33021E4D4970057A146 /* NetworkManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C12F21E4D4970057A146 /* NetworkManager.h */; };
@@ -57,11 +63,9 @@
 		5D23C35F21E4D4970057A146 /* MPTCString.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C16C21E4D4970057A146 /* MPTCString.m */; };
 		5D23C36021E4D4970057A146 /* MPTCConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C16E21E4D4970057A146 /* MPTCConfig.m */; };
 		5D23C36121E4D4970057A146 /* MPTCConfig.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C16F21E4D4970057A146 /* MPTCConfig.h */; };
-		5D23C36221E4D4970057A146 /* MPTCDataUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C17121E4D4970057A146 /* MPTCDataUtils.h */; };
 		5D23C36321E4D4970057A146 /* MPTCDataCreator.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C17221E4D4970057A146 /* MPTCDataCreator.m */; };
 		5D23C36421E4D4970057A146 /* MPTCDataImporter.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C17321E4D4970057A146 /* MPTCDataImporter.h */; };
 		5D23C36521E4D4970057A146 /* MPTCDataCreator.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C17421E4D4970057A146 /* MPTCDataCreator.h */; };
-		5D23C36621E4D4970057A146 /* MPTCDataUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C17521E4D4970057A146 /* MPTCDataUtils.m */; };
 		5D23C36721E4D4970057A146 /* MPTCDataImporter.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C17621E4D4970057A146 /* MPTCDataImporter.m */; };
 		5D23C36821E4D4970057A146 /* mptc_ngrams_en_US.dat in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C17821E4D4970057A146 /* mptc_ngrams_en_US.dat */; };
 		5D23C36921E4D4970057A146 /* mptc_defaults_en_US.dat in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C17921E4D4970057A146 /* mptc_defaults_en_US.dat */; };
@@ -428,6 +432,12 @@
 		0C7C2761F01D7F964AAFFE92 /* Pods-HyperKeySDK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HyperKeySDK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-HyperKeySDK/Pods-HyperKeySDK.debug.xcconfig"; sourceTree = "<group>"; };
 		3BFC36207E9A3F34D4B28F01 /* libPods-HyperKeySDK.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-HyperKeySDK.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D8AFFF104FE023A2512A9E5 /* Pods-HyperKeySDK.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-HyperKeySDK.release.xcconfig"; path = "Pods/Target Support Files/Pods-HyperKeySDK/Pods-HyperKeySDK.release.xcconfig"; sourceTree = "<group>"; };
+		5D1C9F7E221854CF007DCAF5 /* MPTCDataConverter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPTCDataConverter.m; sourceTree = "<group>"; };
+		5D1C9F7F221854CF007DCAF5 /* MPTCDataExporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPTCDataExporter.m; sourceTree = "<group>"; };
+		5D1C9F80221854CF007DCAF5 /* MPTCDataExporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTCDataExporter.h; sourceTree = "<group>"; };
+		5D1C9F81221854CF007DCAF5 /* MPTCDataConverter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTCDataConverter.h; sourceTree = "<group>"; };
+		5D1C9F86221854E9007DCAF5 /* MPTCDataUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPTCDataUtils.m; sourceTree = "<group>"; };
+		5D1C9F87221854E9007DCAF5 /* MPTCDataUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTCDataUtils.h; sourceTree = "<group>"; };
 		5D23B9C721E4D1C30057A146 /* HyperKeySDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = HyperKeySDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D23B9CA21E4D1C30057A146 /* HyperKeySDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HyperKeySDK.h; sourceTree = "<group>"; };
 		5D23C12921E4D4970057A146 /* HKKeyboardViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HKKeyboardViewController.m; sourceTree = "<group>"; };
@@ -478,11 +488,9 @@
 		5D23C16C21E4D4970057A146 /* MPTCString.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPTCString.m; sourceTree = "<group>"; };
 		5D23C16E21E4D4970057A146 /* MPTCConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPTCConfig.m; sourceTree = "<group>"; };
 		5D23C16F21E4D4970057A146 /* MPTCConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTCConfig.h; sourceTree = "<group>"; };
-		5D23C17121E4D4970057A146 /* MPTCDataUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTCDataUtils.h; sourceTree = "<group>"; };
 		5D23C17221E4D4970057A146 /* MPTCDataCreator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPTCDataCreator.m; sourceTree = "<group>"; };
 		5D23C17321E4D4970057A146 /* MPTCDataImporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTCDataImporter.h; sourceTree = "<group>"; };
 		5D23C17421E4D4970057A146 /* MPTCDataCreator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPTCDataCreator.h; sourceTree = "<group>"; };
-		5D23C17521E4D4970057A146 /* MPTCDataUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPTCDataUtils.m; sourceTree = "<group>"; };
 		5D23C17621E4D4970057A146 /* MPTCDataImporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPTCDataImporter.m; sourceTree = "<group>"; };
 		5D23C17821E4D4970057A146 /* mptc_ngrams_en_US.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = mptc_ngrams_en_US.dat; sourceTree = "<group>"; };
 		5D23C17921E4D4970057A146 /* mptc_defaults_en_US.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = mptc_defaults_en_US.dat; sourceTree = "<group>"; };
@@ -1096,6 +1104,8 @@
 		5D23C16D21E4D4970057A146 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				5D1C9F87221854E9007DCAF5 /* MPTCDataUtils.h */,
+				5D1C9F86221854E9007DCAF5 /* MPTCDataUtils.m */,
 				5D23C16E21E4D4970057A146 /* MPTCConfig.m */,
 				5D23C16F21E4D4970057A146 /* MPTCConfig.h */,
 			);
@@ -1105,12 +1115,14 @@
 		5D23C17021E4D4970057A146 /* DataCreator */ = {
 			isa = PBXGroup;
 			children = (
-				5D23C17121E4D4970057A146 /* MPTCDataUtils.h */,
 				5D23C17221E4D4970057A146 /* MPTCDataCreator.m */,
 				5D23C17321E4D4970057A146 /* MPTCDataImporter.h */,
 				5D23C17421E4D4970057A146 /* MPTCDataCreator.h */,
-				5D23C17521E4D4970057A146 /* MPTCDataUtils.m */,
 				5D23C17621E4D4970057A146 /* MPTCDataImporter.m */,
+				5D1C9F81221854CF007DCAF5 /* MPTCDataConverter.h */,
+				5D1C9F7E221854CF007DCAF5 /* MPTCDataConverter.m */,
+				5D1C9F80221854CF007DCAF5 /* MPTCDataExporter.h */,
+				5D1C9F7F221854CF007DCAF5 /* MPTCDataExporter.m */,
 			);
 			path = DataCreator;
 			sourceTree = "<group>";
@@ -2101,6 +2113,7 @@
 				5D23C3D721E4D4980057A146 /* UIFont+Hyperkey.h in Headers */,
 				5D23C4BB21E4D4980057A146 /* LXReorderableCollectionViewFlowLayout.h in Headers */,
 				5D23C37421E4D4970057A146 /* ACDarkAppearance.h in Headers */,
+				5D1C9F84221854CF007DCAF5 /* MPTCDataExporter.h in Headers */,
 				5D23C36E21E4D4970057A146 /* PhoneKeyboardMetrics.h in Headers */,
 				5D23C39121E4D4980057A146 /* LocationMapApi.h in Headers */,
 				5D23C4C621E4D4980057A146 /* HKKeyboardViewController.h in Headers */,
@@ -2154,6 +2167,7 @@
 				5D23C33021E4D4970057A146 /* NetworkManager.h in Headers */,
 				5D23C4CE21E4D4980057A146 /* KeyboardViewControllerProtocolList.h in Headers */,
 				5D23C39621E4D4980057A146 /* ActionView.h in Headers */,
+				5D1C9F89221854E9007DCAF5 /* MPTCDataUtils.h in Headers */,
 				5D23C45921E4D4980057A146 /* GTViewController.h in Headers */,
 				5D23C4C321E4D4980057A146 /* KeyboardConfig.h in Headers */,
 				5D23C45E21E4D4980057A146 /* YoutubeCell.h in Headers */,
@@ -2178,13 +2192,13 @@
 				5D23C35021E4D4970057A146 /* Reachability.h in Headers */,
 				5D23C47F21E4D4980057A146 /* DrawImageMPoint.h in Headers */,
 				5D23C45221E4D4980057A146 /* GTTranslatorDelegate.h in Headers */,
+				5D1C9F85221854CF007DCAF5 /* MPTCDataConverter.h in Headers */,
 				5D23C47B21E4D4980057A146 /* DrawImageConfig.h in Headers */,
 				5D23C3C021E4D4980057A146 /* Config.h in Headers */,
 				5D23C41721E4D4980057A146 /* AmazonViewController.h in Headers */,
 				5D23C46121E4D4980057A146 /* YoutubeModel.h in Headers */,
 				5D23C34021E4D4970057A146 /* OverlayButtonTutorialView.h in Headers */,
 				5D23C33C21E4D4970057A146 /* FourthTutorialView.h in Headers */,
-				5D23C36221E4D4970057A146 /* MPTCDataUtils.h in Headers */,
 				5D23C4CB21E4D4980057A146 /* NSObject+Additions.h in Headers */,
 				5D23C42621E4D4980057A146 /* LocationVC.h in Headers */,
 				5D23C49321E4D4980057A146 /* EmojiKeypadCollectionViewCell.h in Headers */,
@@ -2488,6 +2502,7 @@
 				5D23C46A21E4D4980057A146 /* BaseDropAndDriveViewController.m in Sources */,
 				5D23C33F21E4D4970057A146 /* TutorialView.m in Sources */,
 				5D23C37121E4D4970057A146 /* PadKeyboardMetrics.m in Sources */,
+				5D1C9F82221854CF007DCAF5 /* MPTCDataConverter.m in Sources */,
 				5D23C3AF21E4D4980057A146 /* KeyboardFeaturesAuthenticationManager.m in Sources */,
 				5D23C39A21E4D4980057A146 /* BaseVC.m in Sources */,
 				5D23C39D21E4D4980057A146 /* EmojiPanel.m in Sources */,
@@ -2495,6 +2510,7 @@
 				5D23C42321E4D4980057A146 /* XMLReader.m in Sources */,
 				5D23C4B821E4D4980057A146 /* GifCategoryCell.m in Sources */,
 				5D23C38A21E4D4980057A146 /* AppsLineView.m in Sources */,
+				5D1C9F83221854CF007DCAF5 /* MPTCDataExporter.m in Sources */,
 				5D23C4CD21E4D4980057A146 /* UIImage+Additions.m in Sources */,
 				5D23C49C21E4D4980057A146 /* CamFindTableViewCell.m in Sources */,
 				5D23C3C621E4D4980057A146 /* DrawImageColorBarView.m in Sources */,
@@ -2538,7 +2554,6 @@
 				5D23C33A21E4D4970057A146 /* FourthTutorialView.m in Sources */,
 				5D23C36321E4D4970057A146 /* MPTCDataCreator.m in Sources */,
 				5D23C41A21E4D4980057A146 /* AmazonTableViewCell.m in Sources */,
-				5D23C36621E4D4970057A146 /* MPTCDataUtils.m in Sources */,
 				5D23C3BB21E4D4980057A146 /* JSONSessionResult.m in Sources */,
 				5D23C35F21E4D4970057A146 /* MPTCString.m in Sources */,
 				5D23C3A921E4D4980057A146 /* BaseCollectionViewCell.m in Sources */,
@@ -2590,6 +2605,7 @@
 				5D23C4BF21E4D4980057A146 /* AllAroundPullView.m in Sources */,
 				5D23C38821E4D4980057A146 /* ACLockActivatedKey.m in Sources */,
 				5D23C3CB21E4D4980057A146 /* HProgressHUD.m in Sources */,
+				5D1C9F88221854E9007DCAF5 /* MPTCDataUtils.m in Sources */,
 				5D23C38521E4D4980057A146 /* ACActivatedKey.m in Sources */,
 				5D23C35321E4D4970057A146 /* ACSpaceOperation.m in Sources */,
 				5D23C3AD21E4D4980057A146 /* KeyboardFeature.m in Sources */,

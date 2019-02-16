@@ -1,6 +1,6 @@
 //
 //  MPTCDataImporter.m
-//  ACFastMemory
+//  Better Word
 //
 //  Created by Maxim Popov popovme@gmail.com on 20.05.16.
 //  Copyright © 2016 Popovme. All rights reserved.
@@ -8,25 +8,22 @@
 
 #import "MPTCDataImporter.h"
 
+#import "MPTCConfig.h"
 #import "MPTCDataUtils.h"
-
-NSString *const kMPTCDataImporterIgnoreDictionary = @"ignore_dictionary";
-NSUInteger const kMPTCDataImporterMinNgrams2FilterWeight = 85;
-NSUInteger const kMPTCDataImporterMinNgrams3FilterWeight = 160;
-NSUInteger const kMPTCDataImporterMaxNgramsFirstRepeats = 999;
-NSUInteger const kMPTCDataImporterMaxWordWeight = 50000;
-NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
 
 @interface MPTCDataImporter ()
 
-@property (strong, nonatomic) NSCharacterSet *correctCharacters;
-@property (strong, nonatomic) NSCharacterSet *uppercaseCharacters;
-@property (strong, nonatomic) NSCharacterSet *trimCharacters;
-@property (strong, nonatomic) NSCharacterSet *oneCorrectCharacters;
-@property (assign, nonatomic) NSUInteger maxCharacters;
-
+@property (strong, nonatomic) NSMutableDictionary *removeDictionary;
 @property (strong, nonatomic) NSMutableDictionary *ignoreDictionary;
 @property (strong, nonatomic) NSMutableDictionary *replaceDictionary;
+
+@property (strong, nonatomic) NSMutableDictionary *customDictionary;
+@property (strong, nonatomic) NSMutableDictionary *ngramsDictionary;
+@property (strong, nonatomic) NSMutableDictionary *unigramsDictionary;
+@property (strong, nonatomic) NSMutableDictionary *yclistDictionary;
+@property (strong, nonatomic) NSMutableDictionary *scowlDictionary;
+@property (strong, nonatomic) NSMutableDictionary *scowlFrequencyDictionary;
+
 @property (strong, nonatomic) NSMutableDictionary *dictionary;
 @property (strong, nonatomic) NSMutableArray *ngrams2Array;
 @property (strong, nonatomic) NSMutableArray *ngrams3Array;
@@ -40,176 +37,165 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
     
     [MPTCDataUtils setLanguage:language];
     
+    self.removeDictionary = [[NSMutableDictionary alloc] init];
     self.ignoreDictionary = [[NSMutableDictionary alloc] init];
     self.replaceDictionary = [[NSMutableDictionary alloc] init];
+    
+    self.customDictionary = [[NSMutableDictionary alloc] init];
+    self.ngramsDictionary = [[NSMutableDictionary alloc] init];
+    self.unigramsDictionary = [[NSMutableDictionary alloc] init];
+    self.yclistDictionary = [[NSMutableDictionary alloc] init];
+    self.scowlDictionary = [[NSMutableDictionary alloc] init];
+    self.scowlFrequencyDictionary = [[NSMutableDictionary alloc] init];
+    
     self.dictionary = [[NSMutableDictionary alloc] init];
     self.ngrams2Array = [[NSMutableArray alloc] init];
     self.ngrams3Array = [[NSMutableArray alloc] init];
     
-    NSMutableDictionary *ngramsDictionary = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *customDictionary = [[NSMutableDictionary alloc] init];
-    NSMutableDictionary *organozationDictionary = [[NSMutableDictionary alloc] init];
+    // Prepare
+    [self readSpecialDictionaryWithPrefix:kMPTCBaseRemove toDictionary:self.removeDictionary valuesCount:1];
+    [self readSpecialDictionaryWithPrefix:kMPTCBaseIgnore toDictionary:self.ignoreDictionary valuesCount:1];
+    [self readSpecialDictionaryWithPrefix:kMPTCBaseReplace toDictionary:self.replaceDictionary valuesCount:2];
     
-    NSLog(@"Started data import");
+    // Dictionary Unigrams
+    [self readDictionaryWithPrefix:kMPTCBaseUnigrams toDictionary:self.unigramsDictionary valuesCount:2];
+    [self filterDictionary:self.unigramsDictionary];
     
-    [self readSettingsWithPrefix:@"base_settings"];
-    [self readIgnoreDictionaryWithPrefix:@"base_ignore_dict"];
-    [self readReplaceDictionaryWithPrefix:@"base_replace_dict"];
+    // Dictionary Custom
+    [self readDictionaryWithPrefix:kMPTCBaseCustom toDictionary:self.customDictionary valuesCount:2];
+    
+    // Dictionary Ngrams
+    [self readDictionaryWithPrefix:kMPTCBaseNgrams2 toDictionary:self.ngramsDictionary valuesCount:3];
+    [self readDictionaryWithPrefix:kMPTCBaseNgrams3 toDictionary:self.ngramsDictionary valuesCount:4];
+    [self filterDictionary:self.ngramsDictionary];
+    
+    // Dictionary Yclist
+    [self readDictionaryWithPrefix:kMPTCBaseYclist toDictionary:self.yclistDictionary defaultWeight:700];
+    [self filterDictionary:self.yclistDictionary];
+    
+    // Dictionary Scowl
+    [self readDictionaryWithPrefix:kMPTCBaseScowl toDictionary:self.scowlDictionary defaultWeight:50];
+    [self filterDictionary:self.scowlDictionary];
+    
+    // Dictionary Scowl Frequency
+    [self readDictionaryWithPrefix:kMPTCBaseScowlFrequency toDictionary:self.scowlFrequencyDictionary valuesCount:2];
+    [self filterDictionary:self.scowlFrequencyDictionary];
+    [self normalizeDictionary:self.scowlFrequencyDictionary];
+    
+    // Dictionary merge
+    [self mergeDictionary:self.scowlFrequencyDictionary];
+    [self mergeDictionary:self.unigramsDictionary];
+    [self mergeDictionary:self.ngramsDictionary];
+    [self mergeDictionary:self.yclistDictionary];
+    [self mergeDictionary:self.scowlDictionary];
+    [self mergeDictionary:self.customDictionary];
     
     // Ngrams
-    [self readNgramsDictionaryWithPrefix:@"base_ngram_3" toDictionary:ngramsDictionary];
-    [self readNgramsDictionaryWithPrefix:@"base_ngram_2" toDictionary:ngramsDictionary];
-    [self filterDictionary:ngramsDictionary];
-    [self filterCaseSensitivityDictionary:ngramsDictionary];
-    [self addDictionary:ngramsDictionary replace:NO];
-    
-    // Custom unigrams
-    [self readNgramsDictionaryWithPrefix:@"base_custom" toDictionary:customDictionary];
-    [self addDictionary:customDictionary replace:YES];
-    
-    // Organizations
-    [self readDictionaryWithPrefix:@"base_org_1" toDictionary:organozationDictionary defaultWeight:2000];
-    [self readDictionaryWithPrefix:@"base_org_2" toDictionary:organozationDictionary defaultWeight:2000];
-    [self readDictionaryWithPrefix:@"base_abbr" toDictionary:organozationDictionary defaultWeight:500];
-    [self filterDictionary:organozationDictionary];
-    [self addDictionary:organozationDictionary replace:NO];
-    
-    // Ngrams
-    [self readNgramsWithPrefix:@"base_ngram_2"];
-    [self readNgramsWithPrefix:@"base_ngram_3"];
-    [self readNgramsWithPrefix:@"base_org_1" defaultWeight:2000];
-    [self readNgramsWithPrefix:@"base_org_2" defaultWeight:2000];
-    [self readNgramsWithPrefix:@"base_abbr" defaultWeight:500];
-    
-    // Write Data
-    [self writeUnigrams:self.dictionary toFileWithPrefix:@"mptc_unigrams"];
-    [self writeNgrams:self.ngrams2Array toFileWithPrefix:kMPTCDataUtilsNgram2Prefix];
-    [self writeNgrams:self.ngrams3Array toFileWithPrefix:kMPTCDataUtilsNgram3Prefix];
+    [self readNgramsWithPrefix:kMPTCBaseYclist defaultWeight:700];
+    [self readNgramsWithPrefix:kMPTCBaseNgrams2];
+    [self readNgramsWithPrefix:kMPTCBaseNgrams3];
     
     [MPTCDataUtils logSplitter];
     
+    NSLog(@"Unigrams custom count: %@", @(self.customDictionary.count));
+    NSLog(@"Unigrams yclist count: %@", @(self.yclistDictionary.count));
+    NSLog(@"Unigrams scowl count: %@", @(self.scowlDictionary.count));
+    NSLog(@"Unigrams scowl frequency count: %@", @(self.scowlFrequencyDictionary.count));
     NSLog(@"Unigrams count: %@", @(self.dictionary.count));
     NSLog(@"Ngrams2 count: %@", @(self.ngrams2Array.count));
     NSLog(@"Ngrams3 count: %@", @(self.ngrams3Array.count));
     
     [MPTCDataUtils logSplitter];
     
+    [self writeUnigrams:self.dictionary toFileWithPrefix:kMPTCSourceUnigrams];
+    [self writeNgrams:self.ngrams2Array toFileWithPrefix:kMPTCSourceNgrams2];
+    [self writeNgrams:self.ngrams3Array toFileWithPrefix:kMPTCSourceNgrams3];
+    
     NSLog(@"Finished data import");
 }
 
 
-#pragma mark - Read Files
+#pragma mark - Private Read Files
 
-- (void)readSettingsWithPrefix:(NSString *)prefix {
-    [MPTCDataUtils readFileWithPrefix:prefix usingBlock:^(NSArray *values, NSUInteger index, NSUInteger *errorsCount) {
-        if (values.count != 2) {
-            (*errorsCount) ++;
+- (void)readSpecialDictionaryWithPrefix:(NSString *)prefix toDictionary:(NSMutableDictionary *)dictionary valuesCount:(NSUInteger)valuesCount {
+    [MPTCDataUtils readValuesWithPrefix:prefix block:^(NSArray *values, NSUInteger index, NSUInteger *errors, BOOL *critical) {
+        if (values.count != valuesCount) {
+            (*critical) = YES;
             return;
         }
         
-        switch (index) {
-            case 0:
-                self.correctCharacters = [NSCharacterSet characterSetWithCharactersInString:values[1]];
-                break;
-                
-            case 1:
-                self.uppercaseCharacters = [NSCharacterSet characterSetWithCharactersInString:values[1]];
-                break;
-                
-            case 2:
-                self.oneCorrectCharacters = [NSCharacterSet characterSetWithCharactersInString:values[1]];
-                break;
-                
-            case 3:
-                self.trimCharacters = [NSCharacterSet characterSetWithCharactersInString:values[1]];
-                break;
-                
-            case 4:
-                self.maxCharacters = [values[1] integerValue];
-                
-            default:
-                break;
-        }
+        dictionary[values[0]] = valuesCount > 1 ? values[1] : @(0);
     }];
 }
 
-- (void)readIgnoreDictionaryWithPrefix:(NSString *)prefix {
-    [MPTCDataUtils readFileWithPrefix:prefix usingBlock:^(NSArray *values, NSUInteger index, NSUInteger *errorsCount) {
-        if (values.count != 1) {
-            (*errorsCount) ++;
-            return;
-        }
-        
-        self.ignoreDictionary[values[0]] = @(0);
-    }];
-}
-
-- (void)readReplaceDictionaryWithPrefix:(NSString *)prefix {
-    [MPTCDataUtils readFileWithPrefix:prefix usingBlock:^(NSArray *values, NSUInteger index, NSUInteger *errorsCount) {
-        if (values.count != 2) {
-            (*errorsCount) ++;
-            return;
-        }
-        
-        self.replaceDictionary[values[0]] = values[1];
-    }];
-}
-
-- (void)readNgramsDictionaryWithPrefix:(NSString *)prefix toDictionary:(NSMutableDictionary *)dictionary {
-    [self readDictionaryWithPrefix:prefix toDictionary:dictionary defaultWeight:0];
+- (void)readDictionaryWithPrefix:(NSString *)prefix toDictionary:(NSMutableDictionary *)dictionary valuesCount:(NSUInteger)valuesCount {
+    [self readDictionaryWithPrefix:prefix toDictionary:dictionary valuesCount:valuesCount defaultWeight:0];
 }
 
 - (void)readDictionaryWithPrefix:(NSString *)prefix toDictionary:(NSMutableDictionary *)dictionary defaultWeight:(NSUInteger)defaultWeight {
-    __block NSUInteger ignoresCount = 0;
+    [self readDictionaryWithPrefix:prefix toDictionary:dictionary valuesCount:2 defaultWeight:defaultWeight];
+}
+
+- (void)readDictionaryWithPrefix:(NSString *)prefix toDictionary:(NSMutableDictionary *)dictionary valuesCount:(NSUInteger)valuesCount defaultWeight:(NSUInteger)defaultWeight {
+    __block NSUInteger removesCount = 0;
     __block NSUInteger replacesCount = 0;
     
-    [MPTCDataUtils readFileWithPrefix:prefix usingBlock:^(NSArray *values, NSUInteger index, NSUInteger *errorsCount) {
-        if (values.count > (kMPTCDataUtilsNgramsLevels + 1)) {
-            (*errorsCount) ++;
+    
+    [MPTCDataUtils readValuesWithPrefix:prefix block:^(NSArray *values, NSUInteger index, NSUInteger *errors, BOOL *critical) {
+        if (values.count > valuesCount) {
+            (*critical) = YES;
             return;
         }
         
-        NSInteger weight = defaultWeight > 0 ? defaultWeight : [values[0] integerValue];
-        NSInteger i = defaultWeight > 0 ? 0 : 1;
+        NSInteger weight = defaultWeight > 0 ? defaultWeight : [values[valuesCount - 1] integerValue];
         
-        for (; i < values.count; i ++) {
-            NSString *word = values[i];
+        for (NSInteger index = 0; index < valuesCount - 1; index ++) {
+            NSString *word = values[index];
             NSInteger wordWeight = weight;
             
-            if (defaultWeight == 0) {
-                // Ignore words
-                if (self.ignoreDictionary[word.lowercaseString]) {
-                    ignoresCount ++;
-                    continue;
-                }
+            // Remove words
+            if (self.removeDictionary[word.lowercaseString]) {
+                removesCount ++;
                 
-                // Replace words
-                NSString *replaceWord = self.replaceDictionary[word];
-                if (replaceWord) {
-                    replacesCount ++;
-                    word = replaceWord;
+                NSLog(@"Remove word: %@", word);
+                continue;
+            }
+                
+            // Replace words
+            NSString *replaceWord = self.replaceDictionary[word];
+            if (replaceWord) {
+                replacesCount ++;
+                word = replaceWord;
+                
+                NSLog(@"Replace word: %@", replaceWord);
+            }
+        
+            // If Unigrams
+            if (values.count <= 2) {
+                // Create Dictionary with more than one word
+                NSArray *words = [self wordsFromString:values[0]];
+                if (words.count > 1) {
+                    for (NSString *word in words) {
+                        dictionary[word] = @(wordWeight);
+                    }
+                    return;
+                } else if (words.count != 1) {
+                    (*critical) = YES;
+                    return;
                 }
             }
             
+            
             // Sum all equals word weight
-            NSNumber *dictionaryWeight = dictionary[word];
+            /*NSNumber *dictionaryWeight = dictionary[word];
             if (dictionaryWeight) {
                 wordWeight += [dictionaryWeight integerValue];
-            }
+            }*/
             dictionary[word] = @(wordWeight);
         }
     }];
     
-    NSLog(@"Ignores: %@, Replaces: %@", @(ignoresCount), @(replacesCount));
-}
-
-- (void)addDictionary:(NSDictionary *)dictionary replace:(BOOL)replace {
-    NSArray *words = [dictionary allKeys];
-    for (NSString *word in words) {
-        if (replace || !self.dictionary[word]) {
-            self.dictionary[word] = dictionary[word];
-        }
-    }
+    NSLog(@"Removes: %@, Replaces: %@", @(removesCount), @(replacesCount));
 }
 
 - (void)readNgramsWithPrefix:(NSString *)prefix {
@@ -217,62 +203,80 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
 }
 
 - (void)readNgramsWithPrefix:(NSString *)prefix defaultWeight:(NSUInteger)defaultWeight {
-    [MPTCDataUtils readFileWithPrefix:prefix usingBlock:^(NSArray *values, NSUInteger index, NSUInteger *errorsCount) {
-        if (values.count > (kMPTCDataUtilsNgramsLevels + 1)) {
-            (*errorsCount) ++;
+    [MPTCDataUtils readValuesWithPrefix:prefix block:^(NSArray *values, NSUInteger index, NSUInteger *errors, BOOL *critical) {
+        if (values.count > (kMPTCNgramsLevels + 1)) {
+            (*critical) = YES;
             return;
         }
         
-        NSMutableArray *ngram = [[NSMutableArray alloc] initWithArray:values];
-        if (defaultWeight > 0) {
-            [ngram insertObject:@(defaultWeight) atIndex:0];
+        // If Dictionary Names with more than one word
+        if (values.count == 1) {
+            NSArray *words = [self wordsFromString:values[0]];
+            if (words.count > 1) {
+                values = words;
+            } else {
+                return;
+            }
         }
+        
+        NSMutableArray *ngram = [[NSMutableArray alloc] initWithArray:values];
+        
+        if (defaultWeight > 0) {
+            [ngram addObject:@(defaultWeight)];
+        } else {
+            // Replace NSString weight to NSNumber
+            NSInteger lastIndex = ngram.count - 1;
+            NSUInteger weight = [ngram[lastIndex] integerValue];
+            [ngram replaceObjectAtIndex:lastIndex withObject:@(weight)];
+        }
+        
         NSUInteger count = ngram.count;
-        NSUInteger level = count - 1;
+        NSInteger level = count - 1;
         
         NSMutableArray *ngrams = [self ngramsForLevel:level];
         if (!ngrams) {
             return;
         }
-        NSUInteger minFilterWeight = [self minFilterWeightForLevel:level];
-    
+        
         if (defaultWeight == 0) {
             // Filter words by min weight
-            if ([ngram[0] integerValue] < minFilterWeight) {
+            if ([ngram[level] integerValue] < [self minWeightForLevel:level]) {
+                NSLog(@"Ngrams minWeightError ngrams: %@", ngram);
                 return;
             }
             
             // Replace words
-            for (NSUInteger i = 1; i < count; i ++) {
+            for (NSInteger i = 0; i < level; i ++) {
                 NSString *replaceWord = self.replaceDictionary[ngram[i]];
                 if (replaceWord) {
                     [ngram replaceObjectAtIndex:i withObject:replaceWord];
+                    NSLog(@"Ngrams replace word: %@", replaceWord);
                 }
             }
         }
         
         // Verify from dictionary
-        BOOL existDictionary = YES;
-        for (NSUInteger i = 1; i < count; i ++) {
-            if (!self.dictionary[ngram[i]]) {
-                existDictionary = NO;
-                break;
+        for (NSInteger i = 0; i < level; i ++) {
+            NSString *word = ngram[i];
+            if (!self.dictionary[word]) {
+                NSLog(@"Ngrams notExistInDictionary word: %@", word);
+                return;
             }
-        }
-        if (!existDictionary) {
-            return;
         }
         
         [ngrams addObject:ngram];
     }];
 }
 
+
+#pragma mark - Utils
+
 - (NSMutableArray *)ngramsForLevel:(NSUInteger)level {
     switch (level) {
         case 2:
             return self.ngrams2Array;
             break;
-        
+            
         case 3:
             return self.ngrams3Array;
             break;
@@ -283,14 +287,14 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
     return nil;
 }
 
-- (NSUInteger)minFilterWeightForLevel:(NSUInteger)level {
+- (NSUInteger)minWeightForLevel:(NSUInteger)level {
     switch (level) {
         case 2:
-            return kMPTCDataImporterMinNgrams2FilterWeight;
+            return kMPTCNgrams2MinWeight;
             break;
             
         case 3:
-            return kMPTCDataImporterMinNgrams3FilterWeight;
+            return kMPTCNgrams3MinWeight;
             break;
             
         default:
@@ -299,8 +303,88 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
     return 0;
 }
 
+- (void)mergeDictionary:(NSDictionary *)dictionary {
+    [self mergeDictionary:dictionary replace:NO];
+}
 
-#pragma mark - Filters
+- (void)mergeDictionary:(NSDictionary *)dictionary replace:(BOOL)replace {
+    [MPTCDataUtils logSplitter];
+    
+    NSLog(@"Started filter dictionary count: %@", @(dictionary.count));
+    
+    NSInteger addCount = 0;
+    NSInteger existCount = 0;
+    
+    NSArray *words = [dictionary allKeys];
+    for (NSString *word in words) {
+        if (self.dictionary[word]) {
+            if (replace) {
+                self.dictionary[word] = dictionary[word];
+            }
+            existCount ++;
+        } else {
+            self.dictionary[word] = dictionary[word];
+            addCount ++;
+        }
+    }
+    
+    NSLog(@"Finished filter dictionary count: %@; exist: %@, add: %@, result: %@", @(dictionary.count), @(existCount), @(addCount), @(self.dictionary.count));
+}
+
+- (NSArray *)wordsFromString:(NSString *)string {
+    NSCharacterSet *whitespaceCharacters = [NSCharacterSet whitespaceCharacterSet];
+    
+    NSRange range = [string rangeOfCharacterFromSet:whitespaceCharacters];
+    if (range.location != NSNotFound || range.location != 0) {
+        NSString *trimString = [string stringByTrimmingCharactersInSet:whitespaceCharacters];
+        NSArray *words = [trimString componentsSeparatedByCharactersInSet:whitespaceCharacters];
+        if (words.count <= kMPTCNgramsLevels) {
+            for (NSString *word in words) {
+                if (word.length == 0 || [self isNotCorrectWord:word]) {
+                    return nil;
+                }
+            }
+        } else {
+            return nil;
+        }
+        return words;
+    }
+    return [NSArray arrayWithObject:string];
+}
+
+- (void)normalizeDictionary:(NSMutableDictionary *)dictionary {
+    Float32 currentMaxWeight = 0;
+    Float32 currentMinWeight = FLT_MAX;
+    for (NSNumber *numWeight in dictionary.allValues) {
+        Float32 weight = [numWeight floatValue];
+        if (currentMaxWeight < weight) {
+            currentMaxWeight = weight;
+        }
+        if (currentMinWeight > weight) {
+            currentMinWeight = weight;
+        }
+    }
+    Float32 maxWeight = kMPTCMaxWordWeight;
+    Float32 minFactor = kMPTCMinWordWeightFactor;
+    Float32 calcMaxWeight = currentMaxWeight - currentMinWeight;
+    Float32 factor = (calcMaxWeight - maxWeight * minFactor) / (maxWeight * calcMaxWeight);
+    
+    for (NSString *key in dictionary.allKeys) {
+        Float32 weight = [dictionary[key] floatValue] - currentMinWeight;
+        NSInteger normalizeWeight = MAX(weight / (minFactor + weight * factor), 1);
+        dictionary[key] = @(normalizeWeight);
+    }
+}
+
+- (void)sortArrayByWeight:(NSMutableArray *)array {
+    NSInteger lastIndex = ((NSArray *)array.firstObject).count - 1;
+    [array sortUsingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
+        return [obj2[lastIndex] compare:obj1[lastIndex]];
+    }];
+}
+
+
+#pragma mark - Private Filters
 
 - (void)filterDictionary:(NSMutableDictionary *)dictionary {
     [MPTCDataUtils logSplitter];
@@ -309,112 +393,65 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
     
     NSArray *words = [dictionary allKeys];
     for (NSString *word in words) {
-        if ([self isNotCorrectCharactersForWord:word]) {
+        if ([self isNotCorrectWord:word]) {
             [dictionary removeObjectForKey:word];
-            continue;
-        }
-        
-        if ([self isNotCorrectOnlyOneCharactersForWord:word]) {
-            [dictionary removeObjectForKey:word];
-            continue;
-        }
-        
-        if ([self isTrimCharactersForWord:word]) {
-            [dictionary removeObjectForKey:word];
-            continue;
-        }
-        
-        if ([self isTripleCharactersForWord:word]) {
-            [dictionary removeObjectForKey:word];
-            continue;
-        }
-        
-        if ([self isOnlyDoubleCharacters:word]) {
-            [dictionary removeObjectForKey:word];
-            continue;
-        }
-        
-        if ([self isMoreOneHyphen:word]) {
-            [dictionary removeObjectForKey:word];
-            continue;
-        }
-        
-        if ([self isNotCorrectLengthForWord:word]) {
-            [dictionary removeObjectForKey:word];
-            continue;
         }
     }
     
     NSLog(@"Finished filter dictionary count: %@", @(dictionary.count));
 }
 
-- (void)filterCaseSensitivityDictionary:(NSMutableDictionary *)dictionary {
-    [MPTCDataUtils logSplitter];
-    
-    NSLog(@"Started filter case sensitivity dictionary count: %@", @(dictionary.count));
-    
-    NSMutableDictionary *tempDictionary = [[NSMutableDictionary alloc] initWithDictionary:dictionary copyItems:YES];
-    NSMutableDictionary *dublicatesDictionary = [[NSMutableDictionary alloc] init];
-    
-    [dictionary removeAllObjects];
-    
-    NSArray *words = [tempDictionary allKeys];
-    for (NSString *word in words) {
-        NSMutableArray *dublicates = [[NSMutableArray alloc] init];
-        NSArray *existDublicates = dublicatesDictionary[word.lowercaseString];
-        if (existDublicates) {
-            [dublicates addObjectsFromArray:existDublicates];
-        }
-        [dublicates addObject:word];
-        dublicatesDictionary[word.lowercaseString] = dublicates;
+- (BOOL)isNotCorrectWord:(NSString *)word {
+    if ([self isNotCorrectCharactersForWord:word] && !self.ignoreDictionary[word]) {
+        NSLog(@"NotCorrectCharacters word: %@", word);
+        return YES;
     }
     
-    // Find best weight for different case sensitivity word
-    for (NSString *word in words) {
-        NSNumber *resultWeight = tempDictionary[word];
-        NSString *resultWord = word;
-        
-        NSArray *dublicates = dublicatesDictionary[word.lowercaseString];
-        if (dublicates) {
-            if (dublicates.count > 1) {
-                NSString *tempWord = resultWord;
-                NSNumber *tempWeight = resultWeight;
-                for (NSString *dublicateWord in dublicates) {
-                    NSNumber *dublicateWordWeight = tempDictionary[dublicateWord];
-                    if (dublicateWordWeight && [dublicateWordWeight integerValue] > [tempWeight integerValue]) {
-                        tempWord = dublicateWord;
-                        tempWeight = dublicateWordWeight;
-                    }
-                }
-                if (![tempWord isEqualToString:resultWord]) {
-                    resultWord = tempWord;
-                    resultWeight = tempWeight;
-                }
-            }
-            
-            [dublicatesDictionary removeObjectForKey:word.lowercaseString];
-        } else {
-            continue;
-        }
-
-        dictionary[resultWord] = resultWeight;
+    if ([self isNotCorrectOnlyOneCharactersForWord:word] && !self.ignoreDictionary[word]) {
+        NSLog(@"NotCorrectOnlyOneCharacters word: %@", word);
+        return YES;
     }
     
-    NSLog(@"Started filter case sensitivity dictionary count: %@", @(dictionary.count));
+    if ([self isTrimCharactersForWord:word] && !self.ignoreDictionary[word]) {
+        NSLog(@"TrimCharacters word: %@", word);
+        return YES;
+    }
+    
+    if ([self isTripleCharactersForWord:word] && !self.ignoreDictionary[word]) {
+        NSLog(@"TripleCharactersForWord word: %@", word);
+        return YES;
+    }
+    
+    if ([self isOnlyDoubleCharacters:word] && !self.ignoreDictionary[word]) {
+        NSLog(@"OnlyDoubleCharacters word: %@", word);
+        return YES;
+    }
+    
+    if ([self isMoreOneHyphen:word] && !self.ignoreDictionary[word]) {
+        NSLog(@"MoreOneHyphen word: %@", word);
+        return YES;
+    }
+    
+    if ([self isNotCorrectLengthForWord:word] && !self.ignoreDictionary[word]) {
+        NSLog(@"NotCorrectLength word: %@", word);
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (BOOL)isNotCorrectCharactersForWord:(NSString *)word {
-    return ![self.correctCharacters isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]];
+    return ![[MPTCDataUtils correctCharacters] isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]];
 }
 
 - (BOOL)isNotCorrectOnlyOneCharactersForWord:(NSString *)word {
-    return (word.length == 1 && ![self.oneCorrectCharacters isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]]);
+    return (word.length == 1 && ![[MPTCDataUtils oneCorrectCharacters] isSupersetOfSet:[NSCharacterSet characterSetWithCharactersInString:word]]);
 }
 
 - (BOOL)isTrimCharactersForWord:(NSString *)word {
-    if ([self.trimCharacters characterIsMember:[word characterAtIndex:0]]) {
+    if ([[MPTCDataUtils trimCharacters] characterIsMember:[word characterAtIndex:0]]) {
         return YES;
-    } else if (word.length > 1 && [self.trimCharacters characterIsMember:[word characterAtIndex:word.length - 1]]) {
+    } else if (word.length > 1 && [[MPTCDataUtils trimCharacters] characterIsMember:[word characterAtIndex:word.length - 1]]) {
         return YES;
     }
     return NO;
@@ -425,7 +462,7 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
     if (length > 2) {
         unichar previousCharacter = 0;
         NSUInteger count = 0;
-        for (NSUInteger i = 0; i < length; i ++) {
+        for (NSInteger i = 0; i < length; i ++) {
             unichar character = [word characterAtIndex:i];
             if (character == previousCharacter) {
                 count ++;
@@ -450,7 +487,7 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
     if (length > 1) {
         unichar character = '-';
         NSUInteger count = 0;
-        for (NSUInteger i = 0; i < length; i ++) {
+        for (NSInteger i = 0; i < length; i ++) {
             if (character == [word characterAtIndex:i]) {
                 count ++;
                 if (count >= 2) {
@@ -463,19 +500,11 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
 }
 
 - (BOOL)isNotCorrectLengthForWord:(NSString *)word {
-    return (word.length > self.maxCharacters);
-}
-
-- (BOOL)isLowercaseWord:(NSString *)word {
-    NSRange range = [word rangeOfCharacterFromSet:self.uppercaseCharacters];
-    if (range.location == NSNotFound) {
-        return YES;
-    }
-    return NO;
+    return (word.length > [MPTCDataUtils maxCharacters]);
 }
 
 
-#pragma mark - Write Data
+#pragma mark - Private Write Data
 
 - (void)writeUnigrams:(NSDictionary *)unigrams toFileWithPrefix:(NSString *)prefix {
     [MPTCDataUtils logSplitter];
@@ -483,17 +512,14 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
     NSLog(@"Started unigrams write: %@", prefix);
     
     NSMutableArray *data = [[NSMutableArray alloc] init];
-    NSArray *words = [unigrams allKeys];
-    for (NSString *word in words) {
-        [data addObject:@[unigrams[word], word]];
+    NSArray *keys = [unigrams allKeys];
+    for (NSString *word in keys) {
+        [data addObject:@[word, unigrams[word]]];
     }
     
-    NSLog(@"Started count: %@", @(data.count));
     [self removeDublicatesArray:data];
-    NSLog(@"After remove dublicate count: %@", @(data.count));
+    [self sortArrayByWeight:data];
     
-    [self sortByWeightArray:data];
-    [self normalizeByWeightArray:data];
     [MPTCDataUtils writeArray:data toFileWithPrefix:prefix];
     
     NSLog(@"Finished unigrams write: %@", prefix);
@@ -504,87 +530,71 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
     
     NSLog(@"Started ngrams write: %@", prefix);
     
-    NSLog(@"Started count: %@", @(ngrams.count));
     [self removeDublicatesArray:ngrams];
-    NSLog(@"After remove dublicate count: %@", @(ngrams.count));
     [self removeByOverMaxFirstRepeatsArray:ngrams];
-    NSLog(@"After remove over max first repeats count: %@", @(ngrams.count));
+    [self sortArrayByWeight:ngrams];
     
-    [self sortByWeightArray:ngrams];
-    [self normalizeByWeightArray:ngrams];
     [MPTCDataUtils writeArray:ngrams toFileWithPrefix:prefix];
     
     NSLog(@"Finished ngrams write: %@", prefix);
 }
 
-- (void)sortByWeightArray:(NSMutableArray *)array {
-    [array sortUsingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
-        NSUInteger weight1 = [obj1[0] integerValue];
-        NSUInteger weight2 = [obj2[0] integerValue];
-        if (weight1 > weight2) {
-            return NSOrderedAscending;
-        } else if (weight1 < weight2) {
-            return NSOrderedDescending;
-        } else {
-            return NSOrderedSame;
-        }
-    }];
-}
-
-- (void)normalizeByWeightArray:(NSMutableArray *)array {
-    Float32 currentMaxWeight = [array[0][0] integerValue];
-    Float32 maxWeight = kMPTCDataImporterMaxWordWeight;
-    Float32 minFactor = kMPTCDataImporterMinimumWordWeightFactor;
-    Float32 factor = (currentMaxWeight - maxWeight * minFactor) / (maxWeight * currentMaxWeight);
-    
-    for (NSUInteger i = 0; i < array.count; i ++) {
-        NSMutableArray *objects = [[NSMutableArray alloc] initWithArray:array[i]];
-        Float32 weight = [objects[0] floatValue];
-        Float32 normalizeWeight = MAX(weight / (minFactor + weight * factor), 1);
-        [objects replaceObjectAtIndex:0 withObject:@((NSUInteger)normalizeWeight)];
-        [array replaceObjectAtIndex:i withObject:objects];
-    }
-}
-
 - (void)removeDublicatesArray:(NSMutableArray *)array {
+    [MPTCDataUtils logSplitter];
+    
+    NSLog(@"Started remove dublicates, array count: %@", @(array.count));
+    
     [array sortUsingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
-        return [self comparisonArray1:obj1 withArray2:obj2 index:1];
+        return [self comparisonArray1:obj1 withArray2:obj2 index:0];
     }];
     
-    for (NSUInteger i = array.count - 1; i > 0; i --) {
+    for (NSInteger i = array.count - 1; i > 0; i --) {
         NSArray *objects1 = array[i];
         NSArray *objects2 = array[i - 1];
+        NSInteger lastIndex = objects1.count - 1;
         BOOL equal = YES;
-        for (NSUInteger j = 1; j < objects1.count; j ++) {
+        for (NSInteger j = 0; j < lastIndex; j ++) {
             if (![objects1[j] isEqualToString:objects2[j]]) {
                 equal = NO;
                 break;
             }
         }
         if (equal) {
-            if ([objects1[0] integerValue] > [objects2[0] integerValue]) {
+            if ([objects1[lastIndex] integerValue] > [objects2[lastIndex] integerValue]) {
+                NSLog(@"Remove: %@", array[i - 1]);
+                
                 [array removeObjectAtIndex:i - 1];
             } else {
+                NSLog(@"Remove: %@", array[i]);
+                
                 [array removeObjectAtIndex:i];
             }
         }
     }
+                      
+    NSLog(@"Finished remove dublicates, array count: %@", @(array.count));
 }
 
-- (NSComparisonResult)comparisonArray1:(NSArray *)array1 withArray2:(NSArray *)array2 index:(NSUInteger)index {
+- (NSComparisonResult)comparisonArray1:(NSArray *)array1 withArray2:(NSArray *)array2 index:(NSInteger)index {
     NSComparisonResult result = [array1[index] compare:array2[index]];
-    if (result == NSOrderedSame && index < (array1.count - 1)) {
+    if (result == NSOrderedSame && index < (array1.count - 2)) {
         result = [self comparisonArray1:array1 withArray2:array2 index:index + 1];
     }
     return result;
 }
 
 - (void)removeByOverMaxFirstRepeatsArray:(NSMutableArray *)array {
+    [MPTCDataUtils logSplitter];
+    
+    NSLog(@"Started removeByOverMaxFirstRepeats, array count: %@", @(array.count));
+    
+    // Sort by first word and weight
     [array sortUsingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
-        NSComparisonResult result = [obj1[1] compare:obj2[1]];
+        NSComparisonResult result = [obj1[0] compare:obj2[0]];
         if (result == NSOrderedSame) {
-            NSUInteger weight1 = [obj1[0] integerValue];
-            NSUInteger weight2 = [obj2[0] integerValue];
+            NSInteger lastIndex = obj1.count - 1;
+            NSUInteger weight1 = [obj1[lastIndex] integerValue];
+            NSUInteger weight2 = [obj2[lastIndex] integerValue];
             if (weight1 > weight2) {
                 result = NSOrderedDescending;
             } else if (weight1 < weight2) {
@@ -594,13 +604,14 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
         return result;
     }];
     
+    // Remove many repeated first words
     NSString *previousWord = nil;
     NSUInteger count = 0;
-    for (NSUInteger i = array.count - 1; i > 0; i --) {
-        NSString *word = array[i][1];
+    for (NSInteger i = array.count - 1; i > 0; i --) {
+        NSString *word = array[i][0];
         if ([word isEqualToString:previousWord]) {
             count ++;
-            if (count > kMPTCDataImporterMaxNgramsFirstRepeats) {
+            if (count > kMPTCMaxNgramsFirstRepeats) {
                 [array removeObjectAtIndex:i];
             }
         } else {
@@ -608,6 +619,8 @@ NSUInteger const kMPTCDataImporterMinimumWordWeightFactor = 5;
             count = 1;
         }
     }
+    
+    NSLog(@"Finished removeByOverMaxFirstRepeats, array count: %@", @(array.count));
 }
 
 @end

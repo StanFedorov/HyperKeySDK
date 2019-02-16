@@ -10,9 +10,9 @@
 
 @interface ACSpaceOperation : NSOperation
 
-@property (strong, nonatomic) NSString *text;
-@property (strong, nonatomic) NSString *original;
-@property (strong, nonatomic) NSString *correction;
+@property (copy, nonatomic) NSString *text;
+@property (copy, nonatomic) NSString *original;
+@property (copy, nonatomic) NSString *correction;
 
 @property (copy, nonatomic) void (^willCompletionBlock)(NSString *text, NSString *original, NSString *correction);
 

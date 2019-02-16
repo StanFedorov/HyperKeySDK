@@ -8,9 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "ThemeChangesResponderProtocol.h"
-#import "AppsLineView.h"
-
-extern CGFloat const kAutoCorrectionViewHeight;
 
 @protocol AutoCorrectionViewDelegate;
 
@@ -20,9 +17,8 @@ extern CGFloat const kAutoCorrectionViewHeight;
 @property (assign, nonatomic) BOOL isAutoCorrect;
 @property (assign, nonatomic) BOOL isAutoCapitalize;
 @property (assign, nonatomic) BOOL isFullAccess;
-@property (strong, nonatomic) NSString *text;
-@property (strong, nonatomic) AppsLineView *appsLine;
-@property (strong, nonatomic, readonly) NSString *correction;
+@property (copy, nonatomic) NSString *text;
+@property (copy, nonatomic, readonly) NSString *correction;
 @property (strong, nonatomic, readonly) NSCharacterSet *separatorCharacterSet;
 
 - (void)createCorrectionData;
@@ -31,7 +27,7 @@ extern CGFloat const kAutoCorrectionViewHeight;
 - (void)setHidden:(BOOL)hidden animation:(BOOL)animation;
 - (void)addSeparate;
 
-- (BOOL)checkNeedSeparateText:(NSString *)text before:(NSString *)before after:(NSString *)after;
+- (BOOL)checkNeedSeparateText:(NSString *)text withIsertedText:(NSString *)isertedText;
 
 @end
 
@@ -40,5 +36,6 @@ extern CGFloat const kAutoCorrectionViewHeight;
 @optional
 - (void)autoCorrectionView:(AutoCorrectionView *)autoCorrectionView didSelectString:(NSString *)selectedString;
 - (void)autoCorrectionView:(AutoCorrectionView *)autoCorrectionView didReplaceString:(NSString *)replaceString toString:(NSString *)toString;
+- (void)autoCorrectionView:(AutoCorrectionView *)autoCorrectionView didUpdateCorrectionString:(NSString *)correctionString;
 
 @end

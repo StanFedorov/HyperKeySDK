@@ -8,10 +8,19 @@
 
 #import "ACCharacterOperation.h"
 
-//#define kMPTCExecuteTimeLog
+//#define kMPTCStepTimeLog
+#ifdef kMPTCStepTimeLog
+#define ALLTICK NSLog(@"===> CharacterOperation"); NSDate *startAllTime = [NSDate date];
+#define ALLTOCK NSLog(@"<=== CharacterOperation: %.3f", -[startAllTime timeIntervalSinceNow]);
+#else
+#define ALLTICK
+#define ALLTOCK
+#endif
 
+//#define kMPTCExecuteTimeLog
 #ifdef kMPTCExecuteTimeLog
-#define TICK NSDate *startTime = [NSDate date];
+NSDate *startTime;
+#define TICK startTime = [NSDate date];
 #define TOCK(title) NSLog(@"%@: %.3f", title, -[startTime timeIntervalSinceNow]);
 #else
 #define TICK
@@ -24,10 +33,10 @@ NSInteger const kACCharacterOperationMinAutocorrectionsCharacters = 1;
 
 @interface ACCharacterOperation ()
 
-@property (strong, nonatomic, readwrite) NSString *text;
+@property (copy, nonatomic, readwrite) NSString *text;
 @property (strong, nonatomic) MPTextChecker *textChecker;
 
-@property (strong, nonatomic) NSString *original;
+@property (copy, nonatomic) NSString *original;
 @property (strong, nonatomic) MPTCString *correction;
 @property (strong, nonatomic) NSMutableArray *other;
 
@@ -59,54 +68,54 @@ NSInteger const kACCharacterOperationMinAutocorrectionsCharacters = 1;
 #pragma mark - Main
 
 - (void)main {
-    TICK
+    ALLTICK
     
     self.original = nil;
     self.correction = nil;
     self.other = [[NSMutableArray alloc] init];
     
-    NSArray *words = [self.text componentsSeparatedByCharactersInSet:self.textChecker.wordSeparatorCharacterSet];
+    TICK
+    NSString *lastWord = [self.textChecker lastWordForString:self.text];
+    if (lastWord.length > 0) {
+        self.original = lastWord;
+    }
+    TOCK(@"= Last Word")
     
     if (self.cancelled) {
         return;
     }
     
-    if (words.count > 0 && ((NSString *)words.lastObject).length > 0) {
-        self.original = words.lastObject;
-    }
-    
-    if (self.cancelled) {
-        return;
-    }
-    
+    TICK
     if (self.original && ![self isCanCorrectedWord:self.original]) {
-        TOCK(@"==== CharacterOperation ====")
+        ALLTOCK
         
         [self willCompletion];
         return;
     }
+    TOCK(@"= Can Corrected Word")
     
     if (self.cancelled) {
         return;
     }
     
-    BOOL isEmailDomain = [self isEmailDomain:self.original intoString:self.text];
-    
-    if (self.cancelled) {
-        return;
-    }
-    
+    TICK
     MPTCString *original = nil;
     // Corrections for string
     NSArray *corrections = [self.textChecker correctionsForString:self.text original:&original];
+    TOCK(@"= Corrections For String")
+    
+    
+    TICK
     if (corrections.count > 0) {
         [self.other addObjectsFromArray:corrections];
     }
+    TOCK(@"= Add Corrections To Other")
     
     if (self.cancelled) {
         return;
     }
     
+    TICK
     if (!self.original) {
         // Defaults for new word
         if (self.other.count == 0) {
@@ -116,27 +125,33 @@ NSInteger const kACCharacterOperationMinAutocorrectionsCharacters = 1;
             }
         }
         
-        TOCK(@"==== CharacterOperation ====")
+        ALLTOCK
         
         [self willCompletion];
         return;
     }
+    TOCK(@"= Defaults For String")
     
+    TICK
     MPTCString *replacement = [self.textChecker replacementForWord:self.original];
+    TOCK(@"= Replacement For Word")
     
     if (self.cancelled) {
         return;
     }
     
+    TICK
     // Set correction for first prediction
     if (self.other.count > 0) {
         ((MPTCString *)self.other.firstObject).type = MPTCStringTypeCorrection;
     }
+    TOCK(@"= Set Correction For First Prediction")
     
     if (self.cancelled) {
         return;
     }
     
+    TICK
     // Insert replacement as correction if original not exist in prediction
     if (replacement) {
         if (self.other.count > 0 && [((MPTCString *)self.other.firstObject).string isEqualToString:self.original]) {
@@ -145,26 +160,28 @@ NSInteger const kACCharacterOperationMinAutocorrectionsCharacters = 1;
             [self.other insertObject:replacement atIndex:0];
         }
     }
+    TOCK(@"= Insert Replacement")
         
     if (self.cancelled) {
         return;
     }
-        
+    
+    TICK
     // Set correction word
-    if (self.other.count > 0) {
+    if (self.other.count > 0 && ![self isEmailDomain:self.original intoString:self.text]) {
         MPTCString *mptcString = self.other.firstObject;
-        if (!isEmailDomain) {
-            if (mptcString.type == MPTCStringTypeReplacement) {
+        
+        if (mptcString.type == MPTCStringTypeReplacement) {
+            [self setupCorrection:mptcString];
+        } else if (mptcString.type == MPTCStringTypeCorrection && self.original.length > kACCharacterOperationMinAutocorrectionsCharacters) {
+            if (!original || (original && original.sortWeight * 1000 < mptcString.sortWeight)) {
                 [self setupCorrection:mptcString];
-            } else if (mptcString.type == MPTCStringTypeCorrection && self.original.length > kACCharacterOperationMinAutocorrectionsCharacters) {
-                if (!original || (original && original.sortWeight * 1000 < mptcString.sortWeight)) {
-                    [self setupCorrection:mptcString];
-                }
             }
         }
     }
+    TOCK(@"= Set Correction Word")
     
-    TOCK(@"==== CharacterOperation ====")
+    ALLTOCK
     
     [self willCompletion];
 }

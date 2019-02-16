@@ -1,6 +1,6 @@
 //
 //  MPTCDataCreator.m
-//  WordPredictionDB
+//  Better Word
 //
 //  Created by Maxim Popov popovme@gmail.com on 10.02.16.
 //  Copyright © 2016 Popovme. All rights reserved.
@@ -51,13 +51,17 @@
 #pragma mark - Private
 
 - (void)createTypos {
+    [MPTCDataUtils logSplitter];
+    
+    NSLog(@"Started create typos: %@", kMPTCSourceTypos);
+    
     NSMutableData *data = [[NSMutableData alloc] init];
     UInt8 bytesData[UINT8_MAX];
     UInt8 *bytes = bytesData;
     
-    [MPTCDataUtils readFileWithPrefix:kMPTCTyposPrefix usingBlock:^(NSArray *values, NSUInteger index, NSUInteger *errorsCount) {
+    [MPTCDataUtils readValuesWithPrefix:kMPTCSourceTypos block:^(NSArray *values, NSUInteger index, NSUInteger *errors, BOOL *critical) {
         if (values.count != 2 || ((NSString *)values[0]).length != 1) {
-           (*errorsCount) ++;
+           (*critical) = YES;
             return;
         }
         
@@ -75,21 +79,27 @@
         [data appendBytes:bytes length:position];
     }];
     
-    [MPTCDataUtils writeData:data toFileWithPrefix:kMPTCTyposPrefix];
+    [MPTCDataUtils writeData:data toFileWithPrefix:kMPTCTypos];
+    
+    NSLog(@"Finished create typos");
 }
 
 - (void)createDefaults {
+    [MPTCDataUtils logSplitter];
+    
+    NSLog(@"Started create defaults: %@", kMPTCSourceDefaults);
+    
     NSMutableData *data = [[NSMutableData alloc] init];
     UInt8 bytesData[UINT8_MAX];
     UInt8 *bytes = bytesData;
     
-    [MPTCDataUtils readFileWithPrefix:kMPTCDefaultsPrefix usingBlock:^(NSArray *values, NSUInteger index, NSUInteger *errorsCount) {
-        if (values.count < 2) {
-            (*errorsCount) ++;
+    [MPTCDataUtils readValuesWithPrefix:kMPTCSourceDefaults block:^(NSArray *values, NSUInteger index, NSUInteger *errors, BOOL *critical) {
+        if (values.count != 1) {
+            (*critical) = YES;
             return;
         }
         
-        NSString *characters = values[1];
+        NSString *characters = values[0];
         
         UInt8 length = characters.length;
         UInt8 position = 0;
@@ -101,17 +111,23 @@
         [data appendBytes:bytes length:position];
     }];
     
-    [MPTCDataUtils writeData:data toFileWithPrefix:kMPTCDefaultsPrefix];
+    [MPTCDataUtils writeData:data toFileWithPrefix:kMPTCDefaults];
+    
+    NSLog(@"Finished create defaults");
 }
 
 - (void)createReplacements {
+    [MPTCDataUtils logSplitter];
+    
+    NSLog(@"Started create replacements: %@", kMPTCSourceReplacements);
+    
     NSMutableData *data = [[NSMutableData alloc] init];
     UInt8 bytesData[UINT8_MAX];
     UInt8 *bytes = bytesData;
     
-    [MPTCDataUtils readFileWithPrefix:kMPTCReplacementsPrefix usingBlock:^(NSArray *values, NSUInteger index, NSUInteger *errorsCount) {
+    [MPTCDataUtils readValuesWithPrefix:kMPTCSourceReplacements block:^(NSArray *values, NSUInteger index, NSUInteger *errors, BOOL *critical) {
         if (values.count < 2) {
-            (*errorsCount) ++;
+            (*critical) = YES;
             return;
         }
         
@@ -133,22 +149,29 @@
         [data appendBytes:bytes length:position];
     }];
     
-    [MPTCDataUtils writeData:data toFileWithPrefix:kMPTCReplacementsPrefix];
+    [MPTCDataUtils writeData:data toFileWithPrefix:kMPTCReplacements];
+    
+    NSLog(@"Finished create replacements");
 }
 
 - (void)createUnigrams {
-    NSArray *lines = [MPTCDataUtils readLinesFromFileWithPrefix:kMPTCUnigramsPrefix];
+    [MPTCDataUtils logSplitter];
+    
+    NSLog(@"Started create unigrams: %@", kMPTCSourceUnigrams);
+    
+    NSArray *lines = [MPTCDataUtils readLinesFromFileWithPrefix:kMPTCSourceUnigrams];
     lines = [lines sortedArrayUsingComparator:^NSComparisonResult(NSString *obj1, NSString *obj2) {
         NSArray *values1 = [MPTCDataUtils valuesFromLine:obj1];
         NSArray *values2 = [MPTCDataUtils valuesFromLine:obj2];
-        return [((NSString *)values1[1]).lowercaseString compare:((NSString *)values2[1]).lowercaseString];
+        return [((NSString *)values1[0]).lowercaseString compare:((NSString *)values2[0]).lowercaseString];
     }];
     NSUInteger count = lines.count;
     
     NSMutableData *data = [[NSMutableData alloc] init];
     UInt8 bytes[UINT8_MAX];
     
-    [data appendBytes:@"?" length:1]; // Reserved symbol (First unigram characters character must be more 0)
+    // Reserved symbol (First unigram characters character must be more 0)
+    [data appendBytes:@"?" length:1];
     
     for (NSUInteger index = 0; index < count; index ++) {
         NSArray *values = [MPTCDataUtils valuesFromLine:lines[index]];
@@ -157,13 +180,13 @@
             NSLog(@"WARNING: Incorrect Uniram, line: %@", lines[index]);
             return;
         }
-        if (index != 0 && index % kMPTCDataUtilsLogStepSize == 0) {
+        if (index != 0 && index % kMPTCLogStepSize == 0) {
             NSLog(@"Unigram imported %@ of %@", @(index), @(count));
         }
         
-        NSString *word = ((NSString *)values[1]).lowercaseString;
-        NSString *spelling = (![word isEqualToString:values[1]]) ? values[1] : nil;
-        UInt16 weight = (UInt16)[values[0] integerValue];
+        NSString *word = ((NSString *)values[0]).lowercaseString;
+        NSString *spelling = (![word isEqualToString:values[0]]) ? values[0] : nil;
+        UInt16 weight = (UInt16)[values[1] integerValue];
         
         UInt8 length = word.length;
         UInt8 position = 0;
@@ -190,23 +213,28 @@
         [data appendBytes:bytes length:position];
     }
     
-    [MPTCDataUtils writeData:data toFileWithPrefix:kMPTCUnigramsPrefix];
+    [MPTCDataUtils writeData:data toFileWithPrefix:kMPTCUnigrams];
     
     NSLog(@"Unigram imported %@ of %@", @(count), @(count));
+    NSLog(@"Finished create unigram");
 }
 
 - (void)createNgrams {
-    [self prepearedNgramsWithFileName:kMPTCDataUtilsNgram3Prefix];
-    [self prepearedNgramsWithFileName:kMPTCDataUtilsNgram2Prefix];
+    [self prepearedNgramsWithFileName:kMPTCSourceNgrams3];
+    [self prepearedNgramsWithFileName:kMPTCSourceNgrams2];
     
-    for (NSInteger level = kMPTCDataUtilsNgramsLevels; level >= 2; level --) {
+    for (NSInteger level = kMPTCNgramsLevels; level >= 2; level --) {
         [self importNgramsForLevel:level];
     }
     
-    [MPTCDataUtils writeData:self.ngramsData toFileWithPrefix:kMPTCNgramsPrefix];
+    [MPTCDataUtils writeData:self.ngramsData toFileWithPrefix:kMPTCNgrams];
 }
 
 - (void)prepearedNgramsWithFileName:(NSString *)fileName {
+    [MPTCDataUtils logSplitter];
+    
+    NSLog(@"Started prepeared ngrams: %@", fileName);
+    
     NSArray *lines = [MPTCDataUtils readLinesFromFileWithPrefix:fileName];
     if (lines.count == 0) {
         NSLog(@"WARNING: Incorrect Ngrams File");
@@ -223,12 +251,12 @@
             return;
         }
         
-        if (index != 0 && index % kMPTCDataUtilsLogStepSize == 0) {
+        if (index != 0 && index % kMPTCLogStepSize == 0) {
             NSLog(@"Ngrams %@ prepeared %@ of %@", @(level), @(index), @(count));
         }
         
-        NSUInteger weight = (NSUInteger)[values[0] integerValue];
-        NSArray *words = [values subarrayWithRange:NSMakeRange(1, values.count - 1)];
+        NSUInteger weight = (NSUInteger)[values[level] integerValue];
+        NSArray *words = [values subarrayWithRange:NSMakeRange(0, level)];
         
         NSString *word = words.lastObject;
         NSArray *prepareWords = [words subarrayWithRange:NSMakeRange(0, words.count - 1)];
@@ -243,17 +271,18 @@
             for (NSString *prepareWord in prepareWords) {
                 [newNgram addObject:prepareWord];
             }
-            [newNgram addObject:@[@[@(weight), word]]];
+            [newNgram addObject:@[@[word, @(weight)]]];
         } else {
             newNgram = [[NSMutableArray alloc] initWithArray:ngram];
             NSMutableArray *lastWords = [[NSMutableArray alloc] initWithArray:ngram.lastObject];
-            [lastWords addObject:@[@(weight), word]];
+            [lastWords addObject:@[word, @(weight)]];
             [newNgram replaceObjectAtIndex:level - 1 withObject:lastWords];
         }
         ngrams[ngramsKey] = newNgram;
     };
     
     NSLog(@"Ngrams %@ prepeared %@ of %@", @(level), @(count), @(count));
+    NSLog(@"Finished prepeared ngrams: %@", fileName);
 }
 
 - (NSMutableDictionary *)ngramsForLevel:(NSUInteger)level {
@@ -271,6 +300,10 @@
 }
 
 - (void)importNgramsForLevel:(NSUInteger)level {
+    [MPTCDataUtils logSplitter];
+    
+    NSLog(@"Started create ngrams level: %@", @(level));
+    
     NSArray *ngrams = [self ngramsForLevel:level].allValues;
     NSUInteger count = ngrams.count;
     
@@ -279,7 +312,7 @@
     UInt8 position = 0;
     
     for (NSInteger index = 0; index < count; index ++) {
-        if (index != 0 && index % kMPTCDataUtilsLogStepSize == 0) {
+        if (index != 0 && index % kMPTCLogStepSize == 0) {
             NSLog(@"Ngrams %@ imported %@ of %@", @(level), @(index), @(count));
         }
         
@@ -287,7 +320,7 @@
         NSArray *prepareWords = [ngram subarrayWithRange:NSMakeRange(0, level - 1)];
         NSArray *lastWords = ngram.lastObject;
         lastWords = [lastWords sortedArrayUsingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
-            return [((NSString *)obj1[1]).lowercaseString compare:((NSString *)obj2[1]).lowercaseString];
+            return [((NSString *)obj1[0]).lowercaseString compare:((NSString *)obj2[0]).lowercaseString];
         }];
         
         position = 0;
@@ -306,12 +339,12 @@
         
         for (NSArray *lastWord in lastWords) {
             position = 0;
-            UInt32 unigramByteIndex = [self dataIndexForUnigram:lastWord[1]];
+            UInt32 unigramByteIndex = [self dataIndexForUnigram:lastWord[0]];
             bytes[position ++] = unigramByteIndex >> 0 & 255;
             bytes[position ++] = unigramByteIndex >> 8 & 255;
             bytes[position ++] = unigramByteIndex >> 16 & 255;
             
-            *((UInt16 *)&bytes[position]) = (UInt16)[lastWord[0] integerValue];
+            *((UInt16 *)&bytes[position]) = (UInt16)[lastWord[1] integerValue];
             position += 2;
             [data appendBytes:bytes length:position];
         }
@@ -329,6 +362,7 @@
     [self.ngramsData appendData:data];
     
     NSLog(@"Ngrams %@ imported %@ of %@", @(level), @(count), @(count));
+    NSLog(@"Finished create ngrams");
 }
 
 - (UInt32)dataIndexForUnigram:(NSString *)unigram {

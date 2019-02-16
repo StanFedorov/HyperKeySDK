@@ -69,17 +69,20 @@
     if (IS_IPAD) {
         height = self.isPortraitOrientation ? 320 : 394;
     } else {
-        if (IS_IPHONE_6) {
-            // 225
+        if (IS_IPHONE_6 || IS_IPHONE_X) {
+            // 225 + 35
             height = self.isPortraitOrientation ? 260 : 206;
-        } else if (IS_IPHONE_6_PLUS) {
-            // 236
-            height = self.isPortraitOrientation ? 280-10 : 214;
+        } else if (IS_IPHONE_6_PLUS || IS_IPHONE_X_MAX) {
+            // 236 + 35
+            height = self.isPortraitOrientation ? 271 : 214;
         } else {
-            // 225
+            // 225 + 35
             height = self.isPortraitOrientation ? 260 : 206;
         }
     }
+    
+    NSLog(@"HEIGHT %@", @(height - (self.isMainViewTruncate ? [self menuHeight] : 0) + (self.gifStripeShow ? kGifStripeGeight : 0)));
+    
     return height - (self.isMainViewTruncate ? [self menuHeight] : 0) + (self.gifStripeShow ? kGifStripeGeight : 0);
 }
 
@@ -87,10 +90,11 @@
     return IS_IPAD ? 54 : 44;
 }
 
-- (void)resetFrame {
-    self.currentSize = [[UIScreen mainScreen] bounds].size;
+- (void)resetFrameWithSize:(CGSize)size {
+    self.currentSize = size;
     
-    self.portraitOrientation = (self.currentSize.width > self.currentSize.height) ? NO : YES;
+    CGSize screenSize = [[UIScreen mainScreen] bounds].size;
+    self.portraitOrientation = (screenSize.width > screenSize.height) ? NO : YES;
     [self resetKeyboardFrame];
 }
 
@@ -105,11 +109,11 @@
         height = self.isPortraitOrientation ? 267 : 345;
         offset = 0;
     } else {
-        if (IS_IPHONE_6) {
+        if (IS_IPHONE_6 || IS_IPHONE_X) {
             // 225
-            height = self.isPortraitOrientation ? 226 : 172;
+            height = self.isPortraitOrientation ? 225 : 172;
             offset = 54;
-        } else if (IS_IPHONE_6_PLUS) {
+        } else if (IS_IPHONE_6_PLUS || IS_IPHONE_X_MAX) {
             // 236
             height = self.isPortraitOrientation ? 236 : 172;
             offset = 134;
@@ -118,17 +122,18 @@
             height = self.isPortraitOrientation ? 225 : 172;
             offset = 54;
         }
+        
     }
     
     CGRect frame = CGRectZero;
-    if(self.selectedFeature.type == FeatureTypeAmazon) {
+    if (self.selectedFeature.type == FeatureTypeAmazon) {
         CGFloat amazonHeight = [[UIScreen mainScreen] bounds].size.height * 0.6f;
-        CGFloat sizeDiff = amazonHeight-[self mainViewHeight];
-        frame.origin.y = self.isKeyboardHidden ? amazonHeight + offset : (self.isMainViewTruncate ? 0 : [self menuHeight]+sizeDiff) + (self.gifStripeShow ? kGifStripeGeight : 0);
-    }
-    else
+        CGFloat sizeDiff = amazonHeight - [self mainViewHeight];
+        frame.origin.y = self.isKeyboardHidden ? amazonHeight + offset : (self.isMainViewTruncate ? 0 : [self menuHeight] + sizeDiff) + (self.gifStripeShow ? kGifStripeGeight : 0);
+    } else {
         frame.origin.y = self.isKeyboardHidden ? [self mainViewHeight] + offset : (self.isMainViewTruncate ? 0 : [self menuHeight]) + (self.gifStripeShow ? kGifStripeGeight : 0);
-
+    }
+    
     frame.size.width = self.currentSize.width;
     frame.size.height = height;
     self.keyboardFrame = frame;

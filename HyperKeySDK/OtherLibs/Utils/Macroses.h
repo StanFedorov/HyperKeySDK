@@ -18,7 +18,8 @@
 #define IS_IPHONE_6 (IS_IPHONE && MAX(SCREEN_WIDTH, SCREEN_HEIGHT) == 667.0)
 #define IS_IPHONE_6_PLUS (IS_IPHONE && MAX(SCREEN_WIDTH, SCREEN_HEIGHT) == 736.0)
 #define IS_IPADPRO (IS_IPAD && MAX(SCREEN_WIDTH, SCREEN_HEIGHT) > 1024)
-#define IS_IPHONE_X      (IS_IPHONE && [[UIScreen mainScreen] bounds].size.height == 812.0)
+#define IS_IPHONE_X (IS_IPHONE && MAX(SCREEN_WIDTH, SCREEN_HEIGHT) == 812.0)
+#define IS_IPHONE_X_MAX (IS_IPHONE && MAX(SCREEN_WIDTH, SCREEN_HEIGHT) == 896.0)
 
 // Scale
 #define SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
