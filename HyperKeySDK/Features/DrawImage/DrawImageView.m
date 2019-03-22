@@ -81,7 +81,7 @@ NSUInteger const kDrawImageMaxFramesCount = 99;
     
     [AWSLogger defaultLogger].logLevel = AWSLogLevelError;
     
-    self.menuView = [[[NSBundle bundleForClass:DrawImageMenuView.class] loadNibNamed:NSStringFromClass([DrawImageMenuView class]) owner:self options:nil] firstObject];
+    self.menuView = [[[NSBundle bundleForClass:[DrawImageMenuView class]] loadNibNamed:NSStringFromClass([DrawImageMenuView class]) owner:self options:nil] firstObject];
     self.menuView.delegate = self;
     [self.menuContentView addSubview:self.menuView];
     [self.menuView mas_makeConstraints:^(MASConstraintMaker *make) {

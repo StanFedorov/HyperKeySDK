@@ -12,11 +12,20 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "CamFindAmazonViewController.h"
 #import <AVKit/AVKit.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 @interface CamFindViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (weak,nonatomic) IBOutlet UITableView *resultsTable;
 @property (strong,nonatomic) NSMutableArray *searchResults;
-@property (weak,nonatomic) IBOutlet UIImageView *empty;
+@property (weak,nonatomic) IBOutlet UIView *empty;
+@property (weak,nonatomic) IBOutlet UIButton *search;
+@property (weak,nonatomic) IBOutlet UIButton *search2;
+@property (weak,nonatomic) IBOutlet UIButton *results;
+@property (weak,nonatomic) IBOutlet UIButton *history;
+@property (weak,nonatomic) IBOutlet UIView *bgView;
+@property (weak,nonatomic) IBOutlet UIView *topbar;
+@property (weak,nonatomic) IBOutlet UIView *line1;
+@property (weak,nonatomic) IBOutlet UIView *line2;
 @property (weak, nonatomic) IBOutlet UIView *noAcccessView;
 @property (strong, nonatomic) ImagesLoadingAndSavingManager *fileManager;
 @end
@@ -29,7 +38,8 @@
     /*    self.fileManager = [[ImagesLoadingAndSavingManager alloc] init];
      [self.fileManager setDelegate:self];
      [self.fileManager showContentsOfDirrectoryForServiceType:ServiceTypeCamFind];*/
-    
+    self.search.layer.cornerRadius = 25;
+    self.search2.layer.cornerRadius = 25;
     self.resultsTable.tableFooterView = [UIView new];
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     self.searchResults = [[NSKeyedUnarchiver unarchiveObjectWithData:[defaults objectForKey:@"camFindSearches"]] mutableCopy];
@@ -64,17 +74,54 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self checkAccess];
+    [self checkEmpty];
+}
+
+- (void)checkEmpty {
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     self.searchResults = [[NSKeyedUnarchiver unarchiveObjectWithData:[defaults objectForKey:@"camFindSearches"]] mutableCopy];
     self.searchResults  = [[[self.searchResults reverseObjectEnumerator] allObjects] mutableCopy];
-    if(self.searchResults.count == 0)
+    if(self.searchResults.count == 0) {
         self.empty.hidden = NO;
-    else
+        self.search2.hidden = YES;
+        self.topbar.hidden = YES;
+        self.resultsTable.hidden = YES;
+        self.bgView.hidden = YES;
+    }
+    else {
         self.empty.hidden = YES;
+        self.search2.hidden = NO;
+        self.topbar.hidden = NO;
+        self.resultsTable.hidden = NO;
+        self.bgView.hidden = NO;
+    }
+    [self.resultsTable reloadData];
+}
+
+- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+    // Return YES if you want the specified item to be editable.
+    return YES;
+}
+
+// Override to support editing the table view.
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
+        [self.searchResults removeObjectAtIndex:indexPath.row];
+        self.searchResults  = [[[self.searchResults reverseObjectEnumerator] allObjects] mutableCopy];
+        NSData *newData = [NSKeyedArchiver archivedDataWithRootObject:self.searchResults];
+        [defaults setObject:newData forKey:@"camFindSearches"];
+        [defaults synchronize];
+        [self checkEmpty];
+    }
 }
 
 - (IBAction)newCamFind:(id)sender {
-    [self openURL:@"hyperkeysdk://camfind"];
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
+    [userDefaults setBool:YES forKey:kUserDefaultsCamfindRefresh];
+    [userDefaults setBool:NO forKey:kUserDefaultsCamfindClose];
+    [userDefaults synchronize];
+    [self openURL:@"hyperkeyapp://camfind"];
 }
 
 - (void)openURL:(NSString*)url{
@@ -230,7 +277,16 @@
     }
     cell.backgroundColor = [UIColor clearColor];
     cell.itemTitle.text = [self.searchResults objectAtIndex:indexPath.row][@"title"];
-    cell.itemDesc.text = [NSString stringWithFormat:@"Found via CamFind at %@", [self.searchResults objectAtIndex:indexPath.row][@"date"]];
+    cell.itemDesc.text = [NSString stringWithFormat:@"Found via CamFind"];
+    /* cell.itemTitle.text = [self.searchResults objectAtIndex:indexPath.row][@"name"];
+     NSString *link = [self.searchResults objectAtIndex:indexPath.row][@"link"];
+     if(link != nil) {
+     cell.itemDesc.text = [self.searchResults objectAtIndex:indexPath.row][@"desc"];
+     NSURL* url = [NSURL URLWithString:link];
+     NSString* domain = [url host];
+     cell.itemUrl.text = domain;
+     }
+     [cell.imageIcon sd_setImageWithURL:[NSURL URLWithString:[self.searchResults objectAtIndex:indexPath.row][@"image_thumbnail"]]];*/
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     NSString *previewUrl = [userDefaults objectForKey:[NSString stringWithFormat:@"camfind_%@",cell.itemTitle.text]];
     if(previewUrl.length == 0) {
@@ -279,10 +335,31 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
+    /* NSString *link = [self.searchResults objectAtIndex:indexPath.row][@"link"];
+     NSString *name = [self.searchResults objectAtIndex:indexPath.row][@"name"];
+     if(link != nil) {
+     [self insertLinkWithURLString:link title:name featureType:self.featureType completion:nil];
+     }*/
+    
+   /* [FBSDKAppEvents logEvent:@"CamFind Result Open"];
     CamFindAmazonViewController *infoVC = [[CamFindAmazonViewController alloc] initWithNibName:NSStringFromClass([CamFindAmazonViewController class]) bundle:[NSBundle bundleForClass:NSClassFromString(@"CamFindAmazonViewController")]];
     infoVC.camFindItem = [self.searchResults objectAtIndex:indexPath.row][@"title"];
     [infoVC setDelegate:self.delegate];
-    [self.navigationController pushViewController:infoVC animated:YES];
+    [self.navigationController pushViewController:infoVC animated:YES];*/
+    
+    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
+    NSString *previewUrl = [userDefaults objectForKey:[NSString stringWithFormat:@"camfind_%@",[self.searchResults objectAtIndex:indexPath.row][@"title"]]];
+    if(previewUrl.length != 0) {
+    [[SDImageCache sharedImageCache] queryDiskCacheForKey:previewUrl done:^(UIImage *image, SDImageCacheType cacheType) {
+        NSData *imageData = UIImageJPEGRepresentation(image, 1);
+        if (imageData) {
+            [[UIPasteboard generalPasteboard] setItems:@[]];
+            [[UIPasteboard generalPasteboard] setValue:imageData forPasteboardType:(NSString *)kUTTypePNG];
+        }
+        }];
+    }
+
+    [self insertLinkWithURLString:@"" title:[NSString stringWithFormat:@"I've found %@ using CamFind",[self.searchResults objectAtIndex:indexPath.row][@"title"]] featureType:self.featureType completion:nil];
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {

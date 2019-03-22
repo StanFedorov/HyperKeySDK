@@ -13,8 +13,9 @@
 
 - (void)awakeFromNib {
     [super awakeFromNib];
-    self.imageOverlay.layer.borderColor = [UIColor colorWithRed:238/255.0f green:238/255.0f blue:238/255.0f alpha:1.0f].CGColor;
-    self.imageOverlay.layer.borderWidth = 2.0f;
+   // self.imageOverlay.layer.borderColor = [UIColor colorWithRed:238/255.0f green:238/255.0f blue:238/255.0f alpha:1.0f].CGColor;
+  //  self.imageOverlay.layer.borderWidth = 2.0f;
+    self.imageIcon.layer.cornerRadius = 5;
 }
 
 @end

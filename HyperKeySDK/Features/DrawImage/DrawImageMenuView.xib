@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16C68" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -17,21 +16,21 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qjW-33-ddL">
-                    <rect key="frame" x="10" y="0.0" width="169" height="40"/>
+                    <rect key="frame" x="10" y="0.0" width="156" height="40"/>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1j5-xN-NKz">
-                    <rect key="frame" x="184" y="0.0" width="45" height="40"/>
+                    <rect key="frame" x="171" y="8" width="30" height="24"/>
                     <constraints>
-                        <constraint firstAttribute="width" constant="45" id="HMc-Vw-zT5"/>
+                        <constraint firstAttribute="width" constant="30" id="HMc-Vw-zT5"/>
                     </constraints>
-                    <state key="normal" image="btn_draw_undo"/>
+                    <state key="normal" image="sketch_back"/>
                     <connections>
                         <action selector="actionUndo" destination="iN0-l3-epB" eventType="touchUpInside" id="5qc-8A-1PO"/>
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0pQ-Nj-WIM" userLabel="Play Buton">
-                    <rect key="frame" x="231" y="0.0" width="34" height="40"/>
+                    <rect key="frame" x="215" y="0.0" width="34" height="40"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="34" id="oWy-cI-Nu7"/>
                     </constraints>
@@ -42,7 +41,7 @@
                     </connections>
                 </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="right" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="R8u-Dm-FRy" userLabel="Save Gif Button">
-                    <rect key="frame" x="265" y="0.0" width="55" height="40"/>
+                    <rect key="frame" x="249" y="0.0" width="55" height="40"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="55" id="Sth-R2-5iX"/>
                     </constraints>
@@ -60,12 +59,12 @@
                 <constraint firstItem="qjW-33-ddL" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="2G5-qE-fdn"/>
                 <constraint firstItem="R8u-Dm-FRy" firstAttribute="trailing" secondItem="iN0-l3-epB" secondAttribute="trailingMargin" id="4OY-Yo-6xy"/>
                 <constraint firstAttribute="bottom" secondItem="R8u-Dm-FRy" secondAttribute="bottom" id="6Fj-dg-QCG"/>
-                <constraint firstItem="1j5-xN-NKz" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="GtC-zO-X9W"/>
+                <constraint firstItem="1j5-xN-NKz" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="8" id="GtC-zO-X9W"/>
                 <constraint firstAttribute="bottom" secondItem="0pQ-Nj-WIM" secondAttribute="bottom" id="I0K-PK-80u"/>
                 <constraint firstAttribute="bottom" secondItem="qjW-33-ddL" secondAttribute="bottom" id="LPn-Db-dU0"/>
                 <constraint firstItem="1j5-xN-NKz" firstAttribute="leading" secondItem="qjW-33-ddL" secondAttribute="trailing" constant="5" id="Mbz-9O-xAk"/>
-                <constraint firstItem="0pQ-Nj-WIM" firstAttribute="leading" secondItem="1j5-xN-NKz" secondAttribute="trailing" constant="2" id="Vpb-oE-7Md"/>
-                <constraint firstAttribute="bottom" secondItem="1j5-xN-NKz" secondAttribute="bottom" id="dxw-9B-cwJ"/>
+                <constraint firstItem="0pQ-Nj-WIM" firstAttribute="leading" secondItem="1j5-xN-NKz" secondAttribute="trailing" constant="14" id="Vpb-oE-7Md"/>
+                <constraint firstAttribute="bottom" secondItem="1j5-xN-NKz" secondAttribute="bottom" constant="8" id="dxw-9B-cwJ"/>
                 <constraint firstItem="0pQ-Nj-WIM" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="iIn-XF-R7K"/>
                 <constraint firstItem="R8u-Dm-FRy" firstAttribute="leading" secondItem="0pQ-Nj-WIM" secondAttribute="trailing" id="lga-7J-J58"/>
                 <constraint firstItem="R8u-Dm-FRy" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="r5v-qS-iz0"/>
@@ -83,7 +82,7 @@
         </view>
     </objects>
     <resources>
-        <image name="animation_gray_play" width="16" height="19"/>
-        <image name="btn_draw_undo" width="17" height="17"/>
+        <image name="animation_gray_play" width="16.5" height="19"/>
+        <image name="sketch_back" width="80" height="78"/>
     </resources>
 </document>

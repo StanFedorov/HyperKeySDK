@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
+    <customFonts key="customFonts">
+        <array key="roboto_light.ttf">
+            <string>Roboto-Light</string>
+        </array>
+    </customFonts>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DrawImageViewController">
             <connections>
                 <outlet property="iconButton" destination="gFU-vd-yzC" id="IOu-9M-HMa"/>
+                <outlet property="noAcccessView" destination="YWt-K5-xG5" id="8v9-z8-1FA"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -31,10 +37,60 @@
                         <action selector="actionDrawImage:" destination="-1" eventType="touchUpInside" id="CnV-4f-3Vf"/>
                     </connections>
                 </button>
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YWt-K5-xG5">
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="184"/>
+                    <subviews>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="allow_location_background" translatesAutoresizingMaskIntoConstraints="NO" id="XsA-iX-HPJ">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="184"/>
+                        </imageView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QoN-WG-Kyl">
+                            <rect key="frame" x="60" y="104" width="200" height="36"/>
+                            <color key="backgroundColor" red="0.0" green="0.68235294120000001" blue="0.93725490199999995" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="200" id="Sdg-sM-U7Z"/>
+                                <constraint firstAttribute="height" constant="36" id="h8O-ga-BiJ"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" name="Roboto-Light" family="Roboto" pointSize="17"/>
+                            <state key="normal" title="Allow Photo">
+                                <color key="titleShadowColor" red="0.5" green="0.5" blue="0.5" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                            <connections>
+                                <action selector="grantAccess:" destination="-1" eventType="touchUpInside" id="472-tN-X5J"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WnP-BK-hbe">
+                            <rect key="frame" x="43" y="20" width="235" height="60"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="235" id="g3w-1l-Hcg"/>
+                                <constraint firstAttribute="height" constant="60" id="xWM-1W-8su"/>
+                            </constraints>
+                            <string key="text">You need to allow Photo access 
+in order to use Sketchpad</string>
+                            <fontDescription key="fontDescription" name="Roboto-Light" family="Roboto" pointSize="17"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstItem="XsA-iX-HPJ" firstAttribute="height" secondItem="YWt-K5-xG5" secondAttribute="height" id="8X3-l2-asN"/>
+                        <constraint firstItem="XsA-iX-HPJ" firstAttribute="centerY" secondItem="YWt-K5-xG5" secondAttribute="centerY" id="O5K-sj-Kqw"/>
+                        <constraint firstAttribute="centerX" secondItem="QoN-WG-Kyl" secondAttribute="centerX" id="S1E-FF-VGw"/>
+                        <constraint firstItem="XsA-iX-HPJ" firstAttribute="centerX" secondItem="YWt-K5-xG5" secondAttribute="centerX" id="Wu8-3J-IUA"/>
+                        <constraint firstAttribute="centerX" secondItem="WnP-BK-hbe" secondAttribute="centerX" constant="-0.5" id="XfL-gp-0YD"/>
+                        <constraint firstItem="QoN-WG-Kyl" firstAttribute="top" secondItem="WnP-BK-hbe" secondAttribute="bottom" constant="24" id="faS-op-bcQ"/>
+                        <constraint firstAttribute="centerY" secondItem="QoN-WG-Kyl" secondAttribute="centerY" constant="-30" id="gez-YL-B7C"/>
+                        <constraint firstItem="XsA-iX-HPJ" firstAttribute="width" secondItem="YWt-K5-xG5" secondAttribute="width" id="iTj-Jh-Lke"/>
+                    </constraints>
+                </view>
             </subviews>
             <color key="backgroundColor" red="0.98039215686274506" green="0.98039215686274506" blue="0.98039215686274506" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="gFU-vd-yzC" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="9" id="GWq-3a-1fV"/>
+                <constraint firstItem="YWt-K5-xG5" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="asM-P9-grg"/>
+                <constraint firstAttribute="bottom" secondItem="YWt-K5-xG5" secondAttribute="bottom" id="cqe-dz-48Q"/>
+                <constraint firstAttribute="trailing" secondItem="YWt-K5-xG5" secondAttribute="trailing" id="e4K-tt-8Av"/>
+                <constraint firstItem="YWt-K5-xG5" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="pPJ-15-jCh"/>
                 <constraint firstItem="gFU-vd-yzC" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="8" id="tL6-U6-5OZ"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
@@ -43,5 +99,6 @@
     </objects>
     <resources>
         <image name="Hyperkey_icon.png" width="28" height="28"/>
+        <image name="allow_location_background" width="337" height="234"/>
     </resources>
 </document>

@@ -1,8 +1,12 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="10117" systemVersion="15F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES">
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="10085"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -12,10 +16,10 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oPU-n2-Fhc">
-                    <rect key="frame" x="0.0" y="40" width="320" height="177"/>
+                    <rect key="frame" x="0.0" y="30.5" width="320" height="195"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="N8Q-6t-qQQ">
-                            <rect key="frame" x="129" y="0.0" width="63" height="40"/>
+                            <rect key="frame" x="128.5" y="0.0" width="63" height="40"/>
                             <subviews>
                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p4L-8g-yQX">
                                     <rect key="frame" x="0.0" y="0.0" width="63" height="40"/>
@@ -24,13 +28,13 @@
                                             <rect key="frame" x="0.0" y="0.0" width="63" height="40"/>
                                         </imageView>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Paste" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RGS-j3-IdJ">
-                                            <rect key="frame" x="12" y="6" width="40" height="18"/>
+                                            <rect key="frame" x="11.5" y="6" width="40" height="18"/>
                                             <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
-                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
-                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                                     <constraints>
                                         <constraint firstItem="mPf-cb-HYI" firstAttribute="leading" secondItem="p4L-8g-yQX" secondAttribute="leading" id="EXz-a9-cxv"/>
                                         <constraint firstItem="mPf-cb-HYI" firstAttribute="top" secondItem="p4L-8g-yQX" secondAttribute="top" id="Q2D-9o-4nn"/>
@@ -41,7 +45,7 @@
                                     </constraints>
                                 </view>
                             </subviews>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstItem="p4L-8g-yQX" firstAttribute="leading" secondItem="N8Q-6t-qQQ" secondAttribute="leading" id="19f-e8-T7F"/>
                                 <constraint firstAttribute="trailing" secondItem="p4L-8g-yQX" secondAttribute="trailing" id="1zy-AH-qFa"/>
@@ -56,31 +60,31 @@
                             <string key="text">Your GIF drawing was copied 
  Paste it in the text field</string>
                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                            <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ovx-sg-hff">
-                            <rect key="frame" x="8" y="99" width="304" height="78"/>
+                            <rect key="frame" x="8" y="99" width="304" height="96"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="adC-6U-fB5">
-                                    <rect key="frame" x="47" y="0.0" width="60" height="60"/>
+                                    <rect key="frame" x="85" y="0.0" width="60" height="60"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="60" id="DQ4-oq-ahs"/>
                                         <constraint firstAttribute="width" constant="60" id="Dir-4i-f2c"/>
                                     </constraints>
-                                    <state key="normal" image="btn_overlay_whatsapp"/>
+                                    <state key="normal" image="btn_overlay_img"/>
                                     <connections>
                                         <action selector="actionWhatsApp" destination="iN0-l3-epB" eventType="touchUpInside" id="wvq-ij-gR0"/>
                                     </connections>
                                 </button>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Whatsapp" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ft6-gn-H9N">
-                                    <rect key="frame" x="43" y="60" width="69" height="18"/>
+                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Save to  Videos" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ft6-gn-H9N">
+                                    <rect key="frame" x="88" y="60" width="54" height="36"/>
                                     <fontDescription key="fontDescription" type="system" weight="thin" pointSize="15"/>
-                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9Qq-2L-7UP">
-                                    <rect key="frame" x="122" y="0.0" width="60" height="60"/>
+                                    <rect key="frame" x="160" y="0.0" width="60" height="60"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="60" id="BvA-CT-6mZ"/>
                                         <constraint firstAttribute="width" constant="60" id="eji-ua-vcO"/>
@@ -91,13 +95,13 @@
                                     </connections>
                                 </button>
                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Get Link" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KfZ-KC-tkd">
-                                    <rect key="frame" x="124" y="60" width="56" height="18"/>
+                                    <rect key="frame" x="162" y="60" width="56" height="36"/>
                                     <fontDescription key="fontDescription" type="system" weight="thin" pointSize="15"/>
-                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NaR-ts-3s1">
-                                    <rect key="frame" x="197" y="0.0" width="60" height="60"/>
+                                <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NaR-ts-3s1">
+                                    <rect key="frame" x="235" y="0.0" width="60" height="60"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="60" id="EtJ-lq-z9h"/>
                                         <constraint firstAttribute="width" constant="60" id="XYE-io-2kB"/>
@@ -107,14 +111,14 @@
                                         <action selector="actionSaveImage" destination="iN0-l3-epB" eventType="touchUpInside" id="kfo-2o-3dF"/>
                                     </connections>
                                 </button>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Picture" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oxd-al-GCe">
-                                    <rect key="frame" x="203" y="60" width="48" height="18"/>
+                                <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Picture" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Oxd-al-GCe">
+                                    <rect key="frame" x="241" y="60" width="48" height="36"/>
                                     <fontDescription key="fontDescription" type="system" weight="thin" pointSize="15"/>
-                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                     <nil key="highlightedColor"/>
                                 </label>
                             </subviews>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                             <constraints>
                                 <constraint firstItem="Ft6-gn-H9N" firstAttribute="top" secondItem="adC-6U-fB5" secondAttribute="bottom" id="6nR-DI-TXI"/>
                                 <constraint firstItem="Oxd-al-GCe" firstAttribute="centerX" secondItem="NaR-ts-3s1" secondAttribute="centerX" id="6tv-iU-IOo"/>
@@ -122,7 +126,7 @@
                                 <constraint firstItem="9Qq-2L-7UP" firstAttribute="leading" secondItem="adC-6U-fB5" secondAttribute="trailing" constant="15" id="Ci2-9O-vpA"/>
                                 <constraint firstAttribute="bottom" secondItem="KfZ-KC-tkd" secondAttribute="bottom" id="LUR-SW-eSy"/>
                                 <constraint firstItem="adC-6U-fB5" firstAttribute="top" secondItem="ovx-sg-hff" secondAttribute="top" id="NeF-Vb-nXu"/>
-                                <constraint firstItem="9Qq-2L-7UP" firstAttribute="centerX" secondItem="ovx-sg-hff" secondAttribute="centerX" id="UBn-gH-12e"/>
+                                <constraint firstItem="9Qq-2L-7UP" firstAttribute="centerX" secondItem="ovx-sg-hff" secondAttribute="centerX" constant="38" id="UBn-gH-12e"/>
                                 <constraint firstAttribute="bottom" secondItem="Ft6-gn-H9N" secondAttribute="bottom" id="c2J-iP-Kgv"/>
                                 <constraint firstItem="Oxd-al-GCe" firstAttribute="top" secondItem="NaR-ts-3s1" secondAttribute="bottom" id="dqi-0C-Qn3"/>
                                 <constraint firstItem="NaR-ts-3s1" firstAttribute="top" secondItem="ovx-sg-hff" secondAttribute="top" id="gkW-3q-0bb"/>
@@ -134,7 +138,7 @@
                             </constraints>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="N8Q-6t-qQQ" firstAttribute="top" secondItem="oPU-n2-Fhc" secondAttribute="top" id="2OS-iA-ez3"/>
                         <constraint firstItem="JXg-Wz-NaV" firstAttribute="top" secondItem="N8Q-6t-qQQ" secondAttribute="bottom" constant="8" id="7Tn-Bu-POY"/>
@@ -148,7 +152,7 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" red="0.20784313725490194" green="0.22352941176470587" blue="0.2627450980392157" alpha="0.93000000000000005" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.20784313725490194" green="0.22352941176470587" blue="0.2627450980392157" alpha="0.93000000000000005" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="oPU-n2-Fhc" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="K9t-RT-3wL"/>
                 <constraint firstAttribute="trailing" secondItem="oPU-n2-Fhc" secondAttribute="trailing" id="Vna-5O-IFt"/>
@@ -162,9 +166,8 @@
         </view>
     </objects>
     <resources>
-        <image name="btn_overlay_img" width="54" height="53"/>
-        <image name="btn_overlay_link" width="54" height="53"/>
-        <image name="btn_overlay_whatsapp" width="56" height="57"/>
-        <image name="icon_black_hint" width="63" height="40"/>
+        <image name="btn_overlay_img" width="54.5" height="53"/>
+        <image name="btn_overlay_link" width="54.5" height="53"/>
+        <image name="icon_black_hint" width="63.5" height="40.5"/>
     </resources>
 </document>
