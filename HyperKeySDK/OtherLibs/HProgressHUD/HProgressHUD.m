@@ -148,7 +148,7 @@ NSString *const kHProgressHUDAnimationKey = @"HProgressHUDAnimationKey";
         self.animation.toValue = [NSNumber numberWithFloat:M_PI * 2.0];
         self.animation.duration = kHProgressHUDAnimationDuration;
         self.animation.cumulative = YES;
-        self.animation.repeatCount = CGFLOAT_MAX;
+        self.animation.repeatCount = HUGE_VALF;
     }
 }
 
