@@ -10,13 +10,15 @@
 #import "CamFindTableViewCell.h"
 #import "ImagesLoadingAndSavingManager.h"
 #import <SDWebImage/UIImageView+WebCache.h>
-#import "CamFindAmazonViewController.h"
 #import <AVKit/AVKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "KeyboardConfig.h"
+#import "HProgressHUD.h"
 
 @interface CamFindViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (weak,nonatomic) IBOutlet UITableView *resultsTable;
 @property (strong,nonatomic) NSMutableArray *searchResults;
+@property (strong,nonatomic) NSMutableArray *recentResults;
 @property (weak,nonatomic) IBOutlet UIView *empty;
 @property (weak,nonatomic) IBOutlet UIButton *search;
 @property (weak,nonatomic) IBOutlet UIButton *search2;
@@ -26,24 +28,30 @@
 @property (weak,nonatomic) IBOutlet UIView *topbar;
 @property (weak,nonatomic) IBOutlet UIView *line1;
 @property (weak,nonatomic) IBOutlet UIView *line2;
+@property (weak, nonatomic) IBOutlet UITextField *searchField;
+@property (weak, nonatomic) IBOutlet UIView *searchBar;
 @property (weak, nonatomic) IBOutlet UIView *noAcccessView;
 @property (strong, nonatomic) ImagesLoadingAndSavingManager *fileManager;
+@property (nonatomic) int resultMode;
+@property (weak, nonatomic) IBOutlet UIView *hudContainerView;
 @end
 
 @implementation CamFindViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    UINib *cellNib = [UINib nibWithNibName:NSStringFromClass([CamFindTableViewCell class]) bundle:[NSBundle bundleForClass:NSClassFromString(@"CamFindTableViewCell")]];
+    [self.resultsTable registerNib:cellNib forCellReuseIdentifier:@"CamFindTableViewCell"];
     [self.navigationController setNavigationBarHidden:YES animated:NO];
-    /*    self.fileManager = [[ImagesLoadingAndSavingManager alloc] init];
-     [self.fileManager setDelegate:self];
-     [self.fileManager showContentsOfDirrectoryForServiceType:ServiceTypeCamFind];*/
+    self.searchField.delegate = self;
     self.search.layer.cornerRadius = 25;
     self.search2.layer.cornerRadius = 25;
     self.resultsTable.tableFooterView = [UIView new];
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     self.searchResults = [[NSKeyedUnarchiver unarchiveObjectWithData:[defaults objectForKey:@"camFindSearches"]] mutableCopy];
     self.searchResults  = [[[self.searchResults reverseObjectEnumerator] allObjects] mutableCopy];
+    self.recentResults = [[NSKeyedUnarchiver unarchiveObjectWithData:[defaults objectForKey:@"camFindSearchesRecent"]] mutableCopy];
+    self.recentResults  = [[[self.recentResults reverseObjectEnumerator] allObjects] mutableCopy];
     [self.resultsTable reloadData];
 }
 
@@ -52,8 +60,10 @@
     AVAuthorizationStatus authStatus = [AVCaptureDevice authorizationStatusForMediaType:mediaType];
     if(authStatus == AVAuthorizationStatusAuthorized) {
         self.noAcccessView.hidden = YES;
+        self.searchBar.hidden = NO;
     }else {
         self.noAcccessView.hidden = NO;
+        self.searchBar.hidden = YES;
     }
 }
 
@@ -77,16 +87,24 @@
     [self checkEmpty];
 }
 
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 - (void)checkEmpty {
     NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     self.searchResults = [[NSKeyedUnarchiver unarchiveObjectWithData:[defaults objectForKey:@"camFindSearches"]] mutableCopy];
     self.searchResults  = [[[self.searchResults reverseObjectEnumerator] allObjects] mutableCopy];
-    if(self.searchResults.count == 0) {
+    self.recentResults = [[NSKeyedUnarchiver unarchiveObjectWithData:[defaults objectForKey:@"camFindSearchesRecent"]] mutableCopy];
+    self.recentResults  = [[[self.recentResults reverseObjectEnumerator] allObjects] mutableCopy];
+    if(self.searchResults.count == 0 && self.recentResults.count == 0) {
         self.empty.hidden = NO;
         self.search2.hidden = YES;
         self.topbar.hidden = YES;
         self.resultsTable.hidden = YES;
         self.bgView.hidden = YES;
+        self.searchBar.hidden = YES;
     }
     else {
         self.empty.hidden = YES;
@@ -94,8 +112,13 @@
         self.topbar.hidden = NO;
         self.resultsTable.hidden = NO;
         self.bgView.hidden = NO;
+        self.searchBar.hidden = NO;
     }
     [self.resultsTable reloadData];
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [defaults setBool:NO forKey:@"camFindCompleted"];
+        [defaults synchronize];
+    });
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -105,14 +128,21 @@
 
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
-        [self.searchResults removeObjectAtIndex:indexPath.row];
-        self.searchResults  = [[[self.searchResults reverseObjectEnumerator] allObjects] mutableCopy];
-        NSData *newData = [NSKeyedArchiver archivedDataWithRootObject:self.searchResults];
-        [defaults setObject:newData forKey:@"camFindSearches"];
-        [defaults synchronize];
-        [self checkEmpty];
+    if(tableView == self.resultsTable) {
+        if (editingStyle == UITableViewCellEditingStyleDelete) {
+            NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
+            if(self.resultMode == 0) {
+                [self.recentResults removeObjectAtIndex:indexPath.row];
+                self.recentResults  = [[[self.recentResults reverseObjectEnumerator] allObjects] mutableCopy];
+            }else {
+                [self.searchResults removeObjectAtIndex:indexPath.row];
+                self.searchResults  = [[[self.searchResults reverseObjectEnumerator] allObjects] mutableCopy];
+            }
+            NSData *newData = [NSKeyedArchiver archivedDataWithRootObject:self.searchResults];
+            [defaults setObject:newData forKey:@"camFindSearches"];
+            [defaults synchronize];
+            [self checkEmpty];
+        }
     }
 }
 
@@ -121,7 +151,7 @@
     [userDefaults setBool:YES forKey:kUserDefaultsCamfindRefresh];
     [userDefaults setBool:NO forKey:kUserDefaultsCamfindClose];
     [userDefaults synchronize];
-    [self openURL:@"hyperkeyapp://camfind"];
+    [self openURL:@"hyperkeysdk://camfind"];
 }
 
 - (void)openURL:(NSString*)url{
@@ -139,165 +169,27 @@
     [super didReceiveMemoryWarning];
 }
 
-- (void)getProfile {
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
-    NSDictionary *headers = @{ @"Content-Type": @"application/x-www-form-urlencoded", @"Authorization": [NSString stringWithFormat:@"Bearer %@",[userDefaults objectForKey:@"camFindJwt"]] };
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"https://api.camfindapp.com/v1/users/current"]
-                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                       timeoutInterval:10.0];
-    [request setHTTPMethod:@"GET"];
-    [request setAllHTTPHeaderFields:headers];
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
-                                                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                    
-                                                    if (!error) {
-                                                        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                             options:NSJSONReadingMutableContainers
-                                                                                                               error:nil];
-                                                        [self fetchFavs:json[@"profile"][@"id"]];
-                                                    }
-                                                }];
-    [dataTask resume];
-}
-
-- (void)fetchFavs:(NSString*)userId {
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
-    NSDictionary *headers = @{ @"Content-Type": @"application/x-www-form-urlencoded", @"Authorization": [NSString stringWithFormat:@"Bearer %@",[userDefaults objectForKey:@"camFindJwt"]] };
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.camfindapp.com/v1/users/%@/favorites",userId]]
-                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                       timeoutInterval:10.0];
-    [request setHTTPMethod:@"GET"];
-    [request setAllHTTPHeaderFields:headers];
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
-                                                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                    if (!error) {
-                                                        NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                             options:NSJSONReadingMutableContainers
-                                                                                                               error:nil];
-                                                        NSMutableArray *jsonArray = [json objectForKey:@"favorites"];
-                                                        
-                                                        if(jsonArray.count == 0) {
-                                                            [self fetchRecents];
-                                                        }else {
-                                                            dispatch_async(dispatch_get_main_queue(), ^{
-                                                                self.searchResults = [NSMutableArray new];
-                                                                int limit = 10;
-                                                                for(NSDictionary *item in jsonArray) {
-                                                                    if(self.searchResults.count < limit) {
-                                                                        NSMutableDictionary *newItem = [item mutableCopy];
-                                                                        [self.searchResults addObject:newItem];
-                                                                        [self searchItem:newItem];
-                                                                    }else {
-                                                                        break;
-                                                                    }
-                                                                }
-                                                                [self.resultsTable reloadData];
-                                                            });
-                                                        }
-                                                    }
-                                                }];
-    [dataTask resume];
-}
-
-- (void)fetchRecents {
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
-    NSDictionary *headers = @{ @"Content-Type": @"application/x-www-form-urlencoded", @"Authorization": [NSString stringWithFormat:@"Bearer %@",[userDefaults objectForKey:@"camFindJwt"]] };
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.camfindapp.com/v1/images/popular"]]
-                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                       timeoutInterval:10.0];
-    [request setHTTPMethod:@"GET"];
-    [request setAllHTTPHeaderFields:headers];
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
-                                                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                    if (!error) {
-                                                        NSMutableArray *jsonArray = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                                    options:NSJSONReadingMutableContainers
-                                                                                                                      error:nil];
-                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                            self.searchResults = [NSMutableArray new];
-                                                            int limit = 10;
-                                                            for(NSDictionary *item in jsonArray) {
-                                                                if(self.searchResults.count < limit) {
-                                                                    NSMutableDictionary *newItem = [item mutableCopy];
-                                                                    [self.searchResults addObject:newItem];
-                                                                    [self searchItem:newItem];
-                                                                }else {
-                                                                    break;
-                                                                }
-                                                            }
-                                                            [self.resultsTable reloadData];
-                                                        });
-                                                    }
-                                                }];
-    [dataTask resume];
-}
-
-- (void)searchItem:(NSMutableDictionary*)item {
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
-    NSDictionary *headers = @{ @"Content-Type": @"application/json", @"Authorization": [NSString stringWithFormat:@"Bearer %@",[userDefaults objectForKey:@"camFindJwt"]] };
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.camfindapp.com/v1/buy_similar"]]
-                                                           cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                                       timeoutInterval:10.0];
-    NSMutableDictionary *jsonData = [NSMutableDictionary new];
-    NSMutableDictionary *buy_similar = [NSMutableDictionary new];
-    [buy_similar setObject:item[@"name"] forKey:@"search_string"];
-    [buy_similar setObject:@"us" forKey:@"country_code"];
-    [jsonData setObject:buy_similar forKey:@"buy_similar"];
-    NSData *postData = [NSJSONSerialization dataWithJSONObject:jsonData options:0 error:nil];
-    [request setHTTPBody:postData];
-    [request setHTTPMethod:@"GET"];
-    [request setAllHTTPHeaderFields:headers];
-    NSURLSession *session = [NSURLSession sharedSession];
-    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:request
-                                                completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-                                                    if (!error) {
-                                                        NSMutableArray *jsonArray = [NSJSONSerialization JSONObjectWithData:data
-                                                                                                                    options:NSJSONReadingMutableContainers
-                                                                                                                      error:nil];
-                                                        NSDictionary *firstLink = [jsonArray objectAtIndex:0];
-                                                        item[@"link"] = firstLink[@"url"];
-                                                        item[@"desc"] = firstLink[@"title"];
-                                                        [self.resultsTable reloadData];
-                                                        dispatch_async(dispatch_get_main_queue(), ^{
-                                                            [self.resultsTable reloadData];
-                                                        });
-                                                    }
-                                                }];
-    [dataTask resume];
-}
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CamFindTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"CamFindTableViewCell"];
-    if (cell == nil) {
-        NSArray *topLevelObjects = [[NSBundle bundleForClass:NSClassFromString(@"CamFindTableViewCell")] loadNibNamed:@"CamFindTableViewCell" owner:self options:nil];
-        cell = [topLevelObjects objectAtIndex:0];
-    }
     cell.backgroundColor = [UIColor clearColor];
-    cell.itemTitle.text = [self.searchResults objectAtIndex:indexPath.row][@"title"];
-    cell.itemDesc.text = [NSString stringWithFormat:@"Found via CamFind"];
-    /* cell.itemTitle.text = [self.searchResults objectAtIndex:indexPath.row][@"name"];
-     NSString *link = [self.searchResults objectAtIndex:indexPath.row][@"link"];
-     if(link != nil) {
-     cell.itemDesc.text = [self.searchResults objectAtIndex:indexPath.row][@"desc"];
-     NSURL* url = [NSURL URLWithString:link];
-     NSString* domain = [url host];
-     cell.itemUrl.text = domain;
-     }
-     [cell.imageIcon sd_setImageWithURL:[NSURL URLWithString:[self.searchResults objectAtIndex:indexPath.row][@"image_thumbnail"]]];*/
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
+    NSDictionary *item;
+    if(self.resultMode == 0)
+        item = [self.recentResults objectAtIndex:indexPath.row];
+    else
+        item = [self.searchResults objectAtIndex:indexPath.row];
+    cell.itemTitle.text = item[@"title"];
+    cell.itemDesc.text = [NSString stringWithFormat:@"Found via CamFind"];
     NSString *previewUrl = [userDefaults objectForKey:[NSString stringWithFormat:@"camfind_%@",cell.itemTitle.text]];
     if(previewUrl.length == 0) {
-        [self searchImage:cell.itemTitle.text];
+        [self searchImage:cell.itemTitle.text andImageView:cell.imageIcon];
     }else {
         [cell.imageIcon sd_setImageWithURL:[NSURL URLWithString:previewUrl]];
     }
     return cell;
 }
 
-- (void)searchImage:(NSString*)query {
+- (void)searchImage:(NSString*)query andImageView:(UIImageView*)iv{
     NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
     NSDictionary *headers = @{ @"Ocp-Apim-Subscription-Key": @"e0d5f3bfc1814598891169a8bd6aaedd" };
     NSString *encodedQuery = [query stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLUserAllowedCharacterSet]];
@@ -317,7 +209,7 @@
                                                         [userDefaults setObject:firstLink[@"thumbnailUrl"] forKey:[NSString stringWithFormat:@"camfind_%@",query]];
                                                         [userDefaults synchronize];
                                                         dispatch_async(dispatch_get_main_queue(), ^{
-                                                            [self.resultsTable reloadData];
+                                                            [iv sd_setImageWithURL:[NSURL URLWithString:firstLink[@"thumbnailUrl"]]];
                                                         });
                                                     }
                                                 }];
@@ -326,7 +218,10 @@
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.searchResults.count;
+    if(self.resultMode == 1)
+        return self.searchResults.count;
+    else
+        return self.recentResults.count;
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -335,44 +230,41 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    /* NSString *link = [self.searchResults objectAtIndex:indexPath.row][@"link"];
-     NSString *name = [self.searchResults objectAtIndex:indexPath.row][@"name"];
-     if(link != nil) {
-     [self insertLinkWithURLString:link title:name featureType:self.featureType completion:nil];
-     }*/
-    
-   /* [FBSDKAppEvents logEvent:@"CamFind Result Open"];
-    CamFindAmazonViewController *infoVC = [[CamFindAmazonViewController alloc] initWithNibName:NSStringFromClass([CamFindAmazonViewController class]) bundle:[NSBundle bundleForClass:NSClassFromString(@"CamFindAmazonViewController")]];
-    infoVC.camFindItem = [self.searchResults objectAtIndex:indexPath.row][@"title"];
-    [infoVC setDelegate:self.delegate];
-    [self.navigationController pushViewController:infoVC animated:YES];*/
-    
-    NSUserDefaults *userDefaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
-    NSString *previewUrl = [userDefaults objectForKey:[NSString stringWithFormat:@"camfind_%@",[self.searchResults objectAtIndex:indexPath.row][@"title"]]];
-    if(previewUrl.length != 0) {
-    [[SDImageCache sharedImageCache] queryDiskCacheForKey:previewUrl done:^(UIImage *image, SDImageCacheType cacheType) {
-        NSData *imageData = UIImageJPEGRepresentation(image, 1);
-        if (imageData) {
-            [[UIPasteboard generalPasteboard] setItems:@[]];
-            [[UIPasteboard generalPasteboard] setValue:imageData forPasteboardType:(NSString *)kUTTypePNG];
-        }
-        }];
-    }
+    if(self.resultMode == 1) {
+        [self insertLinkWithURLString:@"" title:[NSString stringWithFormat:@"%@",[self decodeFromPercentEscapeString:[self.searchResults objectAtIndex:indexPath.row][@"url"]]] featureType:self.featureType completion:nil];
+    }else {
+        [self insertLinkWithURLString:@"" title:[NSString stringWithFormat:@"%@",[self decodeFromPercentEscapeString:[self.recentResults objectAtIndex:indexPath.row][@"url"]]] featureType:self.featureType completion:nil];
 
-    [self insertLinkWithURLString:@"" title:[NSString stringWithFormat:@"I've found %@ using CamFind",[self.searchResults objectAtIndex:indexPath.row][@"title"]] featureType:self.featureType completion:nil];
+    }
+}
+
+- (NSString*) decodeFromPercentEscapeString:(NSString *) string {
+    return (__bridge NSString *) CFURLCreateStringByReplacingPercentEscapesUsingEncoding(NULL,
+                                                                                         (__bridge CFStringRef) string,
+                                                                                         CFSTR(""),
+                                                                                         kCFStringEncodingUTF8);
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return CGFLOAT_MIN;
 }
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
+
+- (IBAction)previousClicked:(id)sender {
+    [self.history setTitleColor:[UIColor colorWithRed:96/255.0f green:81/255.0f blue:255/255.0f alpha:1.0f] forState:UIControlStateNormal];
+    self.line2.backgroundColor = [UIColor colorWithRed:96/255.0f green:81/255.0f blue:255/255.0f alpha:1.0f];
+    self.line1.backgroundColor = [UIColor clearColor];
+    [self.results setTitleColor:[UIColor colorWithRed:136/255.0f green:136/255.0f blue:136/255.0f alpha:1.0f] forState:UIControlStateNormal];
+    self.resultMode = 1;
+    [self.resultsTable reloadData];
+}
+
+- (IBAction)resultsClicked:(id)sender {
+    [self.results setTitleColor:[UIColor colorWithRed:96/255.0f green:81/255.0f blue:255/255.0f alpha:1.0f] forState:UIControlStateNormal];
+    self.line1.backgroundColor = [UIColor colorWithRed:96/255.0f green:81/255.0f blue:255/255.0f alpha:1.0f];
+    self.line2.backgroundColor = [UIColor clearColor];
+    [self.history setTitleColor:[UIColor colorWithRed:136/255.0f green:136/255.0f blue:136/255.0f alpha:1.0f] forState:UIControlStateNormal];
+    self.resultMode = 0;
+    [self.resultsTable reloadData];
+}
 
 @end

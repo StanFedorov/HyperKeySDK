@@ -363,7 +363,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     
     if([defaults boolForKey:@"camFindCompleted"]) {
         [defaults setBool:YES forKey:kUserDefaultsCamfindClose];
-        [defaults setBool:NO forKey:@"camFindCompleted"];
         [defaults synchronize];
         KeyboardFeature *defaultFeature = [KeyboardFeature featureWithType:FeatureTypeCamFind];
         [self switchToFeature:defaultFeature];

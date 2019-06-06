@@ -371,13 +371,10 @@
 		5D23C49B21E4D4980057A146 /* EmojiCategoryCollectionReusableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C2EA21E4D4970057A146 /* EmojiCategoryCollectionReusableView.m */; };
 		5D23C49C21E4D4980057A146 /* CamFindTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C2EC21E4D4970057A146 /* CamFindTableViewCell.m */; };
 		5D23C49D21E4D4980057A146 /* CamFindViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C2ED21E4D4970057A146 /* CamFindViewController.h */; };
-		5D23C49E21E4D4980057A146 /* CamFindAmazonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C2EE21E4D4970057A146 /* CamFindAmazonViewController.m */; };
-		5D23C49F21E4D4980057A146 /* CamFindAmazonViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C2EF21E4D4970057A146 /* CamFindAmazonViewController.xib */; };
 		5D23C4A021E4D4980057A146 /* CamFindTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C2F021E4D4970057A146 /* CamFindTableViewCell.xib */; };
 		5D23C4A121E4D4980057A146 /* camfind_help@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C2F121E4D4970057A146 /* camfind_help@2x.png */; };
 		5D23C4A221E4D4980057A146 /* CamFindViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D23C2F221E4D4970057A146 /* CamFindViewController.m */; };
 		5D23C4A321E4D4980057A146 /* CamFindTableViewCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C2F321E4D4970057A146 /* CamFindTableViewCell.h */; };
-		5D23C4A421E4D4980057A146 /* CamFindAmazonViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C2F421E4D4970057A146 /* CamFindAmazonViewController.h */; };
 		5D23C4A521E4D4980057A146 /* CamFindViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C2F521E4D4970057A146 /* CamFindViewController.xib */; };
 		5D23C4A621E4D4980057A146 /* PhotoAlbumsVC.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C2F721E4D4970057A146 /* PhotoAlbumsVC.h */; };
 		5D23C4A721E4D4980057A146 /* PhotoAlbumsCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D23C2F921E4D4970057A146 /* PhotoAlbumsCell.h */; };
@@ -796,13 +793,10 @@
 		5D23C2EA21E4D4970057A146 /* EmojiCategoryCollectionReusableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EmojiCategoryCollectionReusableView.m; sourceTree = "<group>"; };
 		5D23C2EC21E4D4970057A146 /* CamFindTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CamFindTableViewCell.m; sourceTree = "<group>"; };
 		5D23C2ED21E4D4970057A146 /* CamFindViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CamFindViewController.h; sourceTree = "<group>"; };
-		5D23C2EE21E4D4970057A146 /* CamFindAmazonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CamFindAmazonViewController.m; sourceTree = "<group>"; };
-		5D23C2EF21E4D4970057A146 /* CamFindAmazonViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CamFindAmazonViewController.xib; sourceTree = "<group>"; };
 		5D23C2F021E4D4970057A146 /* CamFindTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CamFindTableViewCell.xib; sourceTree = "<group>"; };
 		5D23C2F121E4D4970057A146 /* camfind_help@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "camfind_help@2x.png"; sourceTree = "<group>"; };
 		5D23C2F221E4D4970057A146 /* CamFindViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CamFindViewController.m; sourceTree = "<group>"; };
 		5D23C2F321E4D4970057A146 /* CamFindTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CamFindTableViewCell.h; sourceTree = "<group>"; };
-		5D23C2F421E4D4970057A146 /* CamFindAmazonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CamFindAmazonViewController.h; sourceTree = "<group>"; };
 		5D23C2F521E4D4970057A146 /* CamFindViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CamFindViewController.xib; sourceTree = "<group>"; };
 		5D23C2F721E4D4970057A146 /* PhotoAlbumsVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoAlbumsVC.h; sourceTree = "<group>"; };
 		5D23C2F921E4D4970057A146 /* PhotoAlbumsCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoAlbumsCell.h; sourceTree = "<group>"; };
@@ -1895,15 +1889,12 @@
 		5D23C2EB21E4D4970057A146 /* CamFind */ = {
 			isa = PBXGroup;
 			children = (
-				5D23C2EC21E4D4970057A146 /* CamFindTableViewCell.m */,
 				5D23C2ED21E4D4970057A146 /* CamFindViewController.h */,
-				5D23C2EE21E4D4970057A146 /* CamFindAmazonViewController.m */,
-				5D23C2EF21E4D4970057A146 /* CamFindAmazonViewController.xib */,
-				5D23C2F021E4D4970057A146 /* CamFindTableViewCell.xib */,
 				5D23C2F221E4D4970057A146 /* CamFindViewController.m */,
-				5D23C2F321E4D4970057A146 /* CamFindTableViewCell.h */,
-				5D23C2F421E4D4970057A146 /* CamFindAmazonViewController.h */,
 				5D23C2F521E4D4970057A146 /* CamFindViewController.xib */,
+				5D23C2EC21E4D4970057A146 /* CamFindTableViewCell.m */,
+				5D23C2F021E4D4970057A146 /* CamFindTableViewCell.xib */,
+				5D23C2F321E4D4970057A146 /* CamFindTableViewCell.h */,
 			);
 			path = CamFind;
 			sourceTree = "<group>";
@@ -2183,7 +2174,6 @@
 				5D23C37E21E4D4980057A146 /* KeyboardLayoutManager.h in Headers */,
 				5D23C37F21E4D4980057A146 /* TopAppImage.h in Headers */,
 				5D23C3CA21E4D4980057A146 /* HProgressHUD.h in Headers */,
-				5D23C4A421E4D4980057A146 /* CamFindAmazonViewController.h in Headers */,
 				5D23C47C21E4D4980057A146 /* DrawImageSaveOverlayView.h in Headers */,
 				5D23C46821E4D4980057A146 /* DropInfoTableViewHeaderCell.h in Headers */,
 				5D23C3B821E4D4980057A146 /* LoadURLDataOperation.h in Headers */,
@@ -2332,7 +2322,6 @@
 				5D23C41421E4D4980057A146 /* Comic Sans MS Bold.ttf in Resources */,
 				5D23C46521E4D4980057A146 /* DropBoxViewController.xib in Resources */,
 				5D23C3FB21E4D4980057A146 /* unlock_filled@2x.png in Resources */,
-				5D23C49F21E4D4980057A146 /* CamFindAmazonViewController.xib in Resources */,
 				5D23C40521E4D4980057A146 /* KeyboardMenuIcons.xcassets in Resources */,
 				5D23C42121E4D4980057A146 /* buybtn@2x.png in Resources */,
 				5D23C39F21E4D4980057A146 /* EmojiCollectionCell.xib in Resources */,
@@ -2518,7 +2507,6 @@
 				5D23C4C421E4D4980057A146 /* KeyboardConfig.m in Sources */,
 				5D23C35821E4D4970057A146 /* MPTextChecker.m in Sources */,
 				5D23C3D921E4D4980057A146 /* UIImage+Resize.m in Sources */,
-				5D23C49E21E4D4980057A146 /* CamFindAmazonViewController.m in Sources */,
 				5D23C3CE21E4D4980057A146 /* UIColor+Hyperkey.m in Sources */,
 				5D23C3BA21E4D4980057A146 /* ImagesLoadingAndSavingManager.m in Sources */,
 				5D23C48121E4D4980057A146 /* DrawImageMenuView.m in Sources */,
