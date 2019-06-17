@@ -40,7 +40,7 @@ CGFloat const kYoutubeCellCellImagesShrinkConst = 50;
     NSLog(@"\n\nyoutube cell size = %@\n\n", NSStringFromCGSize(CGSizeMake(width, width + kYoutubeCellCellIFooterSize - kYoutubeCellCellImagesShrinkConst)));
 #endif
 
-    return CGSizeMake(width, width + kYoutubeCellCellIFooterSize - kYoutubeCellCellImagesShrinkConst);
+    return CGSizeMake(width, width);
 }
 
 @end

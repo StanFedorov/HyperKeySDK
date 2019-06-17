@@ -64,7 +64,6 @@ NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
     
     NSString *cellName = NSStringFromClass([EmojiKeypadCollectionViewCell class]);
     [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:EmojiKeypadCollectionViewCell.class]] forCellWithReuseIdentifier:cellName];
-    
     // TODO: Do right headers
     /*
     cellName = NSStringFromClass([EmojiCategoryCollectionReusableView class]);
@@ -111,9 +110,9 @@ NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(performSearchFieldSearch) name:kKeyboardNotificationActionSearchButton object:nil];
+   // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(performSearchFieldSearch) name:kKeyboardNotificationActionSearchButton object:nil];
     
-    self.searchView.hidden = ![self gifStripeAllowed];
+    self.searchView.hidden = YES;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -125,11 +124,11 @@ NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     
-    self.contentViewTopConstraint.constant = ([LayoutManager isGifStripeShow] ? kGifStripeGeight : 0);
+    self.contentViewTopConstraint.constant = 0;
     
-    if ([LayoutManager isGifStripeShow]) {
-        [self.gifStripe viewWillLayoutSubviews];
-    }
+   // if ([LayoutManager isGifStripeShow]) {
+       // [self.gifStripe viewWillLayoutSubviews];
+   // }
 }
 
 
@@ -198,7 +197,6 @@ NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(insertTextStringToCurrentPosition:)]) {
         [self.delegate insertTextStringToCurrentPosition:textString];
-        
     }
     
     if (![textString isEqualToString:@" "]) {
@@ -276,9 +274,12 @@ NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
     if (![self gifStripeAllowed]) {
         return;
     }
-    
     NSString *string = [self.textField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
     [self.gifStripe updateContentForString:string];
+}
+
+- (void)performSearch:(NSString*)search {
+    [self.gifStripe updateContentForString:search];
 }
 
 - (BOOL)gifStripeAllowed {

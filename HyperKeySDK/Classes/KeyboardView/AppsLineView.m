@@ -11,6 +11,11 @@
 #import "ScrollViewCentered.h"
 #import "Macroses.h"
 #import "KeyboardFeaturesManager.h"
+#import "UITextField+PaddingText.h"
+
+NSString *const kLineSearchFieldEnabledKeyPath = @"enabled";
+NSString *const kLineSearchFieldDidEndEditing = @"kSearchDidEndEditing";
+NSString *const kLineSearchFieldDidTaped = @"kSearchFieldDidTaped";
 
 @interface AppsLineView ()
 @property (weak, nonatomic) IBOutlet UIScrollView *apps;
@@ -23,45 +28,18 @@
 
 - (void) initApps {
     
+    self.search.layer.cornerRadius = 10;
+    [self.search setLeftPadding:28];
+    [self.search setRightPadding:16];
+    self.search.delegate = self;
+    [self addTextFieldObserver];
+    
     if(self.appsList.count == 0) {
-        [self.apps.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
+       // [self.apps.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
         
         self.appsList = [NSMutableArray new];
-        
-        /*   TopAppImage *camFind = [[TopAppImage alloc] init];
-        [camFind setKeyboardFeature:[KeyboardFeature featureWithType:FeatureTypeCamFind]];
-        [self.appsList addObject:camFind];
-        
-        TopAppImage *emoji = [[TopAppImage alloc] init];
-        [emoji setKeyboardFeature:[KeyboardFeature featureWithType:FeatureTypeEmojiKeypad]];
-        [self.appsList addObject:emoji];
-        
-        TopAppImage *gif  = [[TopAppImage alloc] init];
-        [gif setKeyboardFeature:[KeyboardFeature featureWithType:FeatureTypeGif]];
-        [self.appsList addObject:gif];
-        
-        TopAppImage *yelp  = [[TopAppImage alloc] init];
-        [yelp setKeyboardFeature:[KeyboardFeature featureWithType:FeatureTypeYelp]];
-        [self.appsList addObject:yelp];
-        
-        TopAppImage *location = [[TopAppImage alloc] init];
-        [location setKeyboardFeature:[KeyboardFeature featureWithType:FeatureTypeShareLocation]];
-        [self.appsList addObject:location];
-        
-        TopAppImage *youtube  = [[TopAppImage alloc] init];
-        [youtube setKeyboardFeature:[KeyboardFeature featureWithType:FeatureTypeYoutube]];
-        [self.appsList addObject:youtube];
-        
-        TopAppImage *photos  = [[TopAppImage alloc] init];
-        [photos setKeyboardFeature:[KeyboardFeature featureWithType:FeatureTypePhotoLibrary]];
-        [self.appsList addObject:photos];
-        
-        TopAppImage *google  = [[TopAppImage alloc] init];
-        [google setKeyboardFeature:[KeyboardFeature featureWithType:FeatureTypeGoogleTranslate]];
-        [self.appsList addObject:google];*/
-        
+
         NSMutableArray *array = [NSMutableArray arrayWithArray:[KeyboardFeaturesManager sharedManager].enabledItemsList];
-      //  array = [[self sortAccordingToOrderFeaturesList:array] mutableCopy];
 
         for (KeyboardFeature *f in array) {
             TopAppImage *feature  = [[TopAppImage alloc] init];
@@ -82,15 +60,17 @@
         float itemSize = 34;
         float itemPadding = 8;
         float topPadding = 4;
+        float startPadding = 10;
+
         if(IS_IPAD)
             topPadding=10;
-        self.apps.contentSize = CGSizeMake(((itemSize+itemPadding) * (self.appsList.count)) - itemPadding, self.apps.frame.size.height);
+        self.apps.contentSize = CGSizeMake(startPadding + ((itemSize+itemPadding) * (self.appsList.count)) - itemPadding, self.apps.frame.size.height);
         for(int i = 0; i < self.appsList.count; i++) {
             TopAppImage *item = [self.appsList objectAtIndex:i];
             if(i == 0)
-                [item setFrame:CGRectMake(0, topPadding, itemSize, itemSize)];
+                [item setFrame:CGRectMake(startPadding, topPadding, itemSize, itemSize)];
             else
-                [item setFrame:CGRectMake((itemPadding+itemSize)*i, topPadding, itemSize, itemSize)];
+                [item setFrame:CGRectMake(startPadding + (itemPadding+itemSize)*i, topPadding, itemSize, itemSize)];
             [item addTarget:self action:@selector(itemClicked:) forControlEvents:UIControlEventTouchUpInside];
             [self.apps addSubview:item];
         }
@@ -103,6 +83,31 @@
         }
     }
 }
+
+
+- (void)addTextFieldObserver {
+    [self.search addObserver:self forKeyPath:kLineSearchFieldEnabledKeyPath options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)removeTextFieldObsever {
+    [self.search removeObserver:self forKeyPath:kLineSearchFieldEnabledKeyPath];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:kLineSearchFieldEnabledKeyPath] && object == self.search) {
+        if (!self.search.enabled) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kLineSearchFieldDidEndEditing object:nil userInfo:nil];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLineSearchFieldDidTaped object:nil userInfo:nil];
+    return NO;
+}
+
 
 -(void)itemClicked:(id)sender{
     TopAppImage *item = (TopAppImage*)sender;

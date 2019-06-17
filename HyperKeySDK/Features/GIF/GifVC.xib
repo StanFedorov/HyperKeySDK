@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="16C68" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -29,12 +29,12 @@
             <subviews>
                 <collectionView multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="BFx-P4-27T">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="276"/>
-                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="2" minimumInteritemSpacing="2" id="s7P-sf-Xme">
                         <size key="itemSize" width="50" height="50"/>
                         <size key="headerReferenceSize" width="0.0" height="0.0"/>
                         <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                        <inset key="sectionInset" minX="8" minY="8" maxX="8" maxY="8"/>
                     </collectionViewFlowLayout>
                     <cells/>
                     <connections>
@@ -45,14 +45,21 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Tk4-Od-K1U" userLabel="Categories selector view">
                     <rect key="frame" x="0.0" y="276" width="320" height="44"/>
                     <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xQL-3s-GzP">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="1"/>
+                            <color key="backgroundColor" red="0.9137254901960784" green="0.91764705882352937" blue="0.93333333333333335" alpha="1" colorSpace="calibratedRGB"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="1" id="4FC-pd-XU3"/>
+                            </constraints>
+                        </view>
                         <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="oH7-jq-vxz">
-                            <rect key="frame" x="0.0" y="7" width="320" height="30"/>
-                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="3" id="pvf-Ss-zCG">
                                 <size key="itemSize" width="50" height="50"/>
                                 <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                 <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                <inset key="sectionInset" minX="17" minY="0.0" maxX="17" maxY="0.0"/>
+                                <inset key="sectionInset" minX="8" minY="0.0" maxX="17" maxY="0.0"/>
                             </collectionViewFlowLayout>
                             <connections>
                                 <outlet property="dataSource" destination="-1" id="fko-2D-euv"/>
@@ -60,16 +67,19 @@
                             </connections>
                         </collectionView>
                     </subviews>
-                    <color key="backgroundColor" red="0.88627450980392153" green="0.89803921568627454" blue="0.9137254901960784" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="bottom" secondItem="oH7-jq-vxz" secondAttribute="bottom" constant="7" id="XFa-o7-dtt"/>
-                        <constraint firstItem="oH7-jq-vxz" firstAttribute="top" secondItem="Tk4-Od-K1U" secondAttribute="top" constant="7" id="eBx-qt-2RG"/>
+                        <constraint firstItem="xQL-3s-GzP" firstAttribute="top" secondItem="Tk4-Od-K1U" secondAttribute="top" id="BQV-04-CXn"/>
+                        <constraint firstItem="xQL-3s-GzP" firstAttribute="leading" secondItem="Tk4-Od-K1U" secondAttribute="leading" id="Q4E-ID-h3n"/>
+                        <constraint firstAttribute="bottom" secondItem="oH7-jq-vxz" secondAttribute="bottom" id="XFa-o7-dtt"/>
+                        <constraint firstItem="oH7-jq-vxz" firstAttribute="top" secondItem="Tk4-Od-K1U" secondAttribute="top" id="eBx-qt-2RG"/>
                         <constraint firstItem="oH7-jq-vxz" firstAttribute="leading" secondItem="Tk4-Od-K1U" secondAttribute="leading" id="eyW-5V-2Ay"/>
+                        <constraint firstAttribute="trailing" secondItem="xQL-3s-GzP" secondAttribute="trailing" id="gLC-Xp-2Dw"/>
                         <constraint firstAttribute="height" constant="44" id="sbg-BY-qz1"/>
                         <constraint firstAttribute="trailing" secondItem="oH7-jq-vxz" secondAttribute="trailing" id="yqG-vu-5Em"/>
                     </constraints>
                 </view>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tdR-D0-hYf">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tdR-D0-hYf">
                     <rect key="frame" x="66" y="9" width="188" height="30"/>
                     <subviews>
                         <imageView userInteractionEnabled="NO" alpha="0.69999999999999996" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="bg_spotify_search" translatesAutoresizingMaskIntoConstraints="NO" id="miH-3l-tJq">
@@ -97,7 +107,7 @@
                         <action selector="actionSearch" destination="-1" eventType="touchUpInside" id="gCL-Bh-Zw6"/>
                     </connections>
                 </button>
-                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fWB-pw-T1Y">
+                <textField hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Search" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fWB-pw-T1Y">
                     <rect key="frame" x="96" y="9" width="158" height="30"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="3EH-c4-bYX"/>
@@ -117,7 +127,7 @@
                         <action selector="actionIcon:" destination="-1" eventType="touchUpInside" id="arZ-Q5-3Cv"/>
                     </connections>
                 </button>
-                <button opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gpl-JO-bkE">
+                <button hidden="YES" opaque="NO" alpha="0.80000001192092896" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gpl-JO-bkE">
                     <rect key="frame" x="274" y="10" width="36" height="36"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="36" id="8j9-bv-pHG"/>
@@ -143,7 +153,7 @@
                     </constraints>
                 </view>
             </subviews>
-            <color key="backgroundColor" red="0.14509803921568626" green="0.14509803921568626" blue="0.14509803921568626" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="tdR-D0-hYf" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" constant="66" id="09K-9l-OIE"/>
                 <constraint firstAttribute="trailing" secondItem="tdR-D0-hYf" secondAttribute="trailing" constant="66" id="4GV-tr-ABA"/>
@@ -173,8 +183,8 @@
     </objects>
     <resources>
         <image name="Hyperkey_icon.png" width="29" height="29"/>
-        <image name="bg_spotify_search" width="187" height="28"/>
-        <image name="btn_search_field" width="16" height="16"/>
+        <image name="bg_spotify_search" width="187" height="28.5"/>
+        <image name="btn_search_field" width="16.5" height="16.5"/>
         <image name="search_round_button" width="36" height="36"/>
     </resources>
 </document>

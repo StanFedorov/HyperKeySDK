@@ -46,6 +46,8 @@ NSString *const kGTLangListName = @"name";
 @property (strong, nonatomic) NSTimer *pasteboardCheckTimer;
 @property (assign, nonatomic) NSUInteger pasteboardchangeCount;
 @property (strong, nonatomic) NSArray *pasteboardTypes;
+@property (strong, nonatomic) NSString *searchString;
+
 
 @end
 
@@ -69,6 +71,17 @@ NSString *const kGTLangListName = @"name";
     self.textView.layer.cornerRadius = 5;
     self.pasteboardchangeCount = [UIPasteboard generalPasteboard].changeCount;
     self.pasteboardTypes = @[@"public.utf8-plain-text", @"public.text"];
+    
+    if(self.searchString != nil && self.searchString.length > 0) {
+        [self setOriginText:self.searchString];
+    }
+}
+
+- (void)setLastSearch:(NSString *)search {
+    self.searchString = search;
+}
+- (void)performSearch:(NSString*)query {
+    [self setOriginText:query];
 }
 
 - (void)viewDidAppear:(BOOL)animated { //viewViewAppear: - did not start
@@ -131,7 +144,6 @@ NSString *const kGTLangListName = @"name";
 }
 
 - (IBAction)replaceOriginTextToTranslated:(id)sender {
-    
     if ([self.delegate respondsToSelector:@selector(changeOriginText:forTranslatedText:)]) {
         NSString *originText = self.isItTranslatedPasteboard ? nil : self.originText;
         NSString *translatedText = self.isItTranslatedPasteboard ? self.translatedPasteboardContent : self.translatedText;
@@ -141,9 +153,9 @@ NSString *const kGTLangListName = @"name";
 
 - (IBAction)changeLanguage:(id)sender {
     if (!self.langPicker.hidden) {
-        if ([self.delegate respondsToSelector:@selector(showKeyboard)]) {
-            [self.delegate showKeyboard];
-        }
+        //if ([self.delegate respondsToSelector:@selector(showKeyboard)]) {
+          //  [self.delegate showKeyboard];
+      // }
         
         self.streachableLabel.text = [NSString stringWithFormat:@"English >%@", self.langName];
         
@@ -219,33 +231,32 @@ NSString *const kGTLangListName = @"name";
 #pragma mark - Private with text
 
 - (void)setOriginText:(NSString *)originText {
+    NSLog(@"setOriginText");
     if (!originText) {
         return;
     }
     
     self.isItTranslatedPasteboard = NO;
     
-    if (self.isItFirstStart && self.originText && originText && ![originText isEqualToString:self.originText]) {
+   /* if (self.isItFirstStart && self.originText && originText && ![originText isEqualToString:self.originText]) {
         self.isItFirstStart = NO;
-        
         NSUserDefaults * defaults = [[NSUserDefaults alloc] initWithSuiteName:kUserDefaultsSuiteName];
         [defaults setBool:YES forKey:kGTUserDefaultsKeySecondStart];
         [defaults synchronize];
-    }
+    }*/
     
-    if (self.isItFirstStart) {
-        _originText = originText;
-        self.translatedText = nil;
-    } else {
+   // if (self.isItFirstStart) {
+       // _originText = originText;
+      //  self.translatedText = nil;
+  //  } else {
         if ([_originText isEqualToString:originText]) {
             return;
         }
-        
         _originText = originText;
         if (_originText) {
             [self translateOriginText];
         }
-    }
+   // }
 }
 
 - (void)updateAfterTranslation {

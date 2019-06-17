@@ -56,6 +56,7 @@ NSInteger const kGifVCScrollDeceleratingRate = 0.994;
 @property (strong, nonatomic) NSString *previousSearchString;
 @property (assign, nonatomic) CGSize cellSize;
 @property (assign, nonatomic) NSUInteger trimDataCount;
+@property (strong, nonatomic) NSString *searchString;
 
 @end
 
@@ -74,6 +75,8 @@ NSInteger const kGifVCScrollDeceleratingRate = 0.994;
     self.offset = nil;
     self.trimDataCount = 0;
     self.previousSearchString = nil;
+    
+    
     
     NSString *cellName = NSStringFromClass([GifCell class]);
     [self.itemsCollectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:GifCell.class]] forCellWithReuseIdentifier:cellName];
@@ -102,7 +105,8 @@ NSInteger const kGifVCScrollDeceleratingRate = 0.994;
     self.fileManager.serviceType = ServiceTypeGIFs;
     [self.fileManager cancelAllAsynchronicalWithProgressObservingDownloads];
     
-    [self loadItemsWithSearch:@""];
+    
+    [self loadItemsWithSearch:self.searchString];
     [self setSearchFieldHidden:YES];
 }
 
@@ -111,15 +115,19 @@ NSInteger const kGifVCScrollDeceleratingRate = 0.994;
     
     if (self.shouldReloadInfo) {
         self.shouldReloadInfo = NO;
-        [self loadItemsWithSearch:@""];
+        [self loadItemsWithSearch:self.searchString];
     }
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionSearch) name:kKeyboardNotificationActionSearchButton object:nil];
+   // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionSearch) name:kKeyboardNotificationActionSearchButton object:nil];
     
     // ALL should select by default
     [self.categoriesCollectionView selectItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] animated:NO scrollPosition:UICollectionViewScrollPositionCenteredHorizontally];
     
-    self.itemsCollectionView.backgroundColor = RGB(226, 229, 233);
+   // self.itemsCollectionView.backgroundColor = RGB(226, 229, 233);
+}
+
+- (void)setLastSearch:(NSString *)search {
+    self.searchString = search;
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -179,15 +187,17 @@ NSInteger const kGifVCScrollDeceleratingRate = 0.994;
     [self updateColumnCount];
     
     UICollectionViewFlowLayout *collectionViewLayout = (UICollectionViewFlowLayout *)self.itemsCollectionView.collectionViewLayout;
-    
+    collectionViewLayout.minimumInteritemSpacing = 8;
+    collectionViewLayout.minimumLineSpacing = 8;
+
     UIEdgeInsets sectionInset = collectionViewLayout.sectionInset;
     UIEdgeInsets contentInset = self.itemsCollectionView.contentInset;
     CGFloat cellSpacing = collectionViewLayout.minimumInteritemSpacing;
     CGFloat lineSpacing = collectionViewLayout.minimumLineSpacing;
     
     CGSize size = CGSizeZero;
-    size.width = ceilf((self.itemsCollectionView.bounds.size.width - sectionInset.left - sectionInset.right - cellSpacing * (self.columnsCount - 1)) / self.columnsCount);
-    size.height = floorf((self.itemsCollectionView.bounds.size.height - contentInset.top - contentInset.bottom - sectionInset.top - sectionInset.bottom - lineSpacing ) / self.rowsCount);
+    size.width = ceilf(((self.itemsCollectionView.bounds.size.height) - sectionInset.left - sectionInset.right - cellSpacing * (self.columnsCount - 1)) / self.columnsCount);
+    size.height = floorf(((self.itemsCollectionView.bounds.size.height) - contentInset.top - contentInset.bottom - sectionInset.top - sectionInset.bottom - lineSpacing ) / self.rowsCount);
     self.cellSize = size;
 }
 
@@ -208,7 +218,6 @@ NSInteger const kGifVCScrollDeceleratingRate = 0.994;
         self.shouldReloadInfo = YES;
         [self.currentLoadingImagesUrlsArray removeAllObjects];
         [self.imagesLoadingQueue cancelAllOperations];
-        
         self.existNextData = YES;
         self.isLoadingData = NO;
         self.offset = nil;
@@ -433,12 +442,8 @@ NSInteger const kGifVCScrollDeceleratingRate = 0.994;
         
         if (path.item < self.dataArray.count) {
             MGif *mGif = self.dataArray[path.item];
-            
             [PasteboardManager clearPasteboard];
             [PasteboardManager setGIF:data];
-            
-            NSData *previewData = [self.fileManager getDataByPath:mGif.previewURLString andServiceType:ServiceTypeGIFs];
-            
         }
     } else if (path) {
         BOOL isVisible = [self.itemsCollectionView.indexPathsForVisibleItems containsObject:path];

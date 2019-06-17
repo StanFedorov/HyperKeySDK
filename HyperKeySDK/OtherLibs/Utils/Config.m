@@ -23,6 +23,7 @@ NSString *const kUserDefaultsBundleID = @"net.hyperkey.keyboard";
 NSString *const kUserDefaultsContainerTutotialShowedBefore = @"isTutotialShowsBefore";
 NSString *const kUserDefaultsAppRunCount = @"UserDefaultsAppRunCount";
 NSString *const kUserDefaultsCamfindClose = @"UserDefaultsCamfindClose";
+NSString *const kUserDefaultsCamfindNewRecent = @"UserDefaultsCamfindNewRecent";
 NSString *const kUserDefaultsCamfindRefresh = @"UserDefaultsCamfindRefresh";
 NSString *const kUserDefaultsCamfindCompleted = @"UserDefaultsCamfindCompleted";
 NSString *const kUserDefaultsCheckEmptyFullNameRunCount = @"UserDefaultsCheckEmptyFullNameRunCount";

@@ -25,6 +25,7 @@ extern NSString *const kUserDefaultsContainerTutotialShowedBefore;
 extern NSString *const kUserDefaultsAppRunCount;
 extern NSString *const kUserDefaultsCamfindClose;
 extern NSString *const kUserDefaultsCamfindRefresh;
+extern NSString *const kUserDefaultsCamfindNewRecent;
 extern NSString *const kUserDefaultsCamfindCompleted;
 extern NSString *const kUserDefaultsCheckEmptyFullNameRunCount;
 extern NSString *const kUserDefaultsFacebookInviteReminder;

@@ -27,7 +27,7 @@ typedef struct {
 
 PhoneKeyboardMetrics getPhoneLinearKeyboardMetrics(CGFloat keyboardWidth, CGFloat keyboardHeight);
 PhoneKeyboardMetrics getPhoneLinearKeyboardMetricsiPhone5(CGFloat keyboardWidth, CGFloat keyboardHeight);
-
+PhoneKeyboardMetrics getPhoneXLinearKeyboardMetrics(CGFloat keyboardWidth, CGFloat keyboardHeight);
 PhoneKeyboardMetrics getPhoneLinearKeyboardMetricsiPhone5Transparent(CGFloat keyboardWidth, CGFloat keyboardHeight);
 PhoneKeyboardMetrics getPhoneLinearKeyboardMetricsiPhone6Transparent(CGFloat keyboardWidth, CGFloat keyboardHeight);
 PhoneKeyboardMetrics getPhoneLinearKeyboardMetricsiPhone6PlusTransparent(CGFloat keyboardWidth, CGFloat keyboardHeight);

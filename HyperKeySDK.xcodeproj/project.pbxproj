@@ -423,6 +423,18 @@
 		5D23C4E221E53DCC0057A146 /* global_portrait@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C4DE21E53DCC0057A146 /* global_portrait@2x.png */; };
 		5D23C4E821E54C9B0057A146 /* icon_progress_w@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C4E721E54C9B0057A146 /* icon_progress_w@2x.png */; };
 		5D23C4EA21E54CA00057A146 /* icon_progress@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 5D23C4E921E54CA00057A146 /* icon_progress@2x.png */; };
+		5D2922C722B7B843001B804A /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D2922C422B7B843001B804A /* SearchViewController.m */; };
+		5D2922C822B7B843001B804A /* SearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D2922C522B7B843001B804A /* SearchViewController.xib */; };
+		5D2922C922B7B843001B804A /* SearchViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2922C622B7B843001B804A /* SearchViewController.h */; };
+		5D2922CD22B7B8B3001B804A /* YelpCellSmall.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D2922CA22B7B8B2001B804A /* YelpCellSmall.xib */; };
+		5D2922CE22B7B8B3001B804A /* YelpCellSmall.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2922CB22B7B8B2001B804A /* YelpCellSmall.h */; };
+		5D2922CF22B7B8B3001B804A /* YelpCellSmall.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D2922CC22B7B8B3001B804A /* YelpCellSmall.m */; };
+		5D2922D222B7BDA6001B804A /* UITextField+PaddingText.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2922D022B7BDA6001B804A /* UITextField+PaddingText.h */; };
+		5D2922D322B7BDA6001B804A /* UITextField+PaddingText.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D2922D122B7BDA6001B804A /* UITextField+PaddingText.m */; };
+		5D2922D722B7BECE001B804A /* AuthView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5D2922D422B7BECE001B804A /* AuthView.xib */; };
+		5D2922D822B7BECE001B804A /* AuthView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5D2922D522B7BECE001B804A /* AuthView.m */; };
+		5D2922D922B7BECE001B804A /* AuthView.h in Headers */ = {isa = PBXBuildFile; fileRef = 5D2922D622B7BECE001B804A /* AuthView.h */; };
+		5D2922DD22B7C5EE001B804A /* SFCompactText-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5D2922DC22B7C5EE001B804A /* SFCompactText-Light.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -845,6 +857,18 @@
 		5D23C4DE21E53DCC0057A146 /* global_portrait@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "global_portrait@2x.png"; sourceTree = "<group>"; };
 		5D23C4E721E54C9B0057A146 /* icon_progress_w@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_progress_w@2x.png"; sourceTree = "<group>"; };
 		5D23C4E921E54CA00057A146 /* icon_progress@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "icon_progress@2x.png"; sourceTree = "<group>"; };
+		5D2922C422B7B843001B804A /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
+		5D2922C522B7B843001B804A /* SearchViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SearchViewController.xib; sourceTree = "<group>"; };
+		5D2922C622B7B843001B804A /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
+		5D2922CA22B7B8B2001B804A /* YelpCellSmall.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = YelpCellSmall.xib; sourceTree = "<group>"; };
+		5D2922CB22B7B8B2001B804A /* YelpCellSmall.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YelpCellSmall.h; sourceTree = "<group>"; };
+		5D2922CC22B7B8B3001B804A /* YelpCellSmall.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YelpCellSmall.m; sourceTree = "<group>"; };
+		5D2922D022B7BDA6001B804A /* UITextField+PaddingText.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITextField+PaddingText.h"; sourceTree = "<group>"; };
+		5D2922D122B7BDA6001B804A /* UITextField+PaddingText.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITextField+PaddingText.m"; sourceTree = "<group>"; };
+		5D2922D422B7BECE001B804A /* AuthView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AuthView.xib; sourceTree = "<group>"; };
+		5D2922D522B7BECE001B804A /* AuthView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AuthView.m; sourceTree = "<group>"; };
+		5D2922D622B7BECE001B804A /* AuthView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AuthView.h; sourceTree = "<group>"; };
+		5D2922DC22B7C5EE001B804A /* SFCompactText-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SFCompactText-Light.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -965,6 +989,9 @@
 		5D23C13521E4D4970057A146 /* HoverView */ = {
 			isa = PBXGroup;
 			children = (
+				5D2922D622B7BECE001B804A /* AuthView.h */,
+				5D2922D522B7BECE001B804A /* AuthView.m */,
+				5D2922D422B7BECE001B804A /* AuthView.xib */,
 				5D23C13721E4D4970057A146 /* HoverView.h */,
 				5D23C13921E4D4970057A146 /* HoverView.xib */,
 				5D23C13B21E4D4970057A146 /* HoverView.m */,
@@ -1144,14 +1171,16 @@
 				5D23C18B21E4D4970057A146 /* KeyboardView.m */,
 				5D23C18C21E4D4970057A146 /* AppsLineView.xib */,
 				5D23C18D21E4D4970057A146 /* AppsLineView.h */,
+				5D23C19F21E4D4970057A146 /* AppsLineView.m */,
 				5D23C18E21E4D4970057A146 /* KeyboardThemes */,
 				5D23C19221E4D4970057A146 /* KeyboardLayoutManager.h */,
 				5D23C19321E4D4970057A146 /* TopAppImage.h */,
 				5D23C19421E4D4970057A146 /* Keys */,
-				5D23C19F21E4D4970057A146 /* AppsLineView.m */,
 				5D23C1A021E4D4970057A146 /* KeyboardView.h */,
 				5D23C1A121E4D4970057A146 /* ScrollViewCentered.h */,
 				5D23C1A221E4D4970057A146 /* KeyboardLayoutManager.m */,
+				5D2922D022B7BDA6001B804A /* UITextField+PaddingText.h */,
+				5D2922D122B7BDA6001B804A /* UITextField+PaddingText.m */,
 			);
 			path = KeyboardView;
 			sourceTree = "<group>";
@@ -1533,6 +1562,7 @@
 				5D23C24221E4D4970057A146 /* Comic Sans MS Bold.ttf */,
 				5D23C24321E4D4970057A146 /* DSEraserCyr.ttf */,
 				5D23C24421E4D4970057A146 /* pfcosmonutpro_regular.ttf */,
+				5D2922DC22B7C5EE001B804A /* SFCompactText-Light.ttf */,
 			);
 			path = Fonts;
 			sourceTree = "<group>";
@@ -1540,6 +1570,7 @@
 		5D23C24521E4D4970057A146 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				5D2922C322B7B843001B804A /* Search */,
 				5D23C24621E4D4970057A146 /* Amazon */,
 				5D23C25721E4D4970057A146 /* Location */,
 				5D23C25B21E4D4970057A146 /* Yelp */,
@@ -1606,6 +1637,9 @@
 		5D23C27E21E4D4970057A146 /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				5D2922CB22B7B8B2001B804A /* YelpCellSmall.h */,
+				5D2922CC22B7B8B3001B804A /* YelpCellSmall.m */,
+				5D2922CA22B7B8B2001B804A /* YelpCellSmall.xib */,
 				5D23C27F21E4D4970057A146 /* YelpCell.m */,
 				5D23C28021E4D4970057A146 /* YelpCell.h */,
 				5D23C28121E4D4970057A146 /* YelpCell.xib */,
@@ -2051,6 +2085,16 @@
 			path = Categories;
 			sourceTree = "<group>";
 		};
+		5D2922C322B7B843001B804A /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				5D2922C422B7B843001B804A /* SearchViewController.m */,
+				5D2922C522B7B843001B804A /* SearchViewController.xib */,
+				5D2922C622B7B843001B804A /* SearchViewController.h */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
 		7154A06441342A98347B280A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -2120,6 +2164,7 @@
 				5D23C3B321E4D4980057A146 /* JSONSessionResult.h in Headers */,
 				5D23C46421E4D4980057A146 /* DropBoxViewController.h in Headers */,
 				5D23C3AB21E4D4980057A146 /* MInsertData.h in Headers */,
+				5D2922D922B7BECE001B804A /* AuthView.h in Headers */,
 				5D23C44D21E4D4980057A146 /* YPAPISample.h in Headers */,
 				5D23C3BC21E4D4980057A146 /* GifConverter.h in Headers */,
 				5D23C3B521E4D4980057A146 /* ImagesLoadingAndSavingManager.h in Headers */,
@@ -2168,6 +2213,8 @@
 				5D23C37D21E4D4980057A146 /* KeyboardThemesHelper.h in Headers */,
 				5D23C4B521E4D4980057A146 /* GifCell.h in Headers */,
 				5D23C47721E4D4980057A146 /* DrawImageMenuView.h in Headers */,
+				5D2922C922B7B843001B804A /* SearchViewController.h in Headers */,
+				5D2922CE22B7B8B3001B804A /* YelpCellSmall.h in Headers */,
 				5D23C45621E4D4980057A146 /* HKStreachableLabel.h in Headers */,
 				5D23C47121E4D4980057A146 /* DrawImageShareOverlayView.h in Headers */,
 				5D23C4BA21E4D4980057A146 /* GifCategoryCell.h in Headers */,
@@ -2198,6 +2245,7 @@
 				5D23C36521E4D4970057A146 /* MPTCDataCreator.h in Headers */,
 				5D23C3C721E4D4980057A146 /* UIColor+DrawImage.h in Headers */,
 				5D23C4AF21E4D4980057A146 /* GifRounLabel.h in Headers */,
+				5D2922D222B7BDA6001B804A /* UITextField+PaddingText.h in Headers */,
 				5D23C3AE21E4D4980057A146 /* KeyboardFeaturesManager.h in Headers */,
 				5D23C3D521E4D4980057A146 /* NSString+Additions.h in Headers */,
 				5D23C3C821E4D4980057A146 /* DrawImageColorBarView.h in Headers */,
@@ -2349,10 +2397,12 @@
 				5D23C36921E4D4970057A146 /* mptc_defaults_en_US.dat in Resources */,
 				5D23C3FC21E4D4980057A146 /* venmo_error@2x.png in Resources */,
 				5D23C3DD21E4D4980057A146 /* PoweredBy_HorizLogo@2x.png in Resources */,
+				5D2922D722B7BECE001B804A /* AuthView.xib in Resources */,
 				5D23C43321E4D4980057A146 /* large_3@2x.png in Resources */,
 				5D23C3F321E4D4980057A146 /* shift_portrait_skinny@2x.png in Resources */,
 				5D23C36A21E4D4970057A146 /* mptc_unigrams_en_US.dat in Resources */,
 				5D23C43B21E4D4980057A146 /* large_5.png in Resources */,
+				5D2922CD22B7B8B3001B804A /* YelpCellSmall.xib in Resources */,
 				5D23C40F21E4D4980057A146 /* paste@2x.png in Resources */,
 				5D23C3DA21E4D4980057A146 /* kb_dismiss_pad@2x.png in Resources */,
 				5D23C48621E4D4980057A146 /* EmojiKeypadViewController~ipad.xib in Resources */,
@@ -2392,6 +2442,7 @@
 				5D23C44321E4D4980057A146 /* large_3.png in Resources */,
 				5D23C43221E4D4980057A146 /* large_1_half@3x.png in Resources */,
 				5D23C4A921E4D4980057A146 /* PhotoAlbumsCell.xib in Resources */,
+				5D2922DD22B7C5EE001B804A /* SFCompactText-Light.ttf in Resources */,
 				5D23C42B21E4D4980057A146 /* large_4_half@3x.png in Resources */,
 				5D23C4E121E53DCC0057A146 /* bold_global_portrait@2x.png in Resources */,
 				5D23C3EC21E4D4980057A146 /* no_connection@2x.png in Resources */,
@@ -2427,6 +2478,7 @@
 				5D23C3A521E4D4980057A146 /* EmojiCollectionCell~ipad.xib in Resources */,
 				5D23C3FE21E4D4980057A146 /* trending_button.png in Resources */,
 				5D23C3E721E4D4980057A146 /* H_copied_icon@2x.png in Resources */,
+				5D2922C822B7B843001B804A /* SearchViewController.xib in Resources */,
 				5D23C40321E4D4980057A146 /* dropbox_file@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2540,6 +2592,7 @@
 				5D23C39021E4D4980057A146 /* LocationManager.m in Sources */,
 				5D23C44921E4D4980057A146 /* YelpCell.m in Sources */,
 				5D23C33A21E4D4970057A146 /* FourthTutorialView.m in Sources */,
+				5D2922D822B7BECE001B804A /* AuthView.m in Sources */,
 				5D23C36321E4D4970057A146 /* MPTCDataCreator.m in Sources */,
 				5D23C41A21E4D4980057A146 /* AmazonTableViewCell.m in Sources */,
 				5D23C3BB21E4D4980057A146 /* JSONSessionResult.m in Sources */,
@@ -2561,6 +2614,7 @@
 				5D23C3D421E4D4980057A146 /* NSUserDefaults+Hyperkey.m in Sources */,
 				5D23C34F21E4D4970057A146 /* ReachabilityManager.m in Sources */,
 				5D23C33921E4D4970057A146 /* HoverView.m in Sources */,
+				5D2922C722B7B843001B804A /* SearchViewController.m in Sources */,
 				5D23C4CC21E4D4980057A146 /* NSData+Additions.m in Sources */,
 				5D23C4BD21E4D4980057A146 /* CHTCollectionViewWaterfallLayout.m in Sources */,
 				5D23C3C521E4D4980057A146 /* UIColor+DrawImage.m in Sources */,
@@ -2582,6 +2636,7 @@
 				5D23C3A621E4D4980057A146 /* EmojiAPI.m in Sources */,
 				5D23C35621E4D4970057A146 /* AutoCorrectionView.m in Sources */,
 				5D23C34221E4D4970057A146 /* OverlayButtonTutorialView.m in Sources */,
+				5D2922D322B7BDA6001B804A /* UITextField+PaddingText.m in Sources */,
 				5D23C38421E4D4980057A146 /* ACKeyMat.m in Sources */,
 				5D23C4B121E4D4980057A146 /* MGif.m in Sources */,
 				5D23C48421E4D4980057A146 /* DrawImageConfig.m in Sources */,
@@ -2601,6 +2656,7 @@
 				5D23C44F21E4D4980057A146 /* YPAPISample.m in Sources */,
 				5D23C37521E4D4970057A146 /* ACLightAppearance.m in Sources */,
 				5D23C36021E4D4970057A146 /* MPTCConfig.m in Sources */,
+				5D2922CF22B7B8B3001B804A /* YelpCellSmall.m in Sources */,
 				5D23C41D21E4D4980057A146 /* AmazonViewController.m in Sources */,
 				5D23C35B21E4D4970057A146 /* MPTCTest.m in Sources */,
 				5D23C34D21E4D4970057A146 /* Reachability.m in Sources */,

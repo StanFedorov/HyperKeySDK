@@ -9,7 +9,8 @@
 #import "BaseDropAndDriveViewController.h"
 
 @interface DropBoxViewController : BaseDropAndDriveViewController
-
+- (void)performSearch:(NSString*)query;
+- (void)setLastSearch:(NSString *)search;
 @property (strong, nonatomic) NSString *filePath;
 
 @end

@@ -241,6 +241,231 @@ PhoneKeyboardMetrics getPhoneLinearKeyboardMetrics(CGFloat keyboardWidth, CGFloa
     return metrics;
 }
 
+PhoneKeyboardMetrics getPhoneXLinearKeyboardMetrics(CGFloat keyboardWidth, CGFloat keyboardHeight) {
+    CGFloat edgeMargin = 3.0;
+    CGFloat bottomMargin = kPhoneKeyboardLandscapeHeight == keyboardHeight ? 11 : 13; // Landscape/Portrait
+    CGFloat bottomMidleRowReduce = kPhoneKeyboardLandscapeHeight == keyboardHeight ? 0.0 : 3.0 - 0.5; // Landscape/portrait
+    
+    CGFloat rowMargin = LINEAR_EQ(keyboardHeight, kPhoneKeyboardPortraitHeight, 11.3 - 0.1, kPhoneKeyboardLandscapeHeight, 4.5);
+    CGFloat columnMargin = LINEAR_EQ(keyboardWidth, kPhoneKeyboardPortraitWidth, 6.0, kPhoneKeyboardLandscapeWidth, 7.0);
+    CGFloat keyHeight = LINEAR_EQ(keyboardHeight, kPhoneKeyboardPortraitHeight, 41.5 + 0.4, kPhoneKeyboardLandscapeHeight, 33.0);
+    CGFloat letterKeyWidth = LINEAR_EQ(keyboardWidth, kPhoneKeyboardPortraitWidth, 26.0, kPhoneKeyboardLandscapeWidth, 50.0);
+    
+    CGFloat nextKeyboardButtonWidth = LINEAR_EQ(keyboardWidth, kPhoneKeyboardPortraitWidth, 34.0, kPhoneKeyboardLandscapeWidth, 50.0);
+    CGFloat returnButtonWidth = LINEAR_EQ(keyboardWidth, kPhoneKeyboardPortraitWidth, 74.0, kPhoneKeyboardLandscapeWidth, 107.0);
+    CGFloat deleteButtonWidth = LINEAR_EQ(keyboardWidth, kPhoneKeyboardPortraitWidth, 36.0, kPhoneKeyboardLandscapeWidth, 69.0);
+    CGFloat leftShiftButtonWidth = LINEAR_EQ(keyboardWidth, kPhoneKeyboardPortraitWidth, 36.0, kPhoneKeyboardLandscapeWidth, 68.0);
+    
+    CGFloat lettersBottomRowMargin = (keyboardWidth - 7 * letterKeyWidth - 6 * columnMargin - edgeMargin * 2 - deleteButtonWidth - leftShiftButtonWidth) / 2;
+    CGFloat lettersMediumRowMargin = (keyboardWidth - 9 * letterKeyWidth - 8 * columnMargin - edgeMargin * 2) / 2;
+    CGFloat symbolBottomRowMargin = (keyboardWidth - 5 * leftShiftButtonWidth - 4 * columnMargin - edgeMargin * 2 - deleteButtonWidth - leftShiftButtonWidth) / 2;
+    
+    
+    PhoneKeyboardMetrics metrics = {
+        .numberPadButtonFrame = {
+            edgeMargin,
+            keyboardHeight - bottomMargin - keyHeight,
+            leftShiftButtonWidth+nextKeyboardButtonWidth+columnMargin,
+            keyHeight
+        },
+        .nextKeyboardButtonFrame = {
+            edgeMargin + leftShiftButtonWidth + columnMargin,
+            keyboardHeight - bottomMargin - keyHeight,
+            nextKeyboardButtonWidth,
+            keyHeight
+        },
+        .overlayButtonFrame = {
+            edgeMargin + leftShiftButtonWidth + columnMargin + nextKeyboardButtonWidth + columnMargin,
+            keyboardHeight - bottomMargin - keyHeight,
+            nextKeyboardButtonWidth,
+            keyHeight
+        },
+        .returnButtonFrame = {
+            keyboardWidth - edgeMargin - returnButtonWidth,
+            keyboardHeight - bottomMargin - keyHeight,
+            returnButtonWidth,
+            keyHeight
+        },
+        .spaceButtonFrame = {
+            edgeMargin + leftShiftButtonWidth + columnMargin + nextKeyboardButtonWidth + columnMargin + nextKeyboardButtonWidth + columnMargin,
+            keyboardHeight - bottomMargin - keyHeight,
+            keyboardWidth - (edgeMargin + leftShiftButtonWidth + columnMargin + nextKeyboardButtonWidth + columnMargin + nextKeyboardButtonWidth + columnMargin + columnMargin + returnButtonWidth + edgeMargin),
+            keyHeight
+        },
+        .deleteButtonFrame = {
+            keyboardWidth - edgeMargin - deleteButtonWidth,
+            keyboardHeight - (bottomMargin + keyHeight + rowMargin + keyHeight) + bottomMidleRowReduce,
+            deleteButtonWidth,
+            keyHeight
+        },
+        .leftShiftButtonFrame = {
+            edgeMargin,
+            keyboardHeight - (bottomMargin + keyHeight + rowMargin + keyHeight) + bottomMidleRowReduce,
+            leftShiftButtonWidth,
+            keyHeight
+        },
+        .yoButton = {
+            (keyboardWidth - letterKeyWidth) / 2,
+            keyboardHeight - (bottomMargin + keyHeight + rowMargin + keyHeight + rowMargin + keyHeight),
+            letterKeyWidth,
+            keyHeight
+        },
+    };
+    
+    
+    CGRect rect = CGRectZero;
+    
+    // Real letter keys :
+    // 1st row
+    for (int i = 0; i < 10; ++i) {
+        rect.origin.x = edgeMargin + i * (letterKeyWidth + columnMargin) - columnMargin / 2;
+        rect.origin.y = keyboardHeight - bottomMargin - 4 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+        rect.size.width = letterKeyWidth + columnMargin;
+        rect.size.height = keyHeight + rowMargin;
+        metrics.letterPadFramesReal[0][i] = rect;
+    }
+    
+    // 2d row
+    for (int i = 1; i < 8; ++i) {
+        rect.origin.x = edgeMargin + lettersMediumRowMargin + i * (letterKeyWidth + columnMargin) - columnMargin  /2;
+        rect.origin.y =  keyboardHeight - bottomMargin - 3 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+        rect.size.width = letterKeyWidth + columnMargin;
+        rect.size.height = keyHeight + rowMargin;
+        metrics.letterPadFramesReal[1][i] = rect;
+    }
+    
+    rect.origin.x = 0;
+    rect.origin.y = keyboardHeight - bottomMargin - 3 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+    rect.size.width = letterKeyWidth + columnMargin + edgeMargin + lettersMediumRowMargin;
+    rect.size.height = keyHeight + rowMargin;
+    metrics.letterPadFramesReal[1][0] = rect;
+    
+    rect.origin.x = keyboardWidth - (letterKeyWidth + columnMargin + edgeMargin + lettersMediumRowMargin);
+    rect.origin.y = keyboardHeight - bottomMargin - 3 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+    rect.size.width = letterKeyWidth + columnMargin + edgeMargin + lettersMediumRowMargin;
+    rect.size.height = keyHeight + rowMargin;
+    metrics.letterPadFramesReal[1][8] = rect;
+    
+    // 3d row
+    for (int i = 1; i < 6; ++i) {
+        rect.origin.x = edgeMargin + leftShiftButtonWidth + lettersBottomRowMargin + i * (letterKeyWidth + columnMargin) - columnMargin / 2;
+        rect.origin.y = keyboardHeight - bottomMargin - 2 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+        rect.size.width = letterKeyWidth + columnMargin;
+        rect.size.height = keyHeight + rowMargin;
+        metrics.letterPadFramesReal[2][i] = rect;
+    }
+    
+    rect.origin.x = edgeMargin + leftShiftButtonWidth + lettersBottomRowMargin / 2;
+    rect.origin.y = keyboardHeight - bottomMargin - 2 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+    rect.size.width = letterKeyWidth + columnMargin + lettersBottomRowMargin / 2;
+    rect.size.height = keyHeight + rowMargin;
+    metrics.letterPadFramesReal[2][0] = rect;
+    
+    rect.origin.x = edgeMargin + leftShiftButtonWidth + lettersBottomRowMargin + 6 * (letterKeyWidth + columnMargin) - columnMargin / 2;
+    rect.origin.y = keyboardHeight - bottomMargin - 2 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+    rect.size.width = letterKeyWidth + columnMargin + lettersBottomRowMargin / 2;
+    rect.size.height = keyHeight + rowMargin;
+    metrics.letterPadFramesReal[2][6] = rect;
+    
+    // Letter keys:
+    // 1st row
+    for (int i = 0; i < 10; ++i) {
+        rect.origin.x = edgeMargin + i * (letterKeyWidth + columnMargin);
+        rect.origin.y = keyboardHeight - bottomMargin - 4 * (keyHeight + rowMargin) + rowMargin + bottomMidleRowReduce;
+        rect.size.width = letterKeyWidth;
+        rect.size.height = keyHeight;
+        metrics.letterPadFrames[0][i] = rect;
+    }
+    
+    // 2d row
+    for (int i = 0; i < 9; ++i) {
+        rect.origin.x = edgeMargin + lettersMediumRowMargin + i * (letterKeyWidth + columnMargin);
+        rect.origin.y = keyboardHeight - bottomMargin - 3 * (keyHeight + rowMargin) + rowMargin + bottomMidleRowReduce;
+        rect.size.width = letterKeyWidth;
+        rect.size.height = keyHeight;
+        metrics.letterPadFrames[1][i] = rect;
+    }
+    
+    // 3d row
+    for (int i = 0; i < 7; ++i) {
+        rect.origin.x = edgeMargin + leftShiftButtonWidth + lettersBottomRowMargin + i * (letterKeyWidth + columnMargin);
+        rect.origin.y = keyboardHeight - bottomMargin - 2 * (keyHeight + rowMargin) + rowMargin + bottomMidleRowReduce;
+        rect.size.width = letterKeyWidth;
+        rect.size.height = keyHeight;
+        metrics.letterPadFrames[2][i] = rect;
+    }
+    
+    // Real symbol keys :
+    // 1st row
+    for (int i = 0; i < 10; ++i) {
+        rect.origin.x = edgeMargin + i * (letterKeyWidth + columnMargin) - columnMargin / 2;
+        rect.origin.y = keyboardHeight - bottomMargin - 4 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+        rect.size.width = letterKeyWidth + columnMargin;
+        rect.size.height = keyHeight + rowMargin;
+        metrics.symbolPadFramesReal[0][i] = rect;
+    }
+    
+    // 2d row
+    for (int i = 0; i < 10; ++i) {
+        rect.origin.x = edgeMargin + i * (letterKeyWidth + columnMargin) - columnMargin / 2;
+        rect.origin.y = keyboardHeight - bottomMargin - 3 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+        rect.size.width = letterKeyWidth + columnMargin;
+        rect.size.height = keyHeight + rowMargin;
+        metrics.symbolPadFramesReal[1][i] = rect;
+    }
+    
+    
+    // 3d row
+    for (int i = 1; i < 4; ++i) {
+        rect.origin.x = edgeMargin + leftShiftButtonWidth + symbolBottomRowMargin + i * (leftShiftButtonWidth + columnMargin) - columnMargin / 2;
+        rect.origin.y = keyboardHeight - bottomMargin - 2 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+        rect.size.width = leftShiftButtonWidth + columnMargin;
+        rect.size.height = keyHeight + rowMargin;
+        metrics.symbolPadFramesReal[2][i] = rect;
+    }
+    
+    rect.origin.x = edgeMargin + leftShiftButtonWidth + columnMargin / 2;
+    rect.origin.y = keyboardHeight - bottomMargin - 2 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+    rect.size.width = leftShiftButtonWidth + symbolBottomRowMargin + bottomMidleRowReduce;
+    rect.size.height = keyHeight + rowMargin;
+    metrics.symbolPadFramesReal[2][0] = rect;
+    
+    rect.origin.x = edgeMargin + 2 * leftShiftButtonWidth + columnMargin / 2 + symbolBottomRowMargin + 4 * (letterKeyWidth + columnMargin) - columnMargin / 2;
+    rect.origin.y = keyboardHeight - bottomMargin - 2 * (keyHeight + rowMargin) + rowMargin - rowMargin / 2 + bottomMidleRowReduce;
+    rect.size.width = leftShiftButtonWidth + symbolBottomRowMargin;
+    rect.size.height = keyHeight + rowMargin;
+    metrics.symbolPadFramesReal[2][4] = rect;
+    
+    // Symbol keys:
+    // 1st row
+    for (int i = 0; i < 10; ++i) {
+        rect.origin.x = edgeMargin + i * (letterKeyWidth + columnMargin);
+        rect.origin.y = keyboardHeight - bottomMargin - 4 * (keyHeight + rowMargin) + rowMargin + bottomMidleRowReduce;
+        rect.size.width = letterKeyWidth;
+        rect.size.height = keyHeight;
+        metrics.symbolPadFrames[0][i] = rect;
+    }
+    
+    // 2d row
+    for (int i = 0; i < 10; ++i) {
+        rect.origin.x = edgeMargin + i * (letterKeyWidth + columnMargin);
+        rect.origin.y = keyboardHeight - bottomMargin - 3 * (keyHeight + rowMargin) + rowMargin + bottomMidleRowReduce;
+        rect.size.width = letterKeyWidth;
+        rect.size.height = keyHeight;
+        metrics.symbolPadFrames[1][i] = rect;
+    }
+    
+    // 3d row
+    for (int i = 0; i < 5; ++i) {
+        rect.origin.x = edgeMargin + leftShiftButtonWidth + symbolBottomRowMargin + i * (leftShiftButtonWidth + columnMargin);
+        rect.origin.y = keyboardHeight - bottomMargin - 2 * (keyHeight + rowMargin) + rowMargin + bottomMidleRowReduce;
+        rect.size.width = leftShiftButtonWidth;
+        rect.size.height = keyHeight;
+        metrics.symbolPadFrames[2][i] = rect;
+    }
+    return metrics;
+}
+
 PhoneKeyboardMetrics getPhoneLinearKeyboardMetricsiPhone5(CGFloat keyboardWidth, CGFloat keyboardHeight) {
     BOOL isPortrait = (keyboardHeight == 225);
     CGFloat edgeMargin = isPortrait ? 3 : 2;

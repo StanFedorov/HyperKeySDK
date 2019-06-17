@@ -13,4 +13,5 @@
 @interface AppsLineView : UIView <ThemeChangesResponderProtocol>
 - (void) initApps;
 @property (strong,nonatomic) HKKeyboardViewController *keyboardViewController;
+@property (weak, nonatomic) IBOutlet UITextField *search;
 @end

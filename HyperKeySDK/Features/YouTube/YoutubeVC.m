@@ -23,6 +23,7 @@
 @property (strong, nonatomic) ImagesLoadingAndSavingManager *fileManager;
 @property (strong, nonatomic) NSMutableArray *videos;
 @property (strong, nonatomic) NSString *lastSearchString;
+@property (strong, nonatomic) NSString *searchString;
 
 @property (assign, nonatomic) BOOL isSearching;
 @property (assign, nonatomic) BOOL cleanBeforeReload;
@@ -38,7 +39,7 @@
     
     NSString *cellName = NSStringFromClass([YoutubeCell class]);
     [self.collectionView registerNib:[UINib nibWithNibName:cellName bundle:[NSBundle bundleForClass:NSClassFromString(@"YoutubeCell")]] forCellWithReuseIdentifier:cellName];
-    
+
     UICollectionViewFlowLayout *layout = (UICollectionViewFlowLayout *)self.collectionView.collectionViewLayout;
     layout.itemSize = [YoutubeCell cellSizeWithSectionInsets:layout.sectionInset andCellSpacing:layout.minimumInteritemSpacing];
     [self.collectionView.collectionViewLayout invalidateLayout];
@@ -86,7 +87,7 @@
 
 - (IBAction)actionSearch {
     [self.delegate hideKeyboard];
-        
+    
     [self search];
 }
 
@@ -102,15 +103,15 @@
     }
 }
 
-- (NSString *)searchString {
-    return [self.searchField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-}
-
 - (void)search {
-    NSString *searchString = [self searchString];
+    NSString *searchString = self.searchString;
     if (![self.lastSearchString isEqualToString:searchString] && !self.isSearching) {
         [self loadDataFromSearch:searchString];
     }
+}
+
+- (void)setLastSearch:(NSString *)search {
+    self.searchString = search;
 }
 
 - (void)loadDataFromSearch:(NSString *)search {
@@ -236,6 +237,9 @@
             });
         }];
     }
+
+    cell.layer.cornerRadius = 5;
+    cell.layer.masksToBounds = YES;
     
     return cell;
 }

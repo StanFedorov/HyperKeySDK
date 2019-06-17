@@ -19,8 +19,10 @@
 #import "UIImage+Additions.h"
 #import "UIFont+Hyperkey.h"
 #import "UIImage+Pod.h"
-#import <mach/mach.h>
 #import <CoreText/CTFontManager.h>
+
+#import <mach/mach.h>
+
 NSString *const kKeyboardViewRowComponentSeparator = @" ";
 
 NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
@@ -89,7 +91,10 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
         self.numberPadCreated = NO;
         self.symbolPadCreated = NO;
         self.currentPad = KeyboardViewPadTypeLetter;
-        [self registerFont:@"SFUIDisplay-Light"];
+        
+        [self registerFont:@"SFUIDisplay-Light" withFormat:@"ttf"];
+        [self registerFont:@"SFCompactText-Light" withFormat:@"ttf"];
+
         self.isPortraitOrientation = YES;
         self.cellImage = [[UIImageView alloc] init];
         [self addSubview:self.cellImage];
@@ -98,6 +103,27 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     return self;
 }
 
+- (void)registerFont:(NSString*)fontName withFormat:(NSString*)format{
+    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+    NSURL *fontURL = [bundle URLForResource:fontName withExtension:format];
+    NSData *inData = [NSData dataWithContentsOfURL:fontURL];
+    CFErrorRef error;
+    CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)inData);
+    CGFontRef fontRef = CGFontCreateWithDataProvider(provider);
+    if (!CTFontManagerRegisterGraphicsFont(fontRef, &error)) {
+        CFStringRef errorDescription = CFErrorCopyDescription(error);
+        NSLog(@"Failed to load font: %@", errorDescription);
+        CFRelease(errorDescription);
+    }
+    CFSafeRelease(fontRef);
+    CFSafeRelease(provider);
+}
+
+void CFSafeRelease(CFTypeRef cf) {
+    if (cf != NULL) {
+        CFRelease(cf);
+    }
+}
 
 #pragma mark - Property
 
@@ -141,7 +167,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
             }
         }
     }
-
+    
     self.cellImage.image = [[UIImage imageNamedPod:imageName] tranlucentWithAlpha:0.1];
 }
 
@@ -179,7 +205,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
             }
             [(ACKey *)self.letterPadMiddleRow[i] setCornerRadius:self.cornerRadius];
         }
-
+        
         for (int i = 0; i < [self.letterPadMiddleRowPad count]; i ++) {
             [self.letterPadMiddleRowPad[i] setFrame:self.padKeyboardMetrics.letterPadFrames[1][i]];
             [(ACKey *)self.letterPadMiddleRowPad[i] setCornerRadius:self.cornerRadius];
@@ -221,8 +247,10 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
         self.rightShiftButton.frame = self.padKeyboardMetrics.rightShiftButtonFrame;
         self.rightShiftButton.cornerRadius = self.cornerRadius;
         
-        self.nextKeyboardButton.frame = self.padKeyboardMetrics.nextKeyboardButtonFrame;
-        self.nextKeyboardButton.cornerRadius = self.cornerRadius;
+        if([self showNextKeyboard]){
+            self.nextKeyboardButton.frame = self.padKeyboardMetrics.nextKeyboardButtonFrame;
+            self.nextKeyboardButton.cornerRadius = self.cornerRadius;
+        }
         self.spaceButton.frame = self.padKeyboardMetrics.spaceButtonFrame;
         self.spaceButton.cornerRadius = self.cornerRadius;
     } else {
@@ -238,9 +266,10 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
         self.deleteButton.frame = self.phoneKeyboardMetrics.deleteButtonFrame;
         self.deleteButton.cornerRadius = self.cornerRadius;
         
-        self.nextKeyboardButton.frame = self.phoneKeyboardMetrics.nextKeyboardButtonFrame;
-        self.nextKeyboardButton.cornerRadius = self.cornerRadius;
-        
+        if([self showNextKeyboard]){
+            self.nextKeyboardButton.frame = self.phoneKeyboardMetrics.nextKeyboardButtonFrame;
+            self.nextKeyboardButton.cornerRadius = self.cornerRadius;
+        }
         self.spaceButton.frame = self.phoneKeyboardMetrics.spaceButtonFrame;
         self.spaceButton.cornerRadius = self.cornerRadius;
         
@@ -248,6 +277,14 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
         self.returnButton.cornerRadius = self.cornerRadius;
         
         self.letterPadButton.cornerRadius = self.cornerRadius;
+    }
+}
+
+- (BOOL)showNextKeyboard {
+    if(IS_IPHONE_X || IS_IPHONE_X_MAX) {
+        return NO;
+    }else {
+        return YES;
     }
 }
 
@@ -440,7 +477,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     [self.numberPadButtonOnSymbolPad removeFromSuperview];
     self.symbolPadButton.frame = self.phoneKeyboardMetrics.leftShiftButtonFrame;
     [self addSubview:self.symbolPadButton];
-
+    
     NSString *row = @"1 2 3 4 5 6 7 8 9 0";
     NSArray *characters1 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
@@ -464,7 +501,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     
     row = @"_ \\ | ~ < > $ € £ ・";
     NSArray *characters2 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
-
+    
     for (int i = 0; i < [self.symbolPadTopRow count]; ++i) {
         [self.symbolPadTopRow[i] setTitle:characters1[i]];
     }
@@ -479,11 +516,12 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
 
 - (ACKey *)nextKeyboardButton {
     if (!_nextKeyboardButton) {
-        _nextKeyboardButton = [ACKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance image:[UIImage imageNamedPod:@"global_portrait"]];
-        [self.delegate setupNewNextKeyboardButton:_nextKeyboardButton];
-        [self addSubview:_nextKeyboardButton];
-        
-        _nextKeyboardButton.needHighlighting = YES;
+        if([self showNextKeyboard]){
+            _nextKeyboardButton = [ACKey keyWithStyle:ACKeyStyleDark appearance:self.keyAppearance image:[UIImage imageNamedPod:@"global_portrait"]];
+            [self.delegate setupNewNextKeyboardButton:_nextKeyboardButton];
+            [self addSubview:_nextKeyboardButton];
+            _nextKeyboardButton.needHighlighting = YES;
+        }
     }
     return _nextKeyboardButton;
 }
@@ -707,7 +745,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     if (!_letterPadBottomRow) {
         NSString *row = @"Z X C V B N M";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
-
+        
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
         NSMutableArray *mats = [[NSMutableArray alloc] init];
         
@@ -750,6 +788,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
             [key addTarget:self action:@selector(letterButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
             [key setTitleFont:[self currentFontRegular]];
             [buttons addObject:key];
+            [key shiftToTop:NO];
             
             mat = [ACKeyMat matForKey:key];
             [mats addObject:mat];
@@ -782,6 +821,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
             [key addTarget:self action:@selector(letterButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
             [key setTitleFont:[self currentFontRegular]];
             [buttons addObject:key];
+            [key shiftToTop:NO];
             
             mat = [ACKeyMat matForKey:key];
             [mats addObject:mat];
@@ -814,6 +854,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
             [key addTarget:self action:@selector(letterButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
             [key setTitleFont:[self currentFontRegular]];
             [buttons addObject:key];
+            [key shiftToTop:NO];
             
             mat = [ACKeyMat matForKey:key];
             [mats addObject:mat];
@@ -908,7 +949,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     if (!_letterPadBottomRowPad) {
         NSString *row = @"Z X C V B N M , .";
         NSArray *letters = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
-
+        
         NSMutableArray *buttons = [[NSMutableArray alloc] init];
         NSMutableArray *mats = [[NSMutableArray alloc] init];
         
@@ -1154,16 +1195,29 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
                        self.letterPadBottomRowPad];
         
     } else {
-        arrSpec = @[self.nextKeyboardButton,
-                    self.spaceButton,
-                    self.returnButton,
-                    self.deleteButton,
-                    self.overlayButton,
-                    self.numberPadButton,
-                    self.symbolPadButton,
-                    self.letterPadButton,
-                    self.numberPadButtonOnSymbolPad,
-                    self.leftShiftButton];
+        
+        if([self showNextKeyboard]) {
+            arrSpec = @[self.nextKeyboardButton,
+                        self.spaceButton,
+                        self.returnButton,
+                        self.deleteButton,
+                        self.overlayButton,
+                        self.numberPadButton,
+                        self.symbolPadButton,
+                        self.letterPadButton,
+                        self.numberPadButtonOnSymbolPad,
+                        self.leftShiftButton];
+        }else {
+            arrSpec = @[self.spaceButton,
+                        self.returnButton,
+                        self.deleteButton,
+                        self.overlayButton,
+                        self.numberPadButton,
+                        self.symbolPadButton,
+                        self.letterPadButton,
+                        self.numberPadButtonOnSymbolPad,
+                        self.leftShiftButton];
+        }
         
         allButtons = @[arrSpec,
                        self.letterPadTopRow,
@@ -1198,12 +1252,14 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
                 self.phoneKeyboardMetrics = getPhoneLinearKeyboardMetricsiPhone5Transparent(self.currentSize.width, self.currentSize.height);
             } else if (IS_IPHONE_6) {
                 self.phoneKeyboardMetrics = getPhoneLinearKeyboardMetricsiPhone6Transparent(self.currentSize.width, self.currentSize.height);
-            } else if (IS_IPHONE_6_PLUS || IS_IPHONE_X) {
+            } else if (IS_IPHONE_6_PLUS || IS_IPHONE_X || IS_IPHONE_X_MAX) {
                 self.phoneKeyboardMetrics = getPhoneLinearKeyboardMetricsiPhone6PlusTransparent(self.currentSize.width, self.currentSize.height);
             }
         } else {
-            if (IS_IPHONE_6 || IS_IPHONE_6_PLUS || IS_IPHONE_X) {
+            if (IS_IPHONE_6 || IS_IPHONE_6_PLUS) {
                 self.phoneKeyboardMetrics = getPhoneLinearKeyboardMetrics(self.currentSize.width, self.currentSize.height);
+            }else if(IS_IPHONE_X || IS_IPHONE_X_MAX) {
+                self.phoneKeyboardMetrics = getPhoneXLinearKeyboardMetrics(self.currentSize.width, self.currentSize.height);
             } else {
                 self.phoneKeyboardMetrics = getPhoneLinearKeyboardMetricsiPhone5(self.currentSize.width, self.currentSize.height);
             }
@@ -1429,7 +1485,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
     
     NSString *row = @"Q W E R T Y U I O P";
     NSArray *numbers1 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
-
+    
     row = @"A S D F G H J K L";
     NSArray *numbers2 = [row componentsSeparatedByString:kKeyboardViewRowComponentSeparator];
     
@@ -1478,7 +1534,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
             if (IS_IPAD) {
                 font = [UIFont systemFontOfSize:(self.frame.size.width >= 1024) ? 22.0 : 14.0  weight:UIFontWeightLight];
             } else {
-                font = [UIFont fontWithName:@"SFUIDisplay-Light" size:16.0];
+                font = [UIFont systemFontOfSize:16];
             }
             break;
     }
@@ -1496,7 +1552,7 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
                 font = [UIFont systemFontOfSize:23];
 #else
                 font = [UIFont helveticaFontOfSize:17];
-#endif            
+#endif
             }
             break;
             
@@ -1506,35 +1562,13 @@ NSUInteger const kKeyboardViewACKeyOvelayTag = -12;
             if (IS_IPAD) {
                 font = [UIFont systemFontOfSize:(self.frame.size.width >= 1024) ? 26.5 : 22.0 weight:UIFontWeightLight];
             } else {
-               
-                font = [UIFont fontWithName:@"SFUIDisplay-Light" size:24.0];
+                font = [UIFont fontWithName:@"SFCompactText-Light" size:25];
             }
             break;
     }
     return font;
 }
 
-- (void)registerFont:(NSString*)fontName {
-    NSBundle *bundle = [NSBundle bundleForClass:[self class]];
-    NSURL *fontURL = [bundle URLForResource:fontName withExtension:@"ttf"];
-    NSData *inData = [NSData dataWithContentsOfURL:fontURL];
-    CFErrorRef error;
-    CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)inData);
-    CGFontRef fontRef = CGFontCreateWithDataProvider(provider);
-    if (!CTFontManagerRegisterGraphicsFont(fontRef, &error)) {
-        CFStringRef errorDescription = CFErrorCopyDescription(error);
-        NSLog(@"Failed to load font: %@", errorDescription);
-        CFRelease(errorDescription);
-    }
-    CFSafeRelease(fontRef);
-    CFSafeRelease(provider);
-}
-
-void CFSafeRelease(CFTypeRef cf) {
-    if (cf != NULL) {
-        CFRelease(cf);
-    }
-}
 
 #pragma mark - Keys State
 
@@ -1562,7 +1596,7 @@ void CFSafeRelease(CFTypeRef cf) {
     
     self.cellImage.alpha = (_currentKBTheme == KBThemeTransparent)? 1.0 : 0.0;
     self.backgroundColor = colorBackgroundForTheme(_currentKBTheme);
-
+    
     [self updateFont];
     [self updateLinearKeyboardMetrics];
     [self arrangeKeys];
@@ -1615,7 +1649,7 @@ void CFSafeRelease(CFTypeRef cf) {
                 _leftShiftButton = [ACLockActivatedKey keyWithStyle:ACKeyStyleLight appearance:self.keyAppearance image:nil];
                 _leftShiftButton.lockImage = [[UIImage imageNamedPod:@"shift_transparent_lock"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate];
                 [((ACLockActivatedKey *)_leftShiftButton) setActiveImage:activeImage andInactiveImage:nonActiveImage];
-
+                
             }   break;
                 
             case KBThemeClassic: {
@@ -1662,7 +1696,7 @@ void CFSafeRelease(CFTypeRef cf) {
                 }   break;
                     
                 default:
-                break;
+                    break;
             }
             
             [_rightShiftButton addTarget:self action:@selector(shiftButtonTapped:) forControlEvents:UIControlEventTouchDown];

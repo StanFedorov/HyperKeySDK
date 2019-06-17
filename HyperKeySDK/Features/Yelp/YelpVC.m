@@ -17,7 +17,6 @@
 #import "JSONSessionManager.h"
 #import "LocationManager.h"
 #import "UIImage+Pod.h"
-
 #import <Masonry/Masonry.h>
 #import <YelpAPI/YelpAPI.h>
 
@@ -33,6 +32,7 @@
 @property (strong, nonatomic) NSMutableArray *placesArray;
 @property (strong, nonatomic) JSONSessionManager *sessionManager;
 @property (strong, nonatomic) ImagesLoadingAndSavingManager *fileManager;
+@property (strong, nonatomic) NSString *searchString;
 
 @property (assign, nonatomic) BOOL isFromDetails;
 @property (assign, nonatomic) BOOL shouldLoadImages;
@@ -79,7 +79,7 @@
     [self.tableView reloadData];
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self selector:@selector(performSearch) name:kKeyboardNotificationActionSearchButton object:nil];
+   // [nc addObserver:self selector:@selector(performSearch) name:kKeyboardNotificationActionSearchButton object:nil];
     [nc addObserver:self selector:@selector(performPlacesRequest) name:kLocationManagerDidGetFirstLocation object:nil];
     [nc addObserver:self selector:@selector(showLocationDenied:) name:kLocationManagerChangeStatusToDenied object:nil];
     
@@ -161,8 +161,9 @@
     }
 }
 
-- (void)performSearch {
-    [self loadPlacesBySearchText:self.searchField.text];
+- (void)performSearch:(NSString*)searchText {
+    self.offset = 0;
+    [self loadPlacesBySearchText:searchText];
 }
 
 - (void)performPlacesRequest {
@@ -171,16 +172,19 @@
     if ([REA_MANAGER reachabilityStatus] == 0) {
         [self setupHoverViewByType:HoverViewTypeNoInternet];
     } else {
-        [self loadPlacesBySearchText:nil];
+        [self loadPlacesBySearchText:self.searchString];
     }
 }
 
 - (IBAction)actionSearch {
     [self.delegate hideKeyboard];
     
-    [self performSearch];
+    //[self performSearch];
 }
 
+- (void)setLastSearch:(NSString *)search {
+    self.searchString = search;
+}
 
 #pragma mark - API
 
@@ -328,34 +332,39 @@
             cell.avatarImage.layer.masksToBounds = YES;
         }
         
+        //   UIImage *rateImage = [self.fileManager loadImageIfItNotExistsByPath:yelpInfo[@"rating_img_url_large"] byServiceType:ServiceTypeYelp andSelectedIndex:indexPath];
+        //   if (rateImage) {
+        //     cell.rateImageView.image = rateImage;
+        //}
+        
         if([yelpInfo[@"rating"] doubleValue] < 1) {
-            cell.rateImageView.image = [UIImage imageNamedPod:@"large_0.png"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_0"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 1.5) {
-            cell.rateImageView.image = [UIImage imageNamedPod:@"large_1.png"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_1"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 2) {
-            cell.rateImageView.image = [UIImage imageNamedPod:@"large_1_half.png"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_1_half"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 2.5) {
-            cell.rateImageView.image = [UIImage imageNamedPod:@"large_2.png"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_2"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 3) {
-            cell.rateImageView.image = [UIImage imageNamedPod:@"large_2_half.png"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_2_half"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 3.5) {
-            cell.rateImageView.image = [UIImage imageNamedPod:@"large_3.png"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_3"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 4) {
-            cell.rateImageView.image = [UIImage imageNamedPod:@"large_3_half.png"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_3_half"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 4.5) {
-            cell.rateImageView.image = [UIImage imageNamedPod:@"large_4.png"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_4"];
         }
         else if([yelpInfo[@"rating"] doubleValue] < 5) {
-            cell.rateImageView.image = [UIImage imageNamedPod:@"large_4_half.png"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_4_half"];
         }else {
-            cell.rateImageView.image = [UIImage imageNamedPod:@"large_5.png"];
+            cell.rateImageView.image = [UIImage imageNamedPod:@"large_5"];
         }
     }
     
@@ -406,12 +415,10 @@
 - (void)googleGeocodeRequestByCoord:(CLLocationCoordinate2D)coordinate withResponceBlock:(void (^)(NSArray * resultInfo))completion {
     NSString *geocodingBaseUrl = @"https://maps.googleapis.com/maps/api/geocode/json?";
     NSString *urlString = [NSString stringWithFormat:@"%@latlng=%f,%f&sensor=false&language=en&key=AIzaSyCA1X4K_WwGfMLc1z8Z6mf5EyWgn26zQWI", geocodingBaseUrl, coordinate.latitude, coordinate.longitude];
-    
 #ifdef DEBUG
     // San Francisco Coordinate
     urlString = [NSString stringWithFormat:@"%@latlng=%f,%f&sensor=false&language=en&key=AIzaSyCA1X4K_WwGfMLc1z8Z6mf5EyWgn26zQWI", geocodingBaseUrl, 37.773972, -122.431297];
 #endif
-    
     [self.sessionManager sendDataTaskWithHTTPMethod:@"GET" URLString:urlString parameters:nil headers:nil success:^(NSURLSessionDataTask *task, id responseObject) {
         completion([self getInfoFromGoogleGeoResponce:responseObject]);
     } failure:^(NSURLSessionDataTask * task, NSError * error) {
@@ -432,7 +439,7 @@
             NSDictionary *location = [geometry objectForKey:@"location"];
             NSString *lat = [location objectForKey:@"lat"];
             NSString *lng = [location objectForKey:@"lng"];
-            
+    
             NSString *city = @"";
             NSString *country = @"";
             for (NSDictionary *componentInfo in result[@"address_components"]) {
@@ -445,7 +452,6 @@
                     }
                 }
             }
-            
             NSDictionary *gc = @{@"lat": lat,@"lng" : lng, @"address" : address, @"city" : city, @"country" : country};
             [filteredResults addObject:gc];
         }

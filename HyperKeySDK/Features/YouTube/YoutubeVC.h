@@ -11,5 +11,6 @@
 @interface YoutubeVC : BaseVC
 
 @property (weak, nonatomic) id<KeyboardContainerDelegate, UITextFieldIndirectDelegate> delegate;
-
+- (void)loadDataFromSearch:(NSString *)search;
+- (void)setLastSearch:(NSString *)search;
 @end

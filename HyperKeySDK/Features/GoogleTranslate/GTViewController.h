@@ -24,5 +24,7 @@
 - (void)stopCheckingPasteboard;
 - (void)checkLanguageSelector;
 - (void)textInInputDidEnd;
+- (void)performSearch:(NSString*)query;
+- (void)setLastSearch:(NSString *)search;
 
 @end

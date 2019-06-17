@@ -39,9 +39,10 @@
 #import "EmojiPanel.h"
 #import <Masonry/Masonry.h>
 #import <ObjectiveDropboxOfficial/ObjectiveDropboxOfficial.h>
-#import "UIImage+Pod.h"
-
+#import "AuthView.h"
+#import "SearchViewController.h"
 #import <mach/mach.h>
+#import "UIImage+Pod.h"
 
 #import "ThemeChangesResponderProtocol.h"
 #import "KeyboardThemesHelper.h"
@@ -121,6 +122,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 - (id)initWithNibName:(NSString *)nibName bundle:(NSBundle *)nibBundle {
     self = [super initWithNibName:nibName bundle:nibBundle];
     if (self) {
+        // Execute self.view.bounds.size here is failure for keyboard custom height
         [LayoutManager resetFrameWithSize:UIScreen.mainScreen.bounds.size];
     }
     return self;
@@ -197,16 +199,16 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     
     self.requireMainKeyboard = YES;
     
-    NSString *nibName = [NSString stringWithFormat:(self.requireMainKeyboard) ? @"bottomWide_%@" : @"bottom_%@", NSStringFromClass([MenuVC class])];
+    //NSString *nibName = [NSString stringWithFormat:(self.requireMainKeyboard) ? @"bottomWide_%@" : @"bottom_%@", NSStringFromClass([MenuVC class])];
     
-    self.menu = [[MenuVC alloc] initWithNibName:nibName bundle:[NSBundle bundleForClass:MenuVC.class]];
-    self.menu.delegate = self;
-    [self.view addSubview:self.menu.view];
+    //self.menu = [[MenuVC alloc] initWithNibName:nibName bundle:nil];
+    //self.menu.delegate = self;
+    //[self.view addSubview:self.menu.view];
     
-    [self.menu.view mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.bottom.mas_equalTo(0);
-        make.height.mas_equalTo([LayoutManager menuHeight]);
-    }];
+    //  [self.menu.view mas_makeConstraints:^(MASConstraintMaker *make) {
+    //  make.left.right.bottom.mas_equalTo(0);
+    // make.height.mas_equalTo([LayoutManager menuHeight]);
+    //}];
     
     if (self.requireWordSuggestions) {
         self.autoCorrectionView = [[[NSBundle bundleForClass:AutoCorrectionView.class] loadNibNamed:NSStringFromClass([AutoCorrectionView class]) owner:self options:nil] firstObject];
@@ -233,6 +235,9 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         }
     }
     
+    
+    [self.view bringSubviewToFront:self.autoCorrectionView];
+    
     self.appsLineView = [[[NSBundle bundleForClass:AppsLineView.class] loadNibNamed:NSStringFromClass([AppsLineView class]) owner:self options:nil] firstObject];
     [self.view addSubview:self.appsLineView];
     [self.appsLineView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -240,7 +245,20 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         make.height.mas_equalTo([LayoutManager menuHeight]);
     }];
     self.appsLineView.keyboardViewController = self;
-    [self.view bringSubviewToFront:self.appsLineView];
+    
+    
+    
+    /*   if(![userDefaults objectForKey:@"firstLaunchCompleted"]) {
+     self.introView = [[[NSBundle mainBundle] loadNibNamed:NSStringFromClass([IntroView class]) owner:self options:nil] objectAtIndex:0];
+     self.introView.tag = 5544;
+     self.introView.frame = self.view.bounds;
+     [self.view addSubview:self.introView];
+     [self.introView mas_makeConstraints:^(MASConstraintMaker *make) {
+     make.edges.mas_equalTo(0);
+     }];
+     [userDefaults setBool:YES forKey:@"firstLaunchCompleted"];
+     [userDefaults synchronize];
+     }*/
     
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(userDidSelectTextField) name:kSearchFieldDidTaped object:nil];
@@ -264,7 +282,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     }
     
     [self updateOverlayButtonImage];
-        
+    
     self.currentKBTheme = KBThemeClassic;
     //!!!: Hide themes lock KBThemeClassic
     //[userDefaults integerForKey:kUserDefaultsKeyboardTheme];
@@ -290,11 +308,11 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     
     self.isKeyboardTextFieldSelected = NO;
     
-    HoverView *hoverView = [self.view viewWithTag:5531];
-    if (hoverView) {
-        [hoverView stopAnimation];
-        [hoverView removeFromSuperview];
-    }
+    //   HoverView *hoverView = [self.view viewWithTag:5531];
+    //  if (hoverView) {
+    //    [hoverView stopAnimation];
+    //   [hoverView removeFromSuperview];
+    //  }
     
     [self stopThemeTimer];
     
@@ -303,6 +321,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
     
     NSString *fullText = [[NSString alloc] init];
     NSString *strBeforeCursor = [self.textDocumentProxy documentContextBeforeInput];
@@ -351,7 +370,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         }
     }
 
-    
     if (self.requireMainKeyboard || [self isShowKeyboardForTextFieldType]) {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
             [self.autoCorrectionView setHidden:NO animation:YES];
@@ -363,6 +381,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     
     if([defaults boolForKey:@"camFindCompleted"]) {
         [defaults setBool:YES forKey:kUserDefaultsCamfindClose];
+        [defaults setBool:YES forKey:kUserDefaultsCamfindNewRecent];
         [defaults synchronize];
         KeyboardFeature *defaultFeature = [KeyboardFeature featureWithType:FeatureTypeCamFind];
         [self switchToFeature:defaultFeature];
@@ -383,7 +402,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     
     if (!self.switchOffAutolayout) {
         [LayoutManager resetFrameWithSize:self.view.bounds.size];
-
+        
         if (self.heightConstraint) {
             [self updateMainViewHeight];
         }
@@ -555,6 +574,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     //if ([LayoutManager isKeyboardHidden]) {
     [LayoutManager setKeyboardHide:NO];
     
+    
     BOOL needToshowFullHeight = self.isKeyboardTextFieldSelected || self.selectedFeature.type == FeatureTypeMinions || self.selectedFeature.type == FeatureTypeGoogleTranslate || self.requireWordSuggestions || self.requireQuickEmojiKey;
     
     BOOL canShowAutocorrections = self.requireWordSuggestions && !self.isKeyboardTextFieldSelected && self.selectedFeature.type != FeatureTypeMinions && self.selectedFeature.type != FeatureTypeGoogleTranslate;
@@ -599,14 +619,15 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         animateKeyboardBlock();
     }
     
-    [self.menu setCoveredByHover:YES];
+    //  [self.menu setCoveredByHover:YES];
     
     if (self.requireWordSuggestions && canShowAutocorrections) {
-        [self.view bringSubviewToFront:self.autoCorrectionView];
         [self.autoCorrectionView setHidden:NO animation:YES];
-        [self.view bringSubviewToFront:self.keyboardView];
-        [self.view bringSubviewToFront:self.appsLineView];
+        //      [self.view bringSubviewToFront:self.keyboardView];
+        //        [self.view bringSubviewToFront:self.appsLineView];
         [self updateAutoCorrectionViewText];
+        [self.view bringSubviewToFront:self.autoCorrectionView];
+        [self.view bringSubviewToFront:self.keyboardView];
     }
     //  }
     
@@ -630,17 +651,17 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 }
 
 - (void)addHoverView {
-    HoverView *hover = [[[NSBundle bundleForClass:HoverView.class] loadNibNamed:NSStringFromClass([HoverView class]) owner:self options:nil] objectAtIndex:0];
+    AuthView *hover = [[[NSBundle bundleForClass:AuthView.class] loadNibNamed:NSStringFromClass([AuthView class]) owner:self options:nil] objectAtIndex:0];
     hover.tag = 5531;
     hover.frame = self.view.bounds;
-    hover.delegate = self;
+    //   hover.delegate = self;
     [self.view addSubview:hover];
     
     [hover mas_makeConstraints:^(MASConstraintMaker *make) {
         make.edges.mas_equalTo(0);
     }];
-    
-    [hover setupViewByType:HoverViewTypeNoAccess];
+    //    [self performSelector:@selector(hideKeyboard) withObject:nil afterDelay:0.1];
+    // [hover setupViewByType:HoverViewTypeNoAccess];
 }
 
 - (BOOL)isShowKeyboardForTextFieldType {
@@ -679,7 +700,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         return;
     }
     
-    [self.view bringSubviewToFront:self.menu.view];
+    //    [self.view bringSubviewToFront:self.menu.view];
     [self.view bringSubviewToFront:self.keyboardView];
     [self refreshAutocorrectionDataWithCleaning:YES];
     
@@ -720,7 +741,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         [self.autoCorrectionView setHidden:YES animation:YES];
     }
     
-    [self.menu setCoveredByHover:NO];
+    //    [self.menu setCoveredByHover:NO];
     
     [self userDidEndEditingTextField];
     
@@ -784,7 +805,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
                 [self.textDocumentProxy insertText:afterText];
             }
             
-            
             // Translate after replace
             [self tryToTranslateOnTheWay];
         }
@@ -793,9 +813,12 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 
 - (void)autoCorrectionView:(AutoCorrectionView *)autoCorrectionView didUpdateCorrectionString:(NSString *)correctionString {
     if (correctionString.length != 0) {
-        self.appsLineView.alpha = 0.0f;
+        [self.view bringSubviewToFront:self.autoCorrectionView];
+        [self.view bringSubviewToFront:self.keyboardView];
+        //  self.appsLineView.alpha = 0.0f;
     }
 }
+
 
 #pragma mark - KeyboardContainerDelegate
 
@@ -852,8 +875,14 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             needToUpdateMainViewHeight = YES;
         }
         
-        self.appsLineView.alpha = 0.0f;
-        [self.menu setCoveredByHover:NO];
+        AuthView *authView = [self.view viewWithTag:5531];
+        if (authView) {
+            [authView hideLine];
+        }
+        
+        
+        // self.appsLineView.alpha = 0.0f;
+        // [self.menu setCoveredByHover:NO];
         [self.autoCorrectionView setHidden:YES animation:YES];
         
         [UIView animateWithDuration:kKeyboardMenuAnimationDuration animations:^{
@@ -973,7 +1002,8 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     [self removeCursorFromView];
     
     if (!self.cursor) {
-        CustomCursorView *cursorView = [[CustomCursorView alloc] initWithFrame:CGRectMake(4, 4, 2, [self searchTextField].frame.size.height - 8)];
+        //   CustomCursorView *cursorView = [[CustomCursorView alloc] initWithFrame:CGRectMake(4, 4, 2, [self searchTextField].frame.size.height - 8)];
+        CustomCursorView *cursorView = [[CustomCursorView alloc] initWithFrame:CGRectMake(28, 4, 2, [self searchTextField].frame.size.height - 8)];
         self.cursor = cursorView;
     }
     
@@ -1010,12 +1040,12 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         CGRect textRect = [self countFrameForTextInTextField:[self searchTextField] withFutureText:futureString];
         
         CGRect cursorFrame = self.cursor.frame;
-        BOOL hasOffset = self.selectedFeature.type == FeatureTypeGoogleTranslate;
+        BOOL hasOffset = NO;
         CGFloat constantForTF = hasOffset ? 6 : 0;
         CGFloat constantForTF2 = hasOffset ? 12 : 6;
-        cursorFrame.origin.x = textRect.size.width + constantForTF;
+        cursorFrame.origin.x = 28 + textRect.size.width + constantForTF;
         if (textRect.size.width > [self searchTextField].frame.size.width - constantForTF2) {
-            cursorFrame.origin.x = [self searchTextField].frame.size.width - constantForTF2;
+            cursorFrame.origin.x = 28+ [self searchTextField].frame.size.width - constantForTF2;
         }
         self.cursor.frame = cursorFrame;
     }
@@ -1042,7 +1072,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 }
 
 - (void)updateSwipeEnable {
-    if (self.selectedVC && ((self.selectedFeature.type == FeatureTypeDrawImage) || (self.selectedFeature.type == FeatureTypeFacebook) || (self.selectedFeature.type == FeatureTypeInstagram)  || (self.selectedFeature.type == FeatureTypeCamFind)  || (self.selectedFeature.type == FeatureTypeAmazon) || (self.selectedFeature.type == FeatureTypePhotoLibrary))) {
+    if (self.selectedVC && self.selectedFeature != nil && ((self.selectedFeature.type == FeatureTypeDrawImage) || (self.selectedFeature.type == FeatureTypeFacebook) || (self.selectedFeature.type == FeatureTypeInstagram)  || (self.selectedFeature.type == FeatureTypeCamFind)  || (self.selectedFeature.type == FeatureTypeAmazon) || (self.selectedFeature.type == FeatureTypePhotoLibrary))) {
         self.swipeUp.enabled = ![LayoutManager isKeyboardHidden];
         self.swipeDown.enabled = ![LayoutManager isKeyboardHidden];
     } else {
@@ -1279,8 +1309,8 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             [self setupCursorByText:oldText];
             
             if(self.selectedFeature.type == FeatureTypeEmojiKeypad && ![LayoutManager isGifStripeShow]) {
-                [LayoutManager setGifStripeShow:YES];
-                [self updateMainViewHeight];
+                //    [LayoutManager setGifStripeShow:YES];
+                //   [self updateMainViewHeight];
             }
         }
     } else {
@@ -1309,7 +1339,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         
         // NO REFACTOR! sequence is necessary
         [self.textDocumentProxy insertText:text];
-        
         if (text.length == 1) {
             [self updateAutoCorrectionViewText];
         }
@@ -1339,31 +1368,32 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 }
 
 - (UITextField *)searchTextField {
-    BaseVC *localSelectedVC;
-    
-    if (self.selectedVC) {
-        if ([self.selectedVC isKindOfClass:[UINavigationController class]]) {
-            NSArray *navStack = [(UINavigationController *)self.selectedVC viewControllers];
-            localSelectedVC = [navStack lastObject];
-        } else {
-            localSelectedVC = (BaseVC *)self.selectedVC;
-        }
-    }
-    
-    if (localSelectedVC) {
-        UITextField *searchField = localSelectedVC.searchTextField;
-        searchField.layer.borderColor = [UIColor blueColor].CGColor;
-        return searchField;
-    }
-    
-    if (self.isKeyboardTextFieldSelected) {
-        self.isKeyboardTextFieldSelected = NO;
-        if (self.cursor) {
-            [self removeCursorFromView];
-        }
-        [self updateReturnButton];
-    }
-    return nil;
+    /*BaseVC *localSelectedVC;
+     
+     if (self.selectedVC) {
+     if ([self.selectedVC isKindOfClass:[UINavigationController class]]) {
+     NSArray *navStack = [(UINavigationController *)self.selectedVC viewControllers];
+     localSelectedVC = [navStack lastObject];
+     } else {
+     localSelectedVC = (BaseVC *)self.selectedVC;
+     }
+     }
+     
+     if (localSelectedVC) {
+     UITextField *searchField = localSelectedVC.searchTextField;
+     searchField.layer.borderColor = [UIColor blueColor].CGColor;
+     return searchField;
+     }
+     
+     if (self.isKeyboardTextFieldSelected) {
+     self.isKeyboardTextFieldSelected = NO;
+     if (self.cursor) {
+     [self removeCursorFromView];
+     }
+     [self updateReturnButton];
+     }*/
+    return self.appsLineView.search;
+    //return nil;
 }
 
 
@@ -1411,7 +1441,9 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     if (self.isKeyboardTextFieldSelected) {
         if (([self.keyboardView.returnButton.title isEqualToString:@"Search"]) || (self.selectedFeature.type == FeatureTypeMemeGenerator) || (self.selectedFeature.type == FeatureTypeDrawImage) || (self.selectedFeature.type == FeatureTypeFrequentlyUsedPhrases)) {
             [[NSNotificationCenter defaultCenter] postNotificationName:kKeyboardNotificationActionSearchButton object:nil];
-            
+            if([self searchTextField] == self.appsLineView.search) {
+                [self showSearch:[self searchTextField].text];
+            }
             [self hideKeyboard];
         } else if ([self.keyboardView.returnButton.title isEqualToString:@"Save"]) {
             [[NSNotificationCenter defaultCenter] postNotificationName:kKeyboardNotificationActionReturnButton object:nil];
@@ -1563,7 +1595,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     if (self.selectedVC) {
         if ([self.selectedVC isKindOfClass:[GTViewController class]] && text && text.length) {
             [self tryToTranslateOnTheWay];
-        } 
+        }
     }
 }
 
@@ -1747,6 +1779,13 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             [self closeEmojiPanel];
         }
     }
+    if(self.selectedFeature.type == item.type) {
+        self.selectedFeature = nil;
+        [self.autoCorrectionView setHidden:NO animation:YES];
+        [self.view bringSubviewToFront:self.autoCorrectionView];
+        [self showKeyboard];
+        return;
+    }
     [self switchToFeature:item];
 }
 
@@ -1795,7 +1834,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
                                                  @(FeatureTypeFrequentlyUsedPhrases): @"FrequentlyUsedPhrasesVC",
                                                  @(FeatureTypeSoundsCatalog):         @"SoundsCatalogViewController",
                                                  @(FeatureTypeRecentShared):          @"RecentSharedVC",
-                                                 @(FeatureTypeFeedFriends):			 @"FeedFriendsViewController",
+                                                 @(FeatureTypeFeedFriends):             @"FeedFriendsViewController",
                                                  @(FeatureTypeTwitch):                @"TwitchViewController",
                                                  @(FeatureTypeCamFind):                @"CamFindViewController",
                                                  @(FeatureTypeAmazon):                @"AmazonViewController",
@@ -1808,7 +1847,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             
             self.selectedFeature = item;
             LayoutManager.selectedFeature = self.selectedFeature;
-
+            
             [LayoutManager setGifStripeShow:NO];
             if(self.selectedFeature != nil && (self.selectedFeature.type == FeatureTypeAmazon || self.selectedFeature.type == FeatureTypeCamFind)) {
                 [self updateMainViewHeightAmazon];
@@ -1841,33 +1880,51 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
                 self.swipeDown.enabled = NO;
             }
             
+            if (self.selectedFeature.type == FeatureTypeYoutube) {
+                [(YoutubeVC *)self.selectedVC setLastSearch:[self searchTextField].text];
+            }
+            if (self.selectedFeature.type == FeatureTypeYelp) {
+                [(YelpVC *)self.selectedVC setLastSearch:[self searchTextField].text];
+            }
+            if (self.selectedFeature.type == FeatureTypeGif) {
+                [(GifVC *)self.selectedVC setLastSearch:[self searchTextField].text];
+            }
+            if (self.selectedFeature.type == FeatureTypeDropbox) {
+                [(DropBoxViewController *)self.selectedVC setLastSearch:[self searchTextField].text];
+            }
+            if (self.selectedFeature.type == FeatureTypeGoogleTranslate) {
+                [(GTViewController *)self.selectedVC setLastSearch:[self searchTextField].text];
+            }
+            
             [self contentadViewAddSubview:(self.selectedNavigationController ? self.selectedNavigationController.view : self.selectedVC.view)];
             
             ((BaseVC *)self.selectedVC).iconButton.hidden = YES;
             
             if (self.selectedFeature.type == FeatureTypeGoogleTranslate || self.selectedFeature.type == FeatureTypeMinions) {
-                NSString *fullText = [[NSString alloc] init];
-                NSString *strBeforeCursor = [self.textDocumentProxy documentContextBeforeInput];
-                NSString *strAfterCursor = [self.textDocumentProxy documentContextAfterInput];
-                if (strBeforeCursor == nil && strAfterCursor == nil) {
-                    fullText = @"";
-                }
-                if (strBeforeCursor != nil && strAfterCursor != nil) {
-                    fullText = [strBeforeCursor stringByAppendingString:strAfterCursor];
-                }
-                if (strBeforeCursor == nil) {
-                    fullText = strAfterCursor;
-                }
-                if (strAfterCursor == nil) {
-                    fullText = strBeforeCursor;
-                }
+                /* NSString *fullText = [[NSString alloc] init];
+                 NSString *strBeforeCursor = [self.textDocumentProxy documentContextBeforeInput];
+                 NSString *strAfterCursor = [self.textDocumentProxy documentContextAfterInput];
+                 if (strBeforeCursor == nil && strAfterCursor == nil) {
+                 fullText = @"";
+                 }
+                 if (strBeforeCursor != nil && strAfterCursor != nil) {
+                 fullText = [strBeforeCursor stringByAppendingString:strAfterCursor];
+                 }
+                 if (strBeforeCursor == nil) {
+                 fullText = strAfterCursor;
+                 }
+                 if (strAfterCursor == nil) {
+                 fullText = strBeforeCursor;
+                 }*/
                 
-                if ([self.selectedVC respondsToSelector:@selector(setOriginText:)]) {
-                    [(GTViewController *)self.selectedVC setOriginText:fullText];
-                }
+                //     if ([self.selectedVC respondsToSelector:@selector(setOriginText:)]) {
+                //  [(GTViewController *)self.selectedVC setOriginText:fullText];
+                // }
                 
-                [LayoutManager setKeyboardHide:YES];
-                [self showKeyboardAsOverlay];
+                //  [LayoutManager setKeyboardHide:YES];
+                //[self showKeyboardAsOverlay];
+                [self updateSwipeEnable];
+                [self performSelector:@selector(hideKeyboard) withObject:nil afterDelay:0.1];
             } else {
                 [self updateSwipeEnable];
                 [self performSelector:@selector(hideKeyboard) withObject:nil afterDelay:0.1];
@@ -1884,9 +1941,40 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     }
 }
 
+- (void)showSearch:(NSString*)searchQuery {
+    if(self.selectedFeature.type == FeatureTypeGif) {
+        GifVC *vc = (GifVC*)self.selectedVC;
+        [vc loadItemsWithSearch:searchQuery];
+    } else if(self.selectedFeature.type == FeatureTypeYelp) {
+        YelpVC *vc = (YelpVC*)self.selectedVC;
+        [vc performSearch:searchQuery];
+    }else if(self.selectedFeature.type == FeatureTypeYoutube) {
+        YoutubeVC *vc = (YoutubeVC*)self.selectedVC;
+        [vc loadDataFromSearch:searchQuery];
+    }else if(self.selectedFeature.type == FeatureTypeDropbox) {
+        DropBoxViewController *vc = (DropBoxViewController*)self.selectedVC;
+        [vc performSearch:searchQuery];
+    }else if(self.selectedFeature.type == FeatureTypeGoogleTranslate) {
+        GTViewController *vc = (GTViewController*)self.selectedVC;
+        [vc performSearch:searchQuery];
+    }else {
+        [self userDidChangeController];
+        [self removeAllControllersWichWeDontNeed];
+        [self updateMainViewHeight];
+        SearchViewController *svc = [[SearchViewController alloc] initWithNibName:@"SearchViewController" bundle:[NSBundle bundleForClass:SearchViewController.class]];
+        svc.keyboardViewController = self;
+        svc.delegate = self;
+        svc.searchQuery = searchQuery;
+        self.selectedVC = svc;
+        [self contentadViewAddSubview:(self.selectedNavigationController ? self.selectedNavigationController.view : self.selectedVC.view)];
+        self.swipeUp.enabled = NO;
+        self.swipeDown.enabled = NO;
+    }
+}
+
 - (void)contentadViewAddSubview:(UIView *)subview {
     CGFloat menuHeight = [LayoutManager menuHeight];
-    subview.frame = CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, self.view.bounds.size.height - menuHeight);
+    subview.frame = CGRectMake(0.0f, 0.0f, self.view.bounds.size.width, self.view.bounds.size.height);
     subview.clipsToBounds = YES;
     
     [self.view bringSubviewToFront:self.menu.view];
@@ -1894,8 +1982,9 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     [self.view bringSubviewToFront:self.keyboardView];
     
     [subview mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.left.and.right.mas_equalTo(0);
-        make.bottom.mas_equalTo(-menuHeight);
+        make.left.and.right.mas_equalTo(0);
+        make.bottom.mas_equalTo(0);
+        make.top.mas_equalTo(menuHeight);
     }];
 }
 
@@ -1960,9 +2049,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     }
 }
 
-
-#pragma mark - Guide for user
-
 - (void)showGuide {
     // No need to show guides when we change theme
     if (self.checkKBThemeChangesTimer) {
@@ -1973,7 +2059,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 - (void)hideGuide {
     self.menu.isKeyboardBlockedByTutorial = NO;
 }
-
 
 #pragma mark - Eraser section
 

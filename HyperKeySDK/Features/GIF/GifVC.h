@@ -9,5 +9,6 @@
 #import "ExtendedBaseVC.h"
 
 @interface GifVC : ExtendedBaseVC
-
+- (void)loadItemsWithSearch:(NSString *)searchString;
+- (void)setLastSearch:(NSString *)search;
 @end

@@ -30,6 +30,7 @@
 @property (strong, nonatomic) NSMutableArray *alpabeticOrderArray;
 @property (strong, nonatomic) DBUserClient *client;
 //@property (strong, nonatomic) DBRestClient *restClient;
+@property (strong, nonatomic) NSString *searchString;
 
 @property (assign, nonatomic) BOOL shouldLoadImages;
 
@@ -42,6 +43,8 @@
     
     [self.navigationController setNavigationBarHidden:YES animated:NO];
 
+    self.tableView.layer.borderWidth = 1;
+    self.tableView.layer.borderColor = [UIColor colorWithRed:233/255.0f green:234/255.0f blue:238/255.0f alpha:1.0f].CGColor;
     if(self.filePath == nil)
         self.filePath = @"";
     
@@ -69,7 +72,14 @@
     }
     NSArray *dropTokenInfo = [[KeyboardFeaturesAuthenticationManager sharedManager] authorizationObjectForFeatureType:FeatureTypeDropbox];
     self.client = [[DBUserClient alloc] initWithAccessToken:dropTokenInfo[0]];
-    [self loadInfoLogic];
+    if(self.searchString.length == 0 || self.searchString == nil)
+        [self loadInfoLogic];
+    else
+        [self performSearch:self.searchString];
+}
+
+- (void)setLastSearch:(NSString *)search {
+    self.searchString = search;
 }
 
 - (IBAction)checkAccess:(id)sender {
@@ -87,10 +97,8 @@
     
     NSArray *dropTokenInfo = [[KeyboardFeaturesAuthenticationManager sharedManager] authorizationObjectForFeatureType:FeatureTypeDropbox];
     self.client = [[DBUserClient alloc] initWithAccessToken:dropTokenInfo[0]];
-    
     self.shouldLoadImages = YES;
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionSearch) name:kKeyboardNotificationActionSearchButton object:nil];
+   // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(actionSearch) name:kKeyboardNotificationActionSearchButton object:nil];
     
     if([self.client isAuthorized]) {
         if (self.shouldReloadInfo) {
@@ -220,6 +228,17 @@
         [cell.hoverView setAlpha:0];
         [cell loadDropThumbnailByPath:fileData.pathLower andFileName:fileData.name];
     }
+    
+    UIView *lineView  = [cell.contentView viewWithTag:999];
+    if(lineView != nil) {
+        [lineView removeFromSuperview];
+    }
+    lineView = [[UIView alloc] initWithFrame:CGRectMake(0, cell.contentView.frame.size.height - 1.0, self.tableView.frame.size.width, 1)];
+    lineView.tag = 999;
+    lineView.backgroundColor = [UIColor colorWithRed:233/255.0f green:234/255.0f blue:238/255.0f alpha:1.0f];
+    [cell.contentView addSubview:lineView];
+    
+    
     return cell;
 }
 
@@ -287,235 +306,6 @@
 - (IBAction)functionButton:(id)sender {
     [self.delegate functionButton:sender];
 }
-
-
-/*- (void)loadInfoLogic {
- NSArray *dropTokenInfo = [[KeyboardFeaturesAuthenticationManager sharedManager] authorizationObjectForFeatureType:FeatureTypeDropbox];
- 
- 
- if ([REA_MANAGER reachabilityStatus] == 0) {
- [self setupHoverViewByType:HoverViewTypeNoInternet];
- self.shouldReloadInfo = YES;
- } else {
- if (dropTokenInfo) {
- NSDictionary *tokenInfo = dropTokenInfo[0];
- 
- [[DBSession sharedSession] updateAccessToken:tokenInfo[@"token"] accessTokenSecret:tokenInfo[@"tokenSecret"] forUserId:tokenInfo[@"userId"]];
- 
- self.restClient = [[DBRestClient alloc] initWithSession:[DBSession sharedSession]];
- self.restClient.delegate = self;
- 
- [HProgressHUD showHUDSizeType:HProgressHUDSizeTypeBigWhite addedTo:self.hudContainerView animated:YES];
- 
- if (self.filePath) {
- [self.restClient loadMetadata:self.filePath];
- } else {
- [self.restClient loadMetadata:@"/"];
- }
- } else {
- [self setupHoverViewByType:HoverViewTypeNoAuthorized];
- self.shouldReloadInfo = YES;
- }
- }
- }
- 
- 
- #pragma mark - Actions
- 
- - (IBAction)actionSearch {
- [self.delegate hideKeyboard];
- 
- if (self.restClient) {
- if (self.searchTextField.text.length > 0) {
- addAnalyticsEventWithFeatureType(kAEventFeatureSearch, self.featureType);
- [self.restClient searchPath:self.filePath ? self.filePath : @"/" forKeyword:self.searchTextField.text];
- } else {
- [self hideNoResultHoverView];
- [self.restClient loadMetadata:self.filePath ? self.filePath : @"/"];
- }
- }
- }
- 
- - (void)handleSwipe:(UISwipeGestureRecognizer *)swipe {
- [self.navigationController popViewControllerAnimated:YES];
- }
- 
- - (IBAction)functionButton:(id)sender {
- [self.delegate functionButton:sender];
- }
- 
- 
- #pragma mark - Search
- 
- - (void)restClient:(DBRestClient *)restClient loadedSearchResults:(NSArray *)results forPath:(NSString *)path keyword:(NSString *)keyword {
- NSLog(@"results: %@", results);
- if (results.count > 0) {
- [self hideNoResultHoverView];
- } else {
- [self showNoResultHoverViewAboveSubview:self.tableView];
- }
- [self parseDataWithContents:results];
- }
- 
- - (void)restClient:(DBRestClient *)restClient searchFailedWithError:(NSError *)error {
- NSLog(@"Error search metadata: %@", error);
- }
- 
- 
- #pragma mark - Drop Delegate
- 
- - (void)restClient:(DBRestClient *)client loadedMetadata:(DBMetadata *)metadata {
- if (metadata.isDirectory) {
- [self parseDataWithContents:metadata.contents];
- }
- }
- 
- - (void)parseDataWithContents:(NSArray *)contents {
- if (!self.alpabeticOrder) {
- self.alpabeticOrder = [[NSMutableDictionary alloc] init];
- self.alpabeticOrderArray = [NSMutableArray array];
- } else {
- [self.alpabeticOrder removeAllObjects];
- [self.alpabeticOrderArray removeAllObjects];
- }
- 
- NSMutableArray *datesForSections = [NSMutableArray array];
- for (DBMetadata *file in contents) {
- [datesForSections addObject:[self onlyMonthAndYearDate:file.lastModifiedDate]];
- //NSLog(@"filename: %@ \n icon: %@ \nlastModifiedDate:%@\n filePath:%@ \ncontents: %@ \nroot:%@ rev:%@", file.filename, file.icon, file.lastModifiedDate, file.path, file.contents, file.root, file.rev);
- }
- NSSet *set = [NSSet setWithArray:datesForSections];
- NSArray *filteredSectionInfo = set.allObjects;
- 
- for (NSDate *date in filteredSectionInfo) {
- [self.alpabeticOrder setObject:[NSMutableArray array] forKey:date];
- }
- 
- for (DBMetadata *file in contents) {
- NSDate *dictionaryKeyDate = [self onlyMonthAndYearDate:file.lastModifiedDate];
- NSMutableArray *letterArray = [self.alpabeticOrder objectForKey:dictionaryKeyDate];
- [letterArray addObject:file];
- }
- 
- NSSortDescriptor *sortOrder = [NSSortDescriptor sortDescriptorWithKey:@"self" ascending:NO];
- NSArray *notSortedKeys = [self.alpabeticOrder.allKeys sortedArrayUsingSelector:@selector(compare:)];
- NSArray *allKeys = [notSortedKeys sortedArrayUsingDescriptors:@[sortOrder]];
- 
- for (NSString *key in allKeys) {
- if (((NSArray *)[self.alpabeticOrder objectForKey:key]).count) {
- [self.alpabeticOrderArray addObject:[self.alpabeticOrder objectForKey:key]];
- }
- }
- 
- [HProgressHUD hideHUDForView:self.hudContainerView animated:YES];
- 
- [self.tableView reloadData];
- }
- 
- - (void)restClient:(DBRestClient *)client loadMetadataFailedWithError:(NSError *)error {
- [HProgressHUD hideHUDForView:self.hudContainerView animated:YES];
- NSLog(@"Error loading metadata: %@", error);
- }
- 
- - (void)restClient:(DBRestClient*)restClient loadedSharableLink:(NSString *)link forFile:(NSString *)path {
- addAnalyticsEventWithFeatureType(kAEventFeatureShare, self.featureType);
- addAnalyticsEventTwicedShare(self.featureType);
- 
- [self insertLinkWithURLString:link title:path.lastPathComponent featureType:self.featureType completion:nil];
- }
- 
- - (void)restClient:(DBRestClient *)restClient loadSharableLinkFailedWithError:(NSError *)error {
- NSLog(@"Error loading SharableLink: %@", error);
- }
- 
- 
- #pragma mark - TableView
- 
- - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
- return self.alpabeticOrderArray.count;
- }
- 
- - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
- NSLog(@"numberofrows: %ld insection:%ld", (unsigned long)((NSArray *)self.alpabeticOrderArray[section]).count, (long)section);
- return ((NSArray *)self.alpabeticOrderArray[section]).count;
- 
- }
- 
- - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
- NSString *cellName = NSStringFromClass([DropInfoTableViewHeaderCell class]);
- 
- DropInfoTableViewHeaderCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellName];
- DBMetadata *fileData = ((NSArray *)self.alpabeticOrderArray[section])[0];
- NSString *formatedDate = [self.dateFormatter stringFromDate:fileData.lastModifiedDate];
- 
- [cell setTitle:formatedDate];
- return cell;
- }
- 
- - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
- DBMetadata *fileData = ((NSArray *)self.alpabeticOrderArray[indexPath.section])[indexPath.row];
- 
- DropInfoTableViewCell *cell = (DropInfoTableViewCell *)[tableView dequeueReusableCellWithIdentifier:NSStringFromClass([DropInfoTableViewCell class])];
- cell.fileData = fileData;
- cell.shouldLoadImages = self.shouldLoadImages;
- 
- double filesize = (double)(fileData.totalBytes / 1000000.0);
- 
- cell.fileNameLabel.text = fileData.filename;
- cell.fileSizeLabel.text = [NSString stringWithFormat:@"%@", fileData.humanReadableSize];
- cell.fileDateLabel.text = [self.dateFormatterWithDate stringFromDate:fileData.lastModifiedDate];
- 
- cell.dropFileImageView.image = nil;
- cell.dropFileImageView.contentMode = UIViewContentModeScaleAspectFit;
- [cell loadDropThumbnailByPath:fileData.path andFileName:fileData.filename];
- 
- [cell.hoverView setAlpha:0];
- 
- if (fileData.isDirectory) {
- cell.fileSizeLabel.text = @"";
- cell.fileSizeLabelWidthConstarint.constant = 0;
- } else {
- if (filesize < 10) {
- cell.fileSizeLabelWidthConstarint.constant = 50;
- } else if (filesize > 10 && filesize < 100) {
- cell.fileSizeLabelWidthConstarint.constant = 57;
- } else if (filesize > 100 && filesize < 1000) {
- cell.fileSizeLabelWidthConstarint.constant = 64;
- } else if (filesize > 100) {
- cell.fileSizeLabelWidthConstarint.constant = 50;
- }
- }
- 
- return cell;
- }
- 
- - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
- [tableView deselectRowAtIndexPath:indexPath animated:NO];
- 
- DropInfoTableViewCell *cell = (DropInfoTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
- 
- DBMetadata *fileData = ((NSArray *)self.alpabeticOrderArray[indexPath.section])[indexPath.row];
- if (!fileData.isDirectory) {
- NSArray *paths = [tableView indexPathsForVisibleRows];
- 
- for (NSIndexPath *path in paths) {
- DropInfoTableViewCell *cell = (DropInfoTableViewCell *)[tableView cellForRowAtIndexPath:path];
- cell.hoverView.alpha = 0;
- }
- 
- [self.restClient loadSharableLinkForFile:fileData.path shortUrl:YES];
- [UIView animateWithDuration:0.5 animations:^{
- [cell.hoverView setAlpha:1.0];
- }];
- 
- } else {
- DropBoxViewController *dropVC = [[DropBoxViewController alloc] initWithNibName:NSStringFromClass([DropBoxViewController class]) bundle:nil];
- dropVC.filePath = fileData.path;
- dropVC.delegate = self.delegate;
- [self.navigationController pushViewController:dropVC animated:YES];
- }
- }
- */
 
 
 #pragma mark - UITextFieldIndirectDelegate

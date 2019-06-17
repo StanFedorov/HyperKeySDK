@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <customFonts key="customFonts">
@@ -29,14 +29,15 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="50" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="lM6-TN-6ul">
-                    <rect key="frame" x="0.0" y="44" width="320" height="172"/>
+                    <rect key="frame" x="12" y="12" width="296" height="192"/>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.0" colorSpace="custom" customColorSpace="sRGB"/>
+                    <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="Y5V-gz-hTa"/>
                         <outlet property="delegate" destination="-1" id="yUc-K5-vfv"/>
                     </connections>
                 </tableView>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sdL-Fa-RuJ" userLabel="SearchBarView">
+                <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sdL-Fa-RuJ" userLabel="SearchBarView">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SVw-Yb-rZg" userLabel="SearchView">
@@ -90,7 +91,7 @@
                     </constraints>
                 </view>
                 <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="DOn-pt-fnj" userLabel="HUDContainerView">
-                    <rect key="frame" x="0.0" y="44" width="320" height="172"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
                 </view>
                 <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TGv-oe-Aug">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
@@ -141,28 +142,28 @@
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="TGv-oe-Aug" secondAttribute="trailing" id="6Wg-M8-M7x"/>
                 <constraint firstItem="TGv-oe-Aug" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="7zc-KO-Zq4"/>
-                <constraint firstItem="lM6-TN-6ul" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="DYW-fM-ZdQ"/>
-                <constraint firstItem="DOn-pt-fnj" firstAttribute="top" secondItem="sdL-Fa-RuJ" secondAttribute="bottom" id="P8T-jD-30F"/>
+                <constraint firstItem="lM6-TN-6ul" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" constant="12" id="DYW-fM-ZdQ"/>
                 <constraint firstItem="sdL-Fa-RuJ" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="R0f-Cc-aic"/>
                 <constraint firstAttribute="trailing" secondItem="sdL-Fa-RuJ" secondAttribute="trailing" id="TSa-v4-Oh6"/>
+                <constraint firstItem="DOn-pt-fnj" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="UDE-wL-F53"/>
+                <constraint firstItem="lM6-TN-6ul" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="12" id="UxY-50-Tej"/>
                 <constraint firstItem="DOn-pt-fnj" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="WwE-ZB-t0h"/>
                 <constraint firstItem="TGv-oe-Aug" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="XVw-vh-cQH"/>
                 <constraint firstItem="sdL-Fa-RuJ" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="fPN-iG-Lo6"/>
                 <constraint firstAttribute="trailing" secondItem="DOn-pt-fnj" secondAttribute="trailing" id="lzQ-94-5Ez"/>
-                <constraint firstAttribute="trailing" secondItem="lM6-TN-6ul" secondAttribute="trailing" id="qcN-C6-QWm"/>
+                <constraint firstAttribute="trailing" secondItem="lM6-TN-6ul" secondAttribute="trailing" constant="12" id="qcN-C6-QWm"/>
                 <constraint firstAttribute="bottom" secondItem="DOn-pt-fnj" secondAttribute="bottom" id="qy0-2a-aO5"/>
-                <constraint firstAttribute="bottom" secondItem="lM6-TN-6ul" secondAttribute="bottom" id="upS-i0-2GL"/>
-                <constraint firstItem="lM6-TN-6ul" firstAttribute="top" secondItem="sdL-Fa-RuJ" secondAttribute="bottom" id="uwF-HC-Yz2"/>
+                <constraint firstAttribute="bottom" secondItem="lM6-TN-6ul" secondAttribute="bottom" constant="12" id="upS-i0-2GL"/>
                 <constraint firstAttribute="bottom" secondItem="TGv-oe-Aug" secondAttribute="bottom" id="vxr-Kz-ShP"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="528" y="391"/>
+            <point key="canvasLocation" x="528" y="390.40479760119945"/>
         </view>
     </objects>
     <resources>
         <image name="allow_location_background" width="337" height="234"/>
-        <image name="btn_search_field" width="16" height="16"/>
-        <image name="searchFied_w" width="7" height="7"/>
+        <image name="btn_search_field" width="16.5" height="16.5"/>
+        <image name="searchFied_w" width="7.5" height="7.5"/>
     </resources>
 </document>
