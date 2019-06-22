@@ -10,7 +10,7 @@
 
 #import "HKStreachableLabel.h"
 #import "Config.h"
-#import "GTMNSString+HTML.h"
+//#import "GTMNSString+HTML.h"
 
 CGFloat const kGTPasteButtonAnimationDuration = 0.5;
 
@@ -148,9 +148,6 @@ NSString *const kGTLangListName = @"name";
         NSString *originText = self.isItTranslatedPasteboard ? nil : self.originText;
         NSString *translatedText = self.isItTranslatedPasteboard ? self.translatedPasteboardContent : self.translatedText;
         [self.delegate changeOriginText:originText forTranslatedText:translatedText];
-        if ([self.delegate respondsToSelector:@selector(keyboardContainerDidInsertText:)]) {
-            [self.delegate keyboardContainerDidInsertText:translatedText];
-        }
     }
 }
 
@@ -350,7 +347,8 @@ NSString *const kGTLangListName = @"name";
             NSString *translatedText = [[arrTranslations firstObject] objectForKey:@"translatedText"];
             
             if (translatedText) {
-                translatedText = [translatedText gtm_stringByUnescapingFromHTML];
+//                translatedText = [translatedText gtm_stringByUnescapingFromHTML];
+                translatedText = translatedText;
             } else {
                 translatedText = kGTEmptyAnswer;
             }
