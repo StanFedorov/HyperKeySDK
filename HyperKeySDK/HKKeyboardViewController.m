@@ -86,6 +86,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 @property (assign, nonatomic) BOOL isKeyboardTextFieldSelected;
 @property (assign, nonatomic) BOOL isFullAccessGranted;
 @property (assign, nonatomic) BOOL isFirxtTextDidChanged;
+@property (assign, nonatomic) BOOL suggestionsHidden;
 
 @property (strong, nonatomic) CustomCursorView *cursor;
 
@@ -621,7 +622,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     
     //  [self.menu setCoveredByHover:YES];
     
-    if (self.requireWordSuggestions && canShowAutocorrections) {
+    if (self.requireWordSuggestions && canShowAutocorrections && !self.suggestionsHidden) {
         [self.autoCorrectionView setHidden:NO animation:YES];
         //      [self.view bringSubviewToFront:self.keyboardView];
         //        [self.view bringSubviewToFront:self.appsLineView];
@@ -1142,9 +1143,14 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         [self removeCursorFromView];
     }
     [[self searchTextField] layer].borderWidth = 0.0;
-    
     [self updateReturnButton];
+    self.keyboardView.hidden = NO;
+    [self updateMainViewHeight];
+    self.suggestionsHidden = YES;
+    [self showKeyboardAsOverlay];
+    self.suggestionsHidden = NO;
 }
+
 
 - (void)textDidChange:(id<UITextInput>)textInput {
     if (!self.isFirxtTextDidChanged) {

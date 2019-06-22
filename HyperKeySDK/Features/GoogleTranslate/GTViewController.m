@@ -59,7 +59,7 @@ NSString *const kGTLangListName = @"name";
     [super viewDidLoad];
 
     [self.textView addObserver:self forKeyPath:kGTKeyPathCS options:(NSKeyValueObservingOptionNew) context:NULL];
-    [self hidePasteButton];
+    //[self hidePasteButton];
     
     [self loadDefaults];
     
@@ -148,6 +148,9 @@ NSString *const kGTLangListName = @"name";
         NSString *originText = self.isItTranslatedPasteboard ? nil : self.originText;
         NSString *translatedText = self.isItTranslatedPasteboard ? self.translatedPasteboardContent : self.translatedText;
         [self.delegate changeOriginText:originText forTranslatedText:translatedText];
+        if ([self.delegate respondsToSelector:@selector(keyboardContainerDidInsertText:)]) {
+            [self.delegate keyboardContainerDidInsertText:translatedText];
+        }
     }
 }
 
@@ -266,7 +269,7 @@ NSString *const kGTLangListName = @"name";
         self.streachableLabel.text = translatedString;
         
         if ([translatedString isEqualToString:kGTEmptyAnswer] || [translatedString isEqualToString:kGTErrorAnswer]) {
-            [self hidePasteButton];
+           // [self hidePasteButton];
             
             if (self.isItTranslatedPasteboard) {
                 self.translatedPasteboardContent = @"";
@@ -287,7 +290,7 @@ NSString *const kGTLangListName = @"name";
             self.translatedText = @"";
         }
         
-        [self hidePasteButton];
+      //  [self hidePasteButton];
     }
     
     if ([self.delegate respondsToSelector:@selector(textDidTranslated:)]) {
@@ -340,7 +343,7 @@ NSString *const kGTLangListName = @"name";
         
         if (parsingError) {
             self.translatedText = kGTErrorAnswer;
-            [self hidePasteButton];
+          //  [self hidePasteButton];
         } else {
             NSDictionary *dictData = [dict objectForKey:@"data"];
             NSArray *arrTranslations = [dictData objectForKey:@"translations"];

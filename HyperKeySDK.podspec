@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   #
 
   s.name         = "HyperKeySDK"
-  s.version      = "0.2"
+  s.version      = "0.2.1"
   s.summary      = "SDK of HyperKey Keyboard."
   s.requires_arc = true
 

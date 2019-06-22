@@ -13,7 +13,8 @@
 #import "ACCharacterOperation.h"
 #import "ACSpaceOperation.h"
 #import "UIImage+Additions.h"
-#import "Macroses.h"
+#import "Config.h"
+#import "KeyboardThemesHelper.h"
 
 NSTimeInterval const kAutoCorrectionViewAnimationDuration = 0.45;
 NSUInteger const kAutoCorrectionViewMaxOperations = 30;
@@ -86,6 +87,8 @@ NSString *const kAutoCorrectionViewLanguage = @"en_US";
             strongSelf.separatorCharacterSet = separator;
         }
     }];
+    
+
 }
 
 
@@ -419,19 +422,19 @@ NSString *const kAutoCorrectionViewLanguage = @"en_US";
     switch (theme) {
         case KBThemeOriginal:
             highlightedTextColor = [UIColor whiteColor];
-            self.backgroundColor = colorAdditionalMenuForTheme(theme);
+           // self.backgroundColor = colorAdditionalMenuForTheme(theme);
             break;
         
         case KBThemeTransparent:
             backImage = nil;
             highlightedTextColor = [UIColor whiteColor];
-            self.backgroundColor = colorAdditionalMenuForTheme(theme);
+          //  self.backgroundColor = colorAdditionalMenuForTheme(theme);
             break;
 
         case KBThemeClassic:
             backImage = [UIImage patternImageWithColor:RGB(236, 237, 240)];
             highlightedTextColor = RGB(0, 80, 215);
-            self.backgroundColor = colorAdditionalMenuForTheme(theme);
+           // self.backgroundColor = colorAdditionalMenuForTheme(theme);
             break;
             
         default:
