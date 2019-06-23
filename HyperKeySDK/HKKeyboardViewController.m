@@ -1592,6 +1592,11 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
                 }
                 
                 [self.textDocumentProxy insertText:result];
+            }else {
+                while (self.textDocumentProxy.documentContextBeforeInput.length > 0) {
+                    [self.textDocumentProxy deleteBackward];
+                }
+                [self.textDocumentProxy insertText:translated];
             }
         }
     }
@@ -1785,13 +1790,13 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             [self closeEmojiPanel];
         }
     }
-    if(self.selectedFeature.type == item.type) {
+   /* if(self.selectedFeature.type == item.type) {
         self.selectedFeature = nil;
         [self.autoCorrectionView setHidden:NO animation:YES];
         [self.view bringSubviewToFront:self.autoCorrectionView];
         [self showKeyboard];
         return;
-    }
+    }*/
     [self switchToFeature:item];
 }
 
@@ -1898,37 +1903,34 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             if (self.selectedFeature.type == FeatureTypeDropbox) {
                 [(DropBoxViewController *)self.selectedVC setLastSearch:[self searchTextField].text];
             }
-            if (self.selectedFeature.type == FeatureTypeGoogleTranslate) {
-                [(GTViewController *)self.selectedVC setLastSearch:[self searchTextField].text];
-            }
             
             [self contentadViewAddSubview:(self.selectedNavigationController ? self.selectedNavigationController.view : self.selectedVC.view)];
             
             ((BaseVC *)self.selectedVC).iconButton.hidden = YES;
             
             if (self.selectedFeature.type == FeatureTypeGoogleTranslate || self.selectedFeature.type == FeatureTypeMinions) {
-                /* NSString *fullText = [[NSString alloc] init];
-                 NSString *strBeforeCursor = [self.textDocumentProxy documentContextBeforeInput];
-                 NSString *strAfterCursor = [self.textDocumentProxy documentContextAfterInput];
-                 if (strBeforeCursor == nil && strAfterCursor == nil) {
-                 fullText = @"";
-                 }
-                 if (strBeforeCursor != nil && strAfterCursor != nil) {
-                 fullText = [strBeforeCursor stringByAppendingString:strAfterCursor];
-                 }
-                 if (strBeforeCursor == nil) {
-                 fullText = strAfterCursor;
-                 }
-                 if (strAfterCursor == nil) {
-                 fullText = strBeforeCursor;
-                 }*/
-                
-                //     if ([self.selectedVC respondsToSelector:@selector(setOriginText:)]) {
-                //  [(GTViewController *)self.selectedVC setOriginText:fullText];
-                // }
-                
-                //  [LayoutManager setKeyboardHide:YES];
-                //[self showKeyboardAsOverlay];
+                NSString *fullText = [[NSString alloc] init];
+                NSString *strBeforeCursor = [self.textDocumentProxy documentContextBeforeInput];
+                NSString *strAfterCursor = [self.textDocumentProxy documentContextAfterInput];
+                if (strBeforeCursor == nil && strAfterCursor == nil) {
+                    fullText = @"";
+                }
+                if (strBeforeCursor != nil && strAfterCursor != nil) {
+                    fullText = [strBeforeCursor stringByAppendingString:strAfterCursor];
+                }
+                if (strBeforeCursor == nil) {
+                    fullText = strAfterCursor;
+                }
+                if (strAfterCursor == nil) {
+                    fullText = strBeforeCursor;
+                }
+                if ([self.selectedVC respondsToSelector:@selector(setOriginText:)]) {
+                    if([self searchTextField].text.length == 0) {
+                        [(GTViewController *)self.selectedVC setOriginText:fullText];
+                    }else {
+                        [(GTViewController *)self.selectedVC setLastSearch:[self searchTextField].text];
+                    }
+                }
                 [self updateSwipeEnable];
                 [self performSelector:@selector(hideKeyboard) withObject:nil afterDelay:0.1];
             } else {
