@@ -1928,7 +1928,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
                     if([self searchTextField].text.length == 0) {
                         [(GTViewController *)self.selectedVC setOriginText:fullText];
                     }else {
-                        [(GTViewController *)self.selectedVC setLastSearch:[self searchTextField].text];
+                        [(GTViewController *)self.selectedVC setOriginText:[self searchTextField].text];
                     }
                 }
                 [self updateSwipeEnable];
