@@ -30,33 +30,20 @@ NSString *const kLineSearchFieldDidTaped = @"kSearchFieldDidTaped";
     
     self.search.layer.cornerRadius = 10;
     [self.search setLeftPadding:28];
-    [self.search setRightPadding:16];
+    [self.search setRightPadding:10];
     self.search.delegate = self;
     [self addTextFieldObserver];
     
     if(self.appsList.count == 0) {
-       // [self.apps.subviews makeObjectsPerformSelector:@selector(removeFromSuperview)];
-        
         self.appsList = [NSMutableArray new];
 
         NSMutableArray *array = [NSMutableArray arrayWithArray:[KeyboardFeaturesManager sharedManager].enabledItemsList];
-
         for (KeyboardFeature *f in array) {
             TopAppImage *feature  = [[TopAppImage alloc] init];
             [feature setKeyboardFeature:f];
             [self.appsList addObject:feature];
         }
         
-        
-        /*  if(self.apps.contentSize.width > self.apps.frame.size.width) {
-         CGFloat newContentOffsetX = (self.apps.contentSize.width-(itemPadding*2)-itemPadding-self.apps.frame.size.width) / 2;
-         [self.apps setContentInset:UIEdgeInsetsMake(0, newContentOffsetX, 0, 8)];
-         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 0.1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-         [self.apps setContentOffset:CGPointMake(0, 0) animated:YES];
-         });
-         }else {
-         [self.apps setContentInset:UIEdgeInsetsMake(0, 8, 0, 8)];
-         }*/
         float itemSize = 34;
         float itemPadding = 8;
         float topPadding = 4;
@@ -84,6 +71,19 @@ NSString *const kLineSearchFieldDidTaped = @"kSearchFieldDidTaped";
     }
 }
 
+- (void)clearActiveIcons {
+    for(TopAppImage *topItem in self.appsList){
+        [topItem updateIconToDefault];
+    }
+}
+
+- (void)setFeatureSelected:(KeyboardFeature*)feature {
+    for(TopAppImage *topItem in self.appsList){
+        if(topItem.feature == feature) {
+            [topItem updateIconToSelected];
+        }
+    }
+}
 
 - (void)addTextFieldObserver {
     [self.search addObserver:self forKeyPath:kLineSearchFieldEnabledKeyPath options:NSKeyValueObservingOptionNew context:nil];

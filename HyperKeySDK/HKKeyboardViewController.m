@@ -1045,8 +1045,8 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         CGFloat constantForTF = hasOffset ? 6 : 0;
         CGFloat constantForTF2 = hasOffset ? 12 : 6;
         cursorFrame.origin.x = 28 + textRect.size.width + constantForTF;
-        if (textRect.size.width > [self searchTextField].frame.size.width - constantForTF2) {
-            cursorFrame.origin.x = 28+ [self searchTextField].frame.size.width - constantForTF2;
+        if (textRect.size.width > [self searchTextField].frame.size.width - 32) {
+            cursorFrame.origin.x = [self searchTextField].frame.size.width - 12;
         }
         self.cursor.frame = cursorFrame;
     }
@@ -1306,18 +1306,13 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
         if (searchField) {
             NSString *oldText = [searchField.text stringByAppendingString:text];
             [searchField setText:oldText];
-            
+
             if (searchField.delegate && [searchField.delegate respondsToSelector:@selector(textDidChangedForTextField:)]) {
                 // Here we notify view controller and delegate of searchField that text is changed
-                [((BaseVC *)searchField.delegate) textDidChangedForTextField:searchField];
+               // [((BaseVC *)searchField.delegate) textDidChangedForTextField:searchField];
             }
             
             [self setupCursorByText:oldText];
-            
-            if(self.selectedFeature.type == FeatureTypeEmojiKeypad && ![LayoutManager isGifStripeShow]) {
-                //    [LayoutManager setGifStripeShow:YES];
-                //   [self updateMainViewHeight];
-            }
         }
     } else {
         [self insertKeyboardText:text];
@@ -1790,13 +1785,14 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             [self closeEmojiPanel];
         }
     }
-   /* if(self.selectedFeature.type == item.type) {
+    if(self.selectedFeature.type == item.type) {
         self.selectedFeature = nil;
-        [self.autoCorrectionView setHidden:NO animation:YES];
-        [self.view bringSubviewToFront:self.autoCorrectionView];
-        [self showKeyboard];
+        [self.appsLineView clearActiveIcons];
+        self.suggestionsHidden = YES;
+        [self showKeyboardAsOverlay];
+        self.suggestionsHidden = NO;
         return;
-    }*/
+    }
     [self switchToFeature:item];
 }
 
@@ -1857,6 +1853,8 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             //NSLog(@"itemType %lu, className : %@", (unsigned long)item.type, className);
             
             self.selectedFeature = item;
+            [self.appsLineView clearActiveIcons];
+            [self.appsLineView setFeatureSelected:self.selectedFeature];
             LayoutManager.selectedFeature = self.selectedFeature;
             
             [LayoutManager setGifStripeShow:NO];

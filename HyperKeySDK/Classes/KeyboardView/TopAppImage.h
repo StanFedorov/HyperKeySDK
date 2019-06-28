@@ -12,5 +12,6 @@
 @interface TopAppImage : UIButton
 @property (strong,nonatomic) KeyboardFeature* feature;
 - (void)setKeyboardFeature:(KeyboardFeature *)feature;
-
+- (void)updateIconToDefault;
+- (void)updateIconToSelected;
 @end

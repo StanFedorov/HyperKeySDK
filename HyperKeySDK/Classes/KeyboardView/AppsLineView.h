@@ -14,4 +14,7 @@
 - (void) initApps;
 @property (strong,nonatomic) HKKeyboardViewController *keyboardViewController;
 @property (weak, nonatomic) IBOutlet UITextField *search;
+- (void)clearActiveIcons;
+- (void)setFeatureSelected:(KeyboardFeature*)feature;
+
 @end

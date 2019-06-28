@@ -16,6 +16,16 @@
     [self setBackgroundImage:[UIImage imageNamedPod:feature.imageNameOrUrl] forState:UIControlStateNormal];
 }
 
+- (void)updateIconToDefault {
+    [self setBackgroundImage:[UIImage imageNamedPod:self.feature.imageNameOrUrl] forState:UIControlStateNormal];
+}
+
+- (void)updateIconToSelected {
+    UIImage *img = [UIImage imageNamedPod:[NSString stringWithFormat:@"%@_selected",self.feature.imageNameOrUrl]];
+    if(img != nil)
+        [self setBackgroundImage:img forState:UIControlStateNormal];
+}
+
 /*
 // Only override drawRect: if you perform custom drawing.
 // An empty implementation adversely affects performance during animation.
