@@ -16,11 +16,11 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sfA-JC-7FP">
-                    <rect key="frame" x="8" y="5" width="200" height="30"/>
+                    <rect key="frame" x="8" y="5" width="158" height="30"/>
                     <color key="backgroundColor" red="0.55686274509803924" green="0.55686274509803924" blue="0.57647058823529407" alpha="0.20000000000000001" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="30" id="Qq1-ig-goQ"/>
-                        <constraint firstAttribute="width" constant="200" id="pPH-Pt-1tx"/>
+                        <constraint firstAttribute="width" constant="158" id="pPH-Pt-1tx"/>
                     </constraints>
                     <nil key="textColor"/>
                     <fontDescription key="fontDescription" type="system" pointSize="14"/>

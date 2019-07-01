@@ -1184,6 +1184,8 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
     if (self.isKeyboardTextFieldSelected) {
         if ((self.selectedFeature.type == FeatureTypeMemeGenerator) || (self.selectedFeature.type == FeatureTypeDrawImage)) {
             newTitle = @"Ok";
+        } else if (self.selectedFeature.type == FeatureTypeGoogleTranslate) {
+            newTitle = @"Translate";
         } else {
             newTitle = @"Search";
         }
@@ -1440,7 +1442,7 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 
 - (void)returnButtonTapped {
     if (self.isKeyboardTextFieldSelected) {
-        if (([self.keyboardView.returnButton.title isEqualToString:@"Search"]) || (self.selectedFeature.type == FeatureTypeMemeGenerator) || (self.selectedFeature.type == FeatureTypeDrawImage) || (self.selectedFeature.type == FeatureTypeFrequentlyUsedPhrases)) {
+        if (([self.keyboardView.returnButton.title isEqualToString:@"Search"] || [self.keyboardView.returnButton.title isEqualToString:@"Translate"]) || (self.selectedFeature.type == FeatureTypeMemeGenerator) || (self.selectedFeature.type == FeatureTypeDrawImage) || (self.selectedFeature.type == FeatureTypeFrequentlyUsedPhrases)) {
             [[NSNotificationCenter defaultCenter] postNotificationName:kKeyboardNotificationActionSearchButton object:nil];
             if([self searchTextField] == self.appsLineView.search) {
                 [self showSearch:[self searchTextField].text];
@@ -1539,13 +1541,12 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 
 - (void)changeOriginText:(NSString *)origin forTranslatedText:(NSString *)translated {
     if (((self.selectedFeature.type == FeatureTypeGoogleTranslate) && (((GTViewController *)self.selectedVC).isItTranslatedPasteboard))) {
-        
+        NSLog(@"STEP 1");
         if (translated) {
             [self.textDocumentProxy insertText:translated];
         }
         return;
     }
-    
     if (origin && translated && translated.length > 0) {
         NSString *beforeString = [self.textDocumentProxy documentContextBeforeInput];
         if (beforeString == nil) {
@@ -1593,7 +1594,14 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
                 }
                 [self.textDocumentProxy insertText:translated];
             }
+        }else {
+            while (self.textDocumentProxy.documentContextBeforeInput.length > 0) {
+                [self.textDocumentProxy deleteBackward];
+            }
+            [self.textDocumentProxy insertText:translated];
         }
+    }else {
+        NSLog(@"STEP FAIL");
     }
 }
 
@@ -1704,11 +1712,8 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 
 - (void)insertTextStringToCurrentPosition:(NSString *)textString {
     // assume the GifStripe have to appear only after input something
-    [LayoutManager setGifStripeShow:(self.selectedFeature.type == FeatureTypeEmojiKeypad)];
     [self updateMainViewHeight];
-    
     [[NSNotificationCenter defaultCenter] postNotificationName:kKeyboardNotificationActionUpdateText object:nil userInfo:@{@"text":textString}];
-    
     [self.textDocumentProxy insertText:textString];
 }
 

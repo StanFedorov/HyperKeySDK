@@ -35,52 +35,6 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="374"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Q5j-nD-jky" userLabel="Gif Stripe View">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="116"/>
-                    <subviews>
-                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JRZ-oZ-wZB">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="116"/>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="V8q-sb-1AX">
-                                <size key="itemSize" width="50" height="50"/>
-                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                            </collectionViewFlowLayout>
-                            <connections>
-                                <outlet property="dataSource" destination="s1H-lu-hxT" id="22m-fZ-WxT"/>
-                                <outlet property="delegate" destination="s1H-lu-hxT" id="vfd-f9-7aA"/>
-                            </connections>
-                        </collectionView>
-                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sy7-2Z-s9W">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="116"/>
-                            <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Load gifs..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Yeg-3K-4bT">
-                                    <rect key="frame" x="118" y="47.5" width="84" height="21"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                            </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <constraints>
-                                <constraint firstItem="Yeg-3K-4bT" firstAttribute="centerY" secondItem="Sy7-2Z-s9W" secondAttribute="centerY" id="83r-cc-qer"/>
-                                <constraint firstItem="Yeg-3K-4bT" firstAttribute="centerX" secondItem="Sy7-2Z-s9W" secondAttribute="centerX" id="yiw-jN-gRl"/>
-                            </constraints>
-                        </view>
-                    </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstItem="Sy7-2Z-s9W" firstAttribute="centerY" secondItem="Q5j-nD-jky" secondAttribute="centerY" id="4Ur-wU-PL8"/>
-                        <constraint firstItem="JRZ-oZ-wZB" firstAttribute="centerX" secondItem="Q5j-nD-jky" secondAttribute="centerX" id="DzN-OH-dO9"/>
-                        <constraint firstItem="Sy7-2Z-s9W" firstAttribute="width" secondItem="Q5j-nD-jky" secondAttribute="width" id="MbE-Ly-a0r"/>
-                        <constraint firstItem="JRZ-oZ-wZB" firstAttribute="width" secondItem="Q5j-nD-jky" secondAttribute="width" id="Ns8-LG-lE3"/>
-                        <constraint firstItem="Sy7-2Z-s9W" firstAttribute="centerX" secondItem="Q5j-nD-jky" secondAttribute="centerX" id="Qg8-Xe-tSV"/>
-                        <constraint firstItem="JRZ-oZ-wZB" firstAttribute="centerY" secondItem="Q5j-nD-jky" secondAttribute="centerY" id="RC1-fH-d6G"/>
-                        <constraint firstItem="Sy7-2Z-s9W" firstAttribute="height" secondItem="Q5j-nD-jky" secondAttribute="height" id="aHw-c9-G7N"/>
-                        <constraint firstItem="JRZ-oZ-wZB" firstAttribute="height" secondItem="Q5j-nD-jky" secondAttribute="height" id="vWU-4q-s97"/>
-                    </constraints>
-                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bPO-fS-8O1" userLabel="Content View">
                     <rect key="frame" x="0.0" y="116" width="320" height="258"/>
                     <subviews>
@@ -372,10 +326,6 @@
             <color key="backgroundColor" red="0.8862745098" green="0.8980392157" blue="0.91372549020000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="bPO-fS-8O1" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="116" id="ClQ-h8-e7l"/>
-                <constraint firstItem="Q5j-nD-jky" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="UkO-wm-Eyb"/>
-                <constraint firstItem="Q5j-nD-jky" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="egE-Kn-U7L"/>
-                <constraint firstItem="bPO-fS-8O1" firstAttribute="top" secondItem="Q5j-nD-jky" secondAttribute="bottom" id="hQr-Lh-sY7"/>
-                <constraint firstItem="Q5j-nD-jky" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" id="jcO-0j-rCC"/>
                 <constraint firstAttribute="trailing" secondItem="bPO-fS-8O1" secondAttribute="trailing" id="oFy-p7-8HD"/>
                 <constraint firstItem="bPO-fS-8O1" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="v36-6N-dkc"/>
                 <constraint firstAttribute="bottom" secondItem="bPO-fS-8O1" secondAttribute="bottom" id="wc9-pr-SMS"/>
@@ -386,10 +336,7 @@
         </view>
         <customObject id="s1H-lu-hxT" userLabel="Gif Stripe" customClass="GifStripeViewController">
             <connections>
-                <outlet property="collectionView" destination="JRZ-oZ-wZB" id="SYm-um-HzB"/>
                 <outlet property="delegate" destination="-1" id="Bgk-JU-WC5"/>
-                <outlet property="emptyLabel" destination="Yeg-3K-4bT" id="Pvy-a5-6Bj"/>
-                <outlet property="emptyView" destination="Sy7-2Z-s9W" id="vr5-Ui-7AB"/>
             </connections>
         </customObject>
         <customObject id="erI-ba-Cc8" customClass="EmojiPageSelectorViewController">

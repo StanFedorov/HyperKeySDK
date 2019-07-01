@@ -1548,6 +1548,7 @@
 				5D23C27B21E4D4970057A146 /* large_3_half@2x.png */,
 				5D23C27C21E4D4970057A146 /* large_3_half@3x.png */,
 				5D23C27D21E4D4970057A146 /* large_4@2x.png */,
+				5D23C2D721E4D4970057A146 /* EmojiKeybadAsset.xcassets */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -1872,7 +1873,6 @@
 		5D23C2D621E4D4970057A146 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				5D23C2D721E4D4970057A146 /* EmojiKeybadAsset.xcassets */,
 				5D23C2D821E4D4970057A146 /* EmojisList_10.plist */,
 				5D23C2D921E4D4970057A146 /* skinTonedList.plist */,
 				5D23C2DA21E4D4970057A146 /* EmojisList_9.plist */,

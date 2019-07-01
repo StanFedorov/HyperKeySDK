@@ -79,7 +79,7 @@ NSString *const kLineSearchFieldDidTaped = @"kSearchFieldDidTaped";
 
 - (void)setFeatureSelected:(KeyboardFeature*)feature {
     for(TopAppImage *topItem in self.appsList){
-        if(topItem.feature == feature) {
+        if(topItem.feature.type == feature.type) {
             [topItem updateIconToSelected];
         }
     }

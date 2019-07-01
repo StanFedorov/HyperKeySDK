@@ -271,15 +271,15 @@ NSUInteger const kEmojiKeypadDefaultRecentEmojisMaintainedCount = 20;
 }
 
 - (void)performSearchFieldSearch {
-    if (![self gifStripeAllowed]) {
+  /*  if (![self gifStripeAllowed]) {
         return;
     }
     NSString *string = [self.textField.text stringByReplacingOccurrencesOfString:@" " withString:@""];
-    [self.gifStripe updateContentForString:string];
+    [self.gifStripe updateContentForString:string];*/
 }
 
 - (void)performSearch:(NSString*)search {
-    [self.gifStripe updateContentForString:search];
+   // [self.gifStripe updateContentForString:search];
 }
 
 - (BOOL)gifStripeAllowed {

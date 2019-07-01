@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="ipad9_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
-        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -29,52 +28,6 @@
             <rect key="frame" x="0.0" y="0.0" width="768" height="420"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RX2-y0-6bv" userLabel="Gif Stripe View">
-                    <rect key="frame" x="0.0" y="0.0" width="768" height="100"/>
-                    <subviews>
-                        <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="none" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="a68-s2-boV">
-                            <rect key="frame" x="0.0" y="0.0" width="768" height="100"/>
-                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="0.0" minimumInteritemSpacing="0.0" id="1cM-8N-iXZ">
-                                <size key="itemSize" width="50" height="50"/>
-                                <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                            </collectionViewFlowLayout>
-                            <connections>
-                                <outlet property="dataSource" destination="jFF-Zl-Hpv" id="O38-9s-vhS"/>
-                                <outlet property="delegate" destination="jFF-Zl-Hpv" id="MBM-Fm-PmO"/>
-                            </connections>
-                        </collectionView>
-                        <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2o7-YA-nsg">
-                            <rect key="frame" x="0.0" y="0.0" width="768" height="100"/>
-                            <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Load gifs..." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ytx-Iy-pBg">
-                                    <rect key="frame" x="342" y="39" width="84" height="21"/>
-                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                    <nil key="highlightedColor"/>
-                                </label>
-                            </subviews>
-                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            <constraints>
-                                <constraint firstItem="Ytx-Iy-pBg" firstAttribute="centerX" secondItem="2o7-YA-nsg" secondAttribute="centerX" id="0yz-zK-UPd"/>
-                                <constraint firstItem="Ytx-Iy-pBg" firstAttribute="centerY" secondItem="2o7-YA-nsg" secondAttribute="centerY" id="Bge-J3-d1U"/>
-                            </constraints>
-                        </view>
-                    </subviews>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                    <constraints>
-                        <constraint firstItem="a68-s2-boV" firstAttribute="height" secondItem="RX2-y0-6bv" secondAttribute="height" id="8If-VU-MY7"/>
-                        <constraint firstItem="2o7-YA-nsg" firstAttribute="centerX" secondItem="RX2-y0-6bv" secondAttribute="centerX" id="ABD-g2-U6x"/>
-                        <constraint firstItem="a68-s2-boV" firstAttribute="centerY" secondItem="RX2-y0-6bv" secondAttribute="centerY" id="DCo-IN-K0f"/>
-                        <constraint firstItem="2o7-YA-nsg" firstAttribute="centerY" secondItem="RX2-y0-6bv" secondAttribute="centerY" id="I3j-Vm-l56"/>
-                        <constraint firstItem="2o7-YA-nsg" firstAttribute="height" secondItem="RX2-y0-6bv" secondAttribute="height" id="M00-lk-w2x"/>
-                        <constraint firstItem="a68-s2-boV" firstAttribute="width" secondItem="RX2-y0-6bv" secondAttribute="width" id="MiB-3p-e5a"/>
-                        <constraint firstItem="a68-s2-boV" firstAttribute="centerX" secondItem="RX2-y0-6bv" secondAttribute="centerX" id="VSg-W7-7JP"/>
-                        <constraint firstItem="2o7-YA-nsg" firstAttribute="width" secondItem="RX2-y0-6bv" secondAttribute="width" id="qpi-5B-fHI"/>
-                    </constraints>
-                </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="55v-D2-czb" userLabel="Content View">
                     <rect key="frame" x="0.0" y="100" width="768" height="320"/>
                     <subviews>
@@ -182,21 +135,21 @@
                                             </constraints>
                                         </imageView>
                                         <imageView contentMode="scaleToFill" image="section02" highlightedImage="section02_active" translatesAutoresizingMaskIntoConstraints="NO" id="hms-QC-MZ9">
-                                            <rect key="frame" x="101.5" y="3" width="25" height="25"/>
+                                            <rect key="frame" x="100.5" y="3" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="25" id="TBQ-8o-XJP"/>
                                                 <constraint firstAttribute="height" constant="25" id="qTW-Ra-Fw2"/>
                                             </constraints>
                                         </imageView>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="section03" highlightedImage="section03_active" translatesAutoresizingMaskIntoConstraints="NO" id="YKP-BF-kPZ">
-                                            <rect key="frame" x="175.5" y="3" width="25" height="25"/>
+                                            <rect key="frame" x="176" y="3" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="25" id="ShS-VD-QWw"/>
                                                 <constraint firstAttribute="height" constant="25" id="WrO-cI-g6d"/>
                                             </constraints>
                                         </imageView>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="section04" highlightedImage="section04_active" translatesAutoresizingMaskIntoConstraints="NO" id="FKX-GZ-k5f">
-                                            <rect key="frame" x="251.5" y="3" width="25" height="25"/>
+                                            <rect key="frame" x="250.5" y="3" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="25" id="s4W-0f-IVn"/>
                                                 <constraint firstAttribute="height" constant="25" id="y7a-nP-ut9"/>
@@ -210,21 +163,21 @@
                                             </constraints>
                                         </imageView>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="section06" highlightedImage="section06_active" translatesAutoresizingMaskIntoConstraints="NO" id="21Q-zq-hjC">
-                                            <rect key="frame" x="398.5" y="2" width="25" height="25"/>
+                                            <rect key="frame" x="399.5" y="2" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="25" id="xYz-xt-MRJ"/>
                                                 <constraint firstAttribute="width" constant="25" id="zmu-zR-fDj"/>
                                             </constraints>
                                         </imageView>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="section07" highlightedImage="section07_active" translatesAutoresizingMaskIntoConstraints="NO" id="3Dg-1j-ZPq">
-                                            <rect key="frame" x="476.5" y="3" width="25" height="25"/>
+                                            <rect key="frame" x="476" y="3" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="25" id="Hvm-cZ-VDL"/>
                                                 <constraint firstAttribute="width" constant="25" id="kGI-Gz-J86"/>
                                             </constraints>
                                         </imageView>
                                         <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="section08" highlightedImage="section08_active" translatesAutoresizingMaskIntoConstraints="NO" id="DLp-dC-cml">
-                                            <rect key="frame" x="552.5" y="3" width="25" height="25"/>
+                                            <rect key="frame" x="553.5" y="3" width="25" height="25"/>
                                             <constraints>
                                                 <constraint firstAttribute="width" constant="25" id="s1m-nm-XwS"/>
                                                 <constraint firstAttribute="height" constant="25" id="uH5-t5-4jM"/>
@@ -344,14 +297,10 @@
             </subviews>
             <color key="backgroundColor" red="0.8862745098" green="0.8980392157" blue="0.91372549020000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="RX2-y0-6bv" firstAttribute="width" secondItem="i5M-Pr-FkT" secondAttribute="width" id="7wz-86-dXO"/>
                 <constraint firstItem="55v-D2-czb" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" constant="100" id="HOD-uO-2fN"/>
-                <constraint firstItem="55v-D2-czb" firstAttribute="top" secondItem="RX2-y0-6bv" secondAttribute="bottom" id="O8J-I6-tJc"/>
                 <constraint firstAttribute="trailing" secondItem="55v-D2-czb" secondAttribute="trailing" id="VwV-1c-hVM"/>
                 <constraint firstAttribute="bottom" secondItem="55v-D2-czb" secondAttribute="bottom" id="XTr-Mn-nRR"/>
                 <constraint firstItem="55v-D2-czb" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="fAg-nV-OD9"/>
-                <constraint firstItem="RX2-y0-6bv" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="fLh-ZK-fH4"/>
-                <constraint firstItem="RX2-y0-6bv" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="w9G-c2-eDk"/>
             </constraints>
             <nil key="simulatedStatusBarMetrics"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -359,10 +308,7 @@
         </view>
         <customObject id="jFF-Zl-Hpv" userLabel="Gif Stripe" customClass="GifStripeViewController">
             <connections>
-                <outlet property="collectionView" destination="a68-s2-boV" id="JCy-uf-m3Q"/>
                 <outlet property="delegate" destination="-1" id="Ql2-Uh-1TP"/>
-                <outlet property="emptyLabel" destination="Ytx-Iy-pBg" id="myK-48-Bfe"/>
-                <outlet property="emptyView" destination="2o7-YA-nsg" id="V7J-xQ-82k"/>
             </connections>
         </customObject>
         <customObject id="erI-ba-Cc8" customClass="EmojiPageSelectorViewController">
@@ -393,8 +339,8 @@
     <resources>
         <image name="Hyperkey_icon" width="29" height="29"/>
         <image name="backspace" width="23" height="17"/>
-        <image name="btn_search_field" width="16" height="16"/>
-        <image name="emojiSearchBackground" width="13" height="13"/>
+        <image name="btn_search_field" width="16.5" height="16.5"/>
+        <image name="emojiSearchBackground" width="13.5" height="13.5"/>
         <image name="section01" width="25" height="25"/>
         <image name="section01_active" width="25" height="25"/>
         <image name="section02" width="25" height="25"/>
