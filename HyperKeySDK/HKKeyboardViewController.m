@@ -1541,7 +1541,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
 
 - (void)changeOriginText:(NSString *)origin forTranslatedText:(NSString *)translated {
     if (((self.selectedFeature.type == FeatureTypeGoogleTranslate) && (((GTViewController *)self.selectedVC).isItTranslatedPasteboard))) {
-        NSLog(@"STEP 1");
         if (translated) {
             [self.textDocumentProxy insertText:translated];
         }
@@ -1600,8 +1599,6 @@ NSTimeInterval const kDeletePreviousWordDelay = 0.3;
             }
             [self.textDocumentProxy insertText:translated];
         }
-    }else {
-        NSLog(@"STEP FAIL");
     }
 }
 
